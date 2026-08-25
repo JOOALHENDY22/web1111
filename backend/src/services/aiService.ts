@@ -57,7 +57,7 @@ export const checkInteractionsAI = async (drugs: string[]): Promise<any> => {
   // 2. Cache Miss -> Call AI with Key Rotation
   const resultData = await executeWithRotation(async (genAI) => {
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-3.5-flash-lite",
+      model: "gemini-1.5-flash",
       generationConfig: {
         responseMimeType: "application/json"
       }
@@ -111,7 +111,7 @@ export const checkInteractionsAI = async (drugs: string[]): Promise<any> => {
 export const suggestDrugsAI = async (query: string): Promise<any> => {
   return await executeWithRotation(async (genAI) => {
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-3.5-flash-lite",
+      model: "gemini-1.5-flash",
       generationConfig: { responseMimeType: "application/json" }
     });
 
@@ -160,7 +160,7 @@ export const compareDrugsAI = async (drugA: string, drugB: string): Promise<any>
   // 2. Cache Miss -> Call AI with Key Rotation
   const resultData = await executeWithRotation(async (genAI) => {
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-3.5-flash-lite",
+      model: "gemini-1.5-flash",
       generationConfig: { responseMimeType: "application/json" }
     });
 
@@ -245,7 +245,7 @@ export const getDrugDetailsAI = async (drugName: string): Promise<any> => {
   // 2. Cache Miss -> Call AI with Key Rotation
   const resultData = await executeWithRotation(async (genAI) => {
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-3.5-flash-lite",
+      model: "gemini-1.5-flash",
       generationConfig: { responseMimeType: "application/json" }
     });
 
@@ -317,7 +317,7 @@ export const getDrugAlternativesAI = async (drugName: string): Promise<any> => {
   // 2. Cache Miss -> Call AI with Key Rotation
   const resultData = await executeWithRotation(async (genAI) => {
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-3.5-flash-lite",
+      model: "gemini-1.5-flash",
       generationConfig: { responseMimeType: "application/json" }
     });
 
@@ -386,7 +386,7 @@ export const checkChronicSafetyAI = async (drugName: string, diseaseName: string
   // 2. Cache Miss -> Call AI with Key Rotation
   const resultData = await executeWithRotation(async (genAI) => {
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-3.5-flash-lite",
+      model: "gemini-1.5-flash",
       generationConfig: { responseMimeType: "application/json" }
     });
 
