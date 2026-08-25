@@ -7,12 +7,23 @@ import path from 'path';
 const router = Router();
 
 // Load offline drugs database
-const drugsDbPath = path.join(__dirname, '../data/egyptian_drugs.json');
 let offlineDrugs: string[] = [];
-try {
-  offlineDrugs = JSON.parse(fs.readFileSync(drugsDbPath, 'utf-8'));
-} catch (e) {
-  console.error("Could not load offline drugs database", e);
+const possiblePaths = [
+  path.join(__dirname, '../data/egyptian_drugs.json'),
+  path.join(__dirname, '../../src/data/egyptian_drugs.json'),
+  path.join(process.cwd(), 'backend/src/data/egyptian_drugs.json'),
+  path.join(process.cwd(), 'src/data/egyptian_drugs.json')
+];
+
+for (const p of possiblePaths) {
+  try {
+    if (fs.existsSync(p)) {
+      offlineDrugs = JSON.parse(fs.readFileSync(p, 'utf-8'));
+      break;
+    }
+  } catch (e) {
+    // continue to next path
+  }
 }
 
 router.post('/interactions', async (req, res) => {

@@ -17,8 +17,9 @@ app.get('/api/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'ok', message: 'YMH DRUG CHECK Backend is running.' });
 });
 
-// Routes
+// Routes (mounted on both /api and / for seamless Vercel / local compatibility)
 app.use('/api', interactionRoutes);
+app.use('/', interactionRoutes);
 
 // Start server for local dev (Vercel will ignore this if we export app)
 if (process.env.NODE_ENV !== 'production') {
