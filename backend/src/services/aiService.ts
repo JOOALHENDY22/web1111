@@ -10,6 +10,20 @@ const getApiKeys = (): string[] => {
   return keysStr.split(',').map(k => k.trim()).filter(Boolean);
 };
 
+// Safe JSON parser for LLM responses with or without markdown code fences
+const cleanJson = (text: string): any => {
+  let cleaned = text.trim();
+  if (cleaned.startsWith('```json')) {
+    cleaned = cleaned.slice(7);
+  } else if (cleaned.startsWith('```')) {
+    cleaned = cleaned.slice(3);
+  }
+  if (cleaned.endsWith('```')) {
+    cleaned = cleaned.slice(0, -3);
+  }
+  return JSON.parse(cleaned.trim());
+};
+
 // Retry mechanism cycling through Gemini API keys if one fails
 const executeWithRotation = async <T>(fn: (genAI: GoogleGenerativeAI) => Promise<T>): Promise<T> => {
   const keys = getApiKeys();
@@ -57,7 +71,7 @@ export const checkInteractionsAI = async (drugs: string[]): Promise<any> => {
   // 2. Cache Miss -> Call AI with Key Rotation
   const resultData = await executeWithRotation(async (genAI) => {
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+      model: "gemini-3.5-flash",
       generationConfig: {
         responseMimeType: "application/json"
       }
@@ -90,7 +104,7 @@ export const checkInteractionsAI = async (drugs: string[]): Promise<any> => {
     const text = response.text();
     console.log("Raw AI Response (Interactions):", text);
     
-    return JSON.parse(text);
+    return cleanJson(text);
   });
 
   // 3. Save to Cache
@@ -111,7 +125,7 @@ export const checkInteractionsAI = async (drugs: string[]): Promise<any> => {
 export const suggestDrugsAI = async (query: string): Promise<any> => {
   return await executeWithRotation(async (genAI) => {
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+      model: "gemini-3.5-flash",
       generationConfig: { responseMimeType: "application/json" }
     });
 
@@ -128,7 +142,7 @@ export const suggestDrugsAI = async (query: string): Promise<any> => {
 
     const result = await model.generateContent(prompt);
     const text = await result.response.text();
-    return JSON.parse(text);
+    return cleanJson(text);
   });
 };
 
@@ -160,7 +174,7 @@ export const compareDrugsAI = async (drugA: string, drugB: string): Promise<any>
   // 2. Cache Miss -> Call AI with Key Rotation
   const resultData = await executeWithRotation(async (genAI) => {
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+      model: "gemini-3.5-flash",
       generationConfig: { responseMimeType: "application/json" }
     });
 
@@ -203,7 +217,7 @@ export const compareDrugsAI = async (drugA: string, drugB: string): Promise<any>
 
     const result = await model.generateContent(prompt);
     const text = await result.response.text();
-    return JSON.parse(text);
+    return cleanJson(text);
   });
 
   // 3. Save to Cache
@@ -245,7 +259,7 @@ export const getDrugDetailsAI = async (drugName: string): Promise<any> => {
   // 2. Cache Miss -> Call AI with Key Rotation
   const resultData = await executeWithRotation(async (genAI) => {
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+      model: "gemini-3.5-flash",
       generationConfig: { responseMimeType: "application/json" }
     });
 
@@ -275,7 +289,7 @@ export const getDrugDetailsAI = async (drugName: string): Promise<any> => {
 
     const result = await model.generateContent(prompt);
     const text = await result.response.text();
-    return JSON.parse(text);
+    return cleanJson(text);
   });
 
   // 3. Save to Cache
@@ -317,7 +331,7 @@ export const getDrugAlternativesAI = async (drugName: string): Promise<any> => {
   // 2. Cache Miss -> Call AI with Key Rotation
   const resultData = await executeWithRotation(async (genAI) => {
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+      model: "gemini-3.5-flash",
       generationConfig: { responseMimeType: "application/json" }
     });
 
@@ -342,7 +356,7 @@ export const getDrugAlternativesAI = async (drugName: string): Promise<any> => {
 
     const result = await model.generateContent(prompt);
     const text = await result.response.text();
-    return JSON.parse(text);
+    return cleanJson(text);
   });
 
   // 3. Save to Cache
@@ -386,7 +400,7 @@ export const checkChronicSafetyAI = async (drugName: string, diseaseName: string
   // 2. Cache Miss -> Call AI with Key Rotation
   const resultData = await executeWithRotation(async (genAI) => {
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+      model: "gemini-3.5-flash",
       generationConfig: { responseMimeType: "application/json" }
     });
 
@@ -409,7 +423,7 @@ export const checkChronicSafetyAI = async (drugName: string, diseaseName: string
 
     const result = await model.generateContent(prompt);
     const text = await result.response.text();
-    return JSON.parse(text);
+    return cleanJson(text);
   });
 
   // 3. Save to Cache
