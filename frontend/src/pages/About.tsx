@@ -31,12 +31,14 @@ export default function About() {
               <p className="text-lg font-medium">
                 {t('creator_banner.created_by')} <span className="font-bold text-primary-600 dark:text-primary-400">Youssef Mohamed</span>
               </p>
-              <div className="mt-4 mb-2 flex justify-center bg-white/50 dark:bg-white/10 p-2 rounded-xl inline-block mx-auto">
-                <img 
-                  src="https://ecu.edu.eg/wp-content/uploads/2021/04/ECU-Logo.png" 
-                  alt="Egyptian Chinese University Logo" 
-                  className="h-24 object-contain drop-shadow-md"
-                />
+              <div className="mt-4 mb-3 flex justify-center">
+                <div className="p-3 bg-white dark:bg-white/95 rounded-2xl shadow-sm border border-gray-100 inline-flex items-center justify-center">
+                  <img 
+                    src="/ecu-logo.png" 
+                    alt="Egyptian Chinese University Logo" 
+                    className="h-24 max-w-full object-contain"
+                  />
+                </div>
               </div>
               <p className="mt-2 text-gray-700 dark:text-gray-300">
                 {t('creator_banner.desc')}

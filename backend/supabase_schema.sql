@@ -1,5 +1,5 @@
 -- ====================================================================
--- YMH DRUG CHECK - Complete Supabase Database Schema
+-- YoPharma - Complete Supabase Database Schema
 -- Run this in your Supabase SQL Editor to ensure all cache tables exist
 -- ====================================================================
 

@@ -35,7 +35,7 @@
     "f3_desc": "Get detailed drug comparisons and equivalents based on clinical parameters."
   },
   "footer": {
-    "rights": "YMH DRUG CHECK. All rights reserved.",
+    "rights": "YoPharma Platform. All rights reserved.",
     "disclaimer": "For educational purposes only. Not a substitute for professional medical advice.",
     "designed_by": "Designed by Youssef Mohamed"
   },
@@ -109,10 +109,10 @@
     "btn_clear": "Clear All"
   },
   "about": {
-    "title": "About YMH Drug Check",
+    "title": "About YoPharma",
     "subtitle": "Empowering pharmacy professionals with clinical insights.",
     "mission_title": "Our Mission",
-    "mission_desc": "YMH Drug Check was built with a single goal: to provide pharmacy students, pharmacists, and healthcare providers with an intuitive, blazing-fast, and highly accurate tool for drug information and interaction checking.",
+    "mission_desc": "YoPharma was built with a single goal: to provide pharmacy students, pharmacists, and healthcare providers with an intuitive, blazing-fast, and highly accurate tool for drug information, food interactions, and vital biomarkers reference.",
     "connect_title": "Connect With Us"
   },
   "notfound": {
