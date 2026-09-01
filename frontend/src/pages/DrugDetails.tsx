@@ -109,12 +109,31 @@ export default function DrugDetails() {
   }
 
   if (error || !drugData) {
+    const isAr = i18n.language.startsWith('ar');
     return (
-      <div className="max-w-4xl mx-auto py-12 text-center">
-        <ShieldAlert className="h-16 w-16 text-red-500 mx-auto mb-4" />
-        <h2 className="text-2xl font-bold mb-2">{t('notfound.title')}</h2>
-        <p className="text-gray-600 mb-6">Could not find official FDA data for "{searchName}".</p>
-        <Link to="/search" className="btn-primary">{t('details.back')}</Link>
+      <div className="max-w-4xl mx-auto py-16 text-center animate-fade-in">
+        <div className="w-16 h-16 rounded-3xl bg-rose-50 dark:bg-rose-950/30 text-rose-500 flex items-center justify-center mx-auto mb-4 border border-rose-200 dark:border-rose-900/50 shadow-lg shadow-rose-500/10">
+          <ShieldAlert className="h-8 w-8" />
+        </div>
+        <h2 className="text-2xl font-bold mb-2">
+          {isAr ? 'تعذر تحميل بيانات الدواء' : 'Unable to Load Medication Details'}
+        </h2>
+        <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
+          {isAr 
+            ? `لم يتم العثور على تفاصيل دوائية كافية لـ "${searchName}". قد يكون هناك ضغط على الخادم أو خطأ في الاسم.`
+            : `Could not retrieve clinical details for "${searchName}". The service might be busy or the drug name may contain a typo.`}
+        </p>
+        <div className="flex items-center justify-center gap-3">
+          <button 
+            onClick={() => window.location.reload()} 
+            className="btn-primary"
+          >
+            {isAr ? 'إعادة المحاولة' : 'Retry'}
+          </button>
+          <Link to="/search" className="btn-secondary">
+            {isAr ? 'البحث عن دواء آخر' : 'Search Another Drug'}
+          </Link>
+        </div>
       </div>
     );
   }
