@@ -45,12 +45,41 @@ const executeWithRotation = async <T>(fn: (genAI: GoogleGenerativeAI) => Promise
   throw lastError || new Error('All Gemini API keys failed');
 };
 
+// High-speed In-Memory RAM Cache for Sub-Millisecond (< 1ms) Responses
+const ramCache = new Map<string, { data: any; exp: number }>();
+const RAM_TTL = 1000 * 60 * 60 * 24; // 24 hours
+
+const getRam = (key: string): any | null => {
+  const item = ramCache.get(key);
+  if (!item) return null;
+  if (Date.now() > item.exp) {
+    ramCache.delete(key);
+    return null;
+  }
+  return item.data;
+};
+
+const setRam = (key: string, data: any) => {
+  if (ramCache.size > 2000) {
+    const oldest = ramCache.keys().next().value;
+    if (oldest) ramCache.delete(oldest);
+  }
+  ramCache.set(key, { data, exp: Date.now() + RAM_TTL });
+};
+
 export const checkInteractionsAI = async (drugs: string[]): Promise<any> => {
   // Sort and hash drug list for consistent caching index
   const sortedDrugs = drugs.map(d => d.toLowerCase().trim()).sort();
   const drugsHash = sortedDrugs.join(',');
 
-  // 1. Try Cache
+  const memKey = `interactions:${drugsHash}`;
+  const memHit = getRam(memKey);
+  if (memHit) {
+    console.log(`[RAM Hit ⚡] Instant interactions for [${drugs.join(', ')}] (<1ms)`);
+    return memHit;
+  }
+
+  // 1. Try Supabase Cache
   if (isSupabaseConfigured && supabase) {
     try {
       const { data, error } = await supabase
@@ -64,6 +93,7 @@ export const checkInteractionsAI = async (drugs: string[]): Promise<any> => {
         const isBilingual = !Array.isArray(json) || json.length === 0 || json.some((item: any) => item.description_ar || item.description_en);
         if (isBilingual) {
           console.log(`[Cache Hit] Serving bilingual interactions for [${drugs.join(', ')}] from Supabase.`);
+          setRam(memKey, json);
           return json;
         }
         console.log(`[Cache Outdated] Legacy single-language interactions cache found for [${drugs.join(', ')}]. Upgrading to bilingual...`);
@@ -126,6 +156,7 @@ export const checkInteractionsAI = async (drugs: string[]): Promise<any> => {
     }
   }
 
+  setRam(memKey, resultData);
   return resultData;
 };
 
@@ -158,6 +189,13 @@ export const compareDrugsAI = async (drugA: string, drugB: string): Promise<any>
   const sortedPair = [drugA.toLowerCase().trim(), drugB.toLowerCase().trim()].sort();
   const dA = sortedPair[0];
   const dB = sortedPair[1];
+  const memKey = `compare:${dA}:${dB}`;
+
+  const memHit = getRam(memKey);
+  if (memHit) {
+    console.log(`[RAM Hit ⚡] Instant comparison for "${drugA}" vs "${drugB}" (<1ms)`);
+    return memHit;
+  }
 
   // 1. Try Cache
   if (isSupabaseConfigured && supabase) {
@@ -174,6 +212,7 @@ export const compareDrugsAI = async (drugA: string, drugB: string): Promise<any>
         const isBilingual = !Array.isArray(json) || json.length === 0 || json.some((item: any) => item.feature_ar || item.feature_en);
         if (isBilingual) {
           console.log(`[Cache Hit] Serving bilingual comparison for "${drugA}" vs "${drugB}" from Supabase.`);
+          setRam(memKey, json);
           return json;
         }
         console.log(`[Cache Outdated] Legacy single-language comparison cache found for "${drugA}" vs "${drugB}". Upgrading to bilingual...`);
@@ -274,11 +313,19 @@ export const compareDrugsAI = async (drugA: string, drugB: string): Promise<any>
     }
   }
 
+  setRam(memKey, resultData);
   return resultData;
 };
 
 export const getDrugDetailsAI = async (drugName: string): Promise<any> => {
   const normalizedName = drugName.toLowerCase().trim();
+  const memKey = `details:${normalizedName}`;
+
+  const memHit = getRam(memKey);
+  if (memHit) {
+    console.log(`[RAM Hit ⚡] Instant drug details for "${drugName}" (<1ms)`);
+    return memHit;
+  }
 
   // 1. Try Cache
   if (isSupabaseConfigured && supabase) {
@@ -294,6 +341,7 @@ export const getDrugDetailsAI = async (drugName: string): Promise<any> => {
         const isBilingual = json && (json.purpose_ar || json.purpose_en || json.overview_ar || json.overview_en);
         if (isBilingual) {
           console.log(`[Cache Hit] Serving bilingual details for "${drugName}" from Supabase.`);
+          setRam(memKey, json);
           return json;
         }
         console.log(`[Cache Outdated] Legacy single-language details cache found for "${drugName}". Upgrading to bilingual...`);
@@ -372,11 +420,19 @@ export const getDrugDetailsAI = async (drugName: string): Promise<any> => {
     }
   }
 
+  setRam(memKey, resultData);
   return resultData;
 };
 
 export const getDrugAlternativesAI = async (drugName: string): Promise<any> => {
   const normalizedName = drugName.toLowerCase().trim();
+  const memKey = `alternatives:${normalizedName}`;
+
+  const memHit = getRam(memKey);
+  if (memHit) {
+    console.log(`[RAM Hit ⚡] Instant alternatives for "${drugName}" (<1ms)`);
+    return memHit;
+  }
 
   // 1. Try Cache
   if (isSupabaseConfigured && supabase) {
@@ -392,6 +448,7 @@ export const getDrugAlternativesAI = async (drugName: string): Promise<any> => {
         const isBilingual = json && (json.active_ingredient_ar || json.active_ingredient_en);
         if (isBilingual) {
           console.log(`[Cache Hit] Serving bilingual alternatives for "${drugName}" from Supabase.`);
+          setRam(memKey, json);
           return json;
         }
         console.log(`[Cache Outdated] Legacy single-language alternatives cache found for "${drugName}". Upgrading to bilingual...`);
@@ -448,12 +505,20 @@ export const getDrugAlternativesAI = async (drugName: string): Promise<any> => {
     }
   }
 
+  setRam(memKey, resultData);
   return resultData;
 };
 
 export const checkChronicSafetyAI = async (drugName: string, diseaseName: string): Promise<any> => {
   const normalizedDrug = drugName.toLowerCase().trim();
   const normalizedDisease = diseaseName.toLowerCase().trim();
+  const memKey = `safety:${normalizedDrug}:${normalizedDisease}`;
+
+  const memHit = getRam(memKey);
+  if (memHit) {
+    console.log(`[RAM Hit ⚡] Instant safety for "${drugName}" + "${diseaseName}" (<1ms)`);
+    return memHit;
+  }
 
   // 1. Try Cache
   if (isSupabaseConfigured && supabase) {
@@ -470,6 +535,7 @@ export const checkChronicSafetyAI = async (drugName: string, diseaseName: string
         const isBilingual = json && (json.explanation_ar || json.explanation_en);
         if (isBilingual) {
           console.log(`[Cache Hit] Serving bilingual disease safety for "${drugName}" + "${diseaseName}" from Supabase.`);
+          setRam(memKey, json);
           return json;
         }
         console.log(`[Cache Outdated] Legacy single-language safety cache found for "${drugName}". Upgrading to bilingual...`);
@@ -522,11 +588,19 @@ export const checkChronicSafetyAI = async (drugName: string, diseaseName: string
     }
   }
 
+  setRam(memKey, resultData);
   return resultData;
 };
 
 export const getFoodInteractionsAI = async (drugName: string): Promise<any> => {
   const normalizedName = drugName.toLowerCase().trim();
+  const memKey = `food:${normalizedName}`;
+
+  const memHit = getRam(memKey);
+  if (memHit) {
+    console.log(`[RAM Hit ⚡] Instant food interactions for "${drugName}" (<1ms)`);
+    return memHit;
+  }
 
   // 1. Try Cache
   if (isSupabaseConfigured && supabase) {
@@ -539,6 +613,7 @@ export const getFoodInteractionsAI = async (drugName: string): Promise<any> => {
       
       if (data && !error) {
         console.log(`[Cache Hit] Serving food interactions for "${drugName}" from Supabase.`);
+        setRam(memKey, data.food_interactions_json);
         return data.food_interactions_json;
       }
     } catch (e: any) {
@@ -606,5 +681,6 @@ export const getFoodInteractionsAI = async (drugName: string): Promise<any> => {
     }
   }
 
+  setRam(memKey, resultData);
   return resultData;
 };

@@ -5,10 +5,19 @@ const FDA_BASE_URL = 'https://api.fda.gov/drug';
 
 const BACKEND_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:5000';
 
+// Instant Client-Side Cache (0ms response time for repeated queries)
+const clientCache = new Map<string, any>();
+
 const fetchAIDrugDetails = async (drugName: string) => {
+  const cacheKey = `details:${drugName.toLowerCase().trim()}`;
+  if (clientCache.has(cacheKey)) {
+    return clientCache.get(cacheKey);
+  }
+
   try {
     const res = await axios.post(`${BACKEND_URL}/api/drug-details`, { drugName });
     if (res.data) {
+      clientCache.set(cacheKey, res.data);
       return res.data;
     }
     return null;
@@ -73,9 +82,16 @@ export const fetchDrugSuggestions = async (query: string) => {
 };
 
 export const fetchDrugComparison = async (drugA: string, drugB: string) => {
+  const sorted = [drugA.toLowerCase().trim(), drugB.toLowerCase().trim()].sort();
+  const cacheKey = `compare:${sorted[0]}:${sorted[1]}`;
+  if (clientCache.has(cacheKey)) {
+    return clientCache.get(cacheKey);
+  }
+
   try {
     const res = await axios.post(`${BACKEND_URL}/api/compare`, { drugA, drugB });
     if (res.data && res.data.comparison) {
+      clientCache.set(cacheKey, res.data.comparison);
       return res.data.comparison;
     }
     return null;
@@ -102,9 +118,16 @@ export const getRxCUI = async (drugName: string): Promise<string | null> => {
 };
 
 export const checkInteractions = async (drugs: string[]) => {
+  const sortedHash = drugs.map(d => d.toLowerCase().trim()).sort().join(',');
+  const cacheKey = `interactions:${sortedHash}`;
+  if (clientCache.has(cacheKey)) {
+    return clientCache.get(cacheKey);
+  }
+
   try {
     const res = await axios.post(`${BACKEND_URL}/api/interactions`, { drugs });
     if (res.data && res.data.interactions) {
+      clientCache.set(cacheKey, res.data.interactions);
       return res.data.interactions;
     }
     return [];
@@ -115,9 +138,15 @@ export const checkInteractions = async (drugs: string[]) => {
 };
 
 export const fetchDrugAlternatives = async (drugName: string) => {
+  const cacheKey = `alternatives:${drugName.toLowerCase().trim()}`;
+  if (clientCache.has(cacheKey)) {
+    return clientCache.get(cacheKey);
+  }
+
   try {
     const res = await axios.post(`${BACKEND_URL}/api/alternatives`, { drugName });
     if (res.data) {
+      clientCache.set(cacheKey, res.data);
       return res.data;
     }
     return null;
@@ -128,9 +157,15 @@ export const fetchDrugAlternatives = async (drugName: string) => {
 };
 
 export const fetchChronicSafety = async (drugName: string, diseaseName: string) => {
+  const cacheKey = `safety:${drugName.toLowerCase().trim()}:${diseaseName.toLowerCase().trim()}`;
+  if (clientCache.has(cacheKey)) {
+    return clientCache.get(cacheKey);
+  }
+
   try {
     const res = await axios.post(`${BACKEND_URL}/api/chronic-safety`, { drugName, diseaseName });
     if (res.data) {
+      clientCache.set(cacheKey, res.data);
       return res.data;
     }
     return null;
@@ -141,9 +176,15 @@ export const fetchChronicSafety = async (drugName: string, diseaseName: string) 
 };
 
 export const fetchFoodInteractions = async (drugName: string) => {
+  const cacheKey = `food:${drugName.toLowerCase().trim()}`;
+  if (clientCache.has(cacheKey)) {
+    return clientCache.get(cacheKey);
+  }
+
   try {
     const res = await axios.post(`${BACKEND_URL}/api/food-interactions`, { drugName });
     if (res.data) {
+      clientCache.set(cacheKey, res.data);
       return res.data;
     }
     return null;
