@@ -1,6 +1,6 @@
 @echo off
 echo ===================================================
-echo Welcome to YMH DRUG CHECK Startup Script!
+echo Welcome to YoPharma Clinical Platform Startup Script!
 echo ===================================================
 echo.
 
@@ -16,11 +16,11 @@ IF %ERRORLEVEL% NEQ 0 (
     exit
 )
 
-echo [1/3] Node.js is installed! Setting up AI Backend...
+echo [1/3] Node.js is installed! Setting up YoPharma Backend...
 cd backend
 call npm install
 echo Starting Backend Server in a new window...
-start cmd /k "title YMH AI Backend && npm run dev"
+start cmd /k "title YoPharma Backend && npm run dev"
 
 cd ..
 

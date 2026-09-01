@@ -14,7 +14,7 @@ app.use(express.json());
 
 // Basic health check route
 app.get('/api/health', (req: Request, res: Response) => {
-  res.status(200).json({ status: 'ok', message: 'YMH DRUG CHECK Backend is running.' });
+  res.status(200).json({ status: 'ok', message: 'YoPharma Backend is running.' });
 });
 
 // Routes (mounted on both /api and / for seamless Vercel / local compatibility)

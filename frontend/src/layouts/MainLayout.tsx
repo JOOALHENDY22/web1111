@@ -69,13 +69,21 @@ export default function MainLayout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center space-x-2 group rtl:space-x-reverse">
-              <div className="p-2 bg-primary-100 dark:bg-primary-900/30 rounded-xl group-hover:scale-105 transition-transform">
-                <Pill className="h-6 w-6 text-primary-600 dark:text-primary-400" />
+            <Link to="/" className="flex items-center gap-3 group">
+              <div className="relative">
+                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-primary-600 via-primary-500 to-teal-400 flex items-center justify-center shadow-lg shadow-primary-500/25 group-hover:scale-105 group-hover:shadow-primary-500/40 transition-all duration-300">
+                  <Pill className="h-5 w-5 text-white transform -rotate-45" />
+                </div>
+                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-gray-900 shadow-sm"></div>
               </div>
-              <span className="text-xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300">
-                YMH <span className="text-primary-600 dark:text-primary-400">DRUG CHECK</span>
-              </span>
+              <div className="flex flex-col">
+                <span className="text-2xl font-black tracking-tight leading-none text-gray-900 dark:text-white">
+                  Yo<span className="bg-gradient-to-r from-primary-500 via-teal-500 to-emerald-500 bg-clip-text text-transparent">Pharma</span>
+                </span>
+                <span className="text-[9px] font-bold tracking-widest uppercase text-gray-400 dark:text-gray-500 font-mono mt-0.5">
+                  Clinical Intelligence
+                </span>
+              </div>
             </Link>
 
             {/* Desktop Navigation */}
