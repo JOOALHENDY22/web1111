@@ -11,7 +11,8 @@ import {
   FileText,
   Calculator,
   ShieldCheck,
-  Stethoscope
+  Stethoscope,
+  User
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -43,6 +44,7 @@ export default function VitalRef() {
 
   // Evaluator States
   const [evalMetric, setEvalMetric] = useState<string>('fasting_glucose');
+  const [evalGender, setEvalGender] = useState<'male' | 'female'>('male');
   const [evalValue1, setEvalValue1] = useState<string>('');
   const [evalValue2, setEvalValue2] = useState<string>('');
 
@@ -244,6 +246,20 @@ export default function VitalRef() {
         { label_ar: 'ارتفاع حرج مهدد للحياة', label_en: 'Critical Hyperkalemia', range: '≥ 6.0 mEq/L', status: 'critical', note_ar: 'خطر توقف عضلة القلب فجأة', note_en: 'Life-threatening arrhythmia risk' }
       ]
     },
+    {
+      id: 'sodium',
+      name_ar: 'الصوديوم في الدم (Serum Sodium - Na+)',
+      name_en: 'Serum Sodium (Na+)',
+      unit: 'mEq/L',
+      category: 'renal',
+      description_ar: 'المنظم الرئيسي لتوازن السوائل والضغط الأسموزي في الجسم والخلايا العصبية.',
+      description_en: 'Key extracellular cation maintaining fluid and osmotic balance.',
+      ranges: [
+        { label_ar: 'طبيعي', label_en: 'Normal', range: '135 - 145 mEq/L', status: 'optimal' },
+        { label_ar: 'نقص صوديوم (Hyponatremia)', label_en: 'Hyponatremia (< 135)', range: '< 135 mEq/L', status: 'warning', note_ar: 'يسبب دوار وتشوش ذهني', note_en: 'Causes headache and mental confusion' },
+        { label_ar: 'ارتفاع صوديوم (Hypernatremia)', label_en: 'Hypernatremia (> 145)', range: '> 145 mEq/L', status: 'warning', note_ar: 'يرتبط بالجفاف الشديد', note_en: 'Associated with severe dehydration' }
+      ]
+    },
 
     // 4. Lipid Profile
     {
@@ -381,7 +397,7 @@ export default function VitalRef() {
     }
   ];
 
-  // Filtered metrics
+  // Filtered metrics for reference tab
   const filteredMetrics = metricsData.filter(m => {
     const matchesCategory = selectedCategory === 'all' || m.category === selectedCategory;
     const q = searchQuery.toLowerCase().trim();
@@ -393,13 +409,14 @@ export default function VitalRef() {
     return matchesCategory && matchesSearch;
   });
 
-  // Evaluation Logic
+  // Comprehensive Evaluation Logic for ALL 22 Biomarkers
   const getEvaluation = () => {
     const val1 = parseFloat(evalValue1);
     const val2 = parseFloat(evalValue2);
 
     if (isNaN(val1) && evalMetric !== 'blood_pressure') return null;
 
+    // 1. Fasting Glucose
     if (evalMetric === 'fasting_glucose') {
       if (val1 < 70) return { status: 'warning', title_ar: 'هبوط في سكر الدم (Hypoglycemia)', title_en: 'Hypoglycemia (Low Sugar)', advice_ar: 'تناول 15 جراماً من السكريات السريعة (عصير أو تمر) وأعد القياس بعد 15 دقيقة.', advice_en: 'Consume 15g fast-acting carbs (juice/honey) and recheck in 15 minutes.' };
       if (val1 <= 99) return { status: 'optimal', title_ar: 'طبيعي ومثالي جداً (Normal)', title_en: 'Normal & Healthy', advice_ar: 'استمر على نظامك الغذائي المتوازن وممارسة النشاط البدني.', advice_en: 'Maintain balanced diet and regular physical activity.' };
@@ -407,19 +424,29 @@ export default function VitalRef() {
       return { status: 'critical', title_ar: 'ارتفاع دال على مرض السكري (Diabetic Range)', title_en: 'Diabetic Range', advice_ar: 'يجب مراجعة طبيب باطنة/غدد صماء لإجراء تحليل السكر التراكمي وتحديد الخطة العلاجية.', advice_en: 'Consult a physician for HbA1c confirmation and treatment plan.' };
     }
 
+    // 2. Postprandial Glucose
     if (evalMetric === 'postprandial_glucose') {
       if (val1 < 140) return { status: 'optimal', title_ar: 'طبيعي وسليم (Normal)', title_en: 'Normal Glucose Tolerance', advice_ar: 'استجابة إنسولين ممتازة للوجبة الغذائية.', advice_en: 'Excellent insulin response to food.' };
       if (val1 <= 199) return { status: 'warning', title_ar: 'مرحلة ما قبل السكري (Impaired Tolerance)', title_en: 'Impaired Glucose Tolerance', advice_ar: 'قلل حجم الوجبات وركز على الألياف والخضار قبل الكربوهيدرات.', advice_en: 'Reduce carb portions and increase fiber before meals.' };
       return { status: 'critical', title_ar: 'ارتفاع سكري صريح (Elevated Postprandial)', title_en: 'Elevated Postprandial', advice_ar: 'استشر الطبيب لتقييم جرعات العلاج أو بدء التدخل الدوائي.', advice_en: 'Consult doctor for therapeutic intervention or dosage adjustment.' };
     }
 
+    // 3. Random Glucose
+    if (evalMetric === 'random_glucose') {
+      if (val1 < 140) return { status: 'optimal', title_ar: 'سكر عشوائي طبيعي', title_en: 'Normal Random Blood Sugar', advice_ar: 'القراءة ضمن النطاق الطبيعي الصحي.', advice_en: 'Reading within healthy standard boundaries.' };
+      if (val1 < 200) return { status: 'warning', title_ar: 'اشتباه سكري / قراءة حدودية', title_en: 'Borderline Elevation', advice_ar: 'يُنصح بإجراء فحص السكر الصائم والسكر التراكمي للتحقق بدقة.', advice_en: 'Recommend testing fasting glucose and HbA1c for confirmation.' };
+      return { status: 'critical', title_ar: 'قراءة مرتفعة دالة على السكري (≥ 200 mg/dL)', title_en: 'Diabetic Range (≥ 200 mg/dL)', advice_ar: 'خاصة عند وجود أعراض كالعطش الزائد وكثرة التبول؛ راجع الطبيب لتأكيد التشخيص.', advice_en: 'Strong indicator of diabetes if symptoms (polyuria/polydipsia) present.' };
+    }
+
+    // 4. HbA1c
     if (evalMetric === 'hba1c') {
       if (val1 < 5.7) return { status: 'optimal', title_ar: 'طبيعي ومثالي (Normal)', title_en: 'Optimal HbA1c', advice_ar: 'متوسط سكر دم ممتاز خلال الأشهر الثلاثة الماضية.', advice_en: 'Excellent 3-month average glucose control.' };
-      if (val1 <= 6.4) return { status: 'warning', title_ar: 'مرحلة ما قبل السكري (Pre-diabetes)', title_en: 'Pre-diabetic Range', advice_ar: 'يتطلب فحص دوري كل 6 أشهر مع تعديل جاد لنمط الحياة.', advice_en: 'Bi-annual checkups recommended with active lifestyle changes.' };
-      if (val1 <= 7.0) return { status: 'normal', title_ar: 'هدف علاجي ممتاز لمريض السكر', title_en: 'Good Diabetic Control Target', advice_ar: 'تحكم سليم يقي شرايين القلب والعين والكلى من التلف.', advice_en: 'Good glycemic control protecting against microvascular damage.' };
+      if (val1 <= 6.4) return { status: 'warning', title_ar: 'مرحلة ما قبل السكري (Pre-diabetes)', title_en: 'Pre-diabetic Range', advice_ar: 'يتطلب فحص دوري كل 6 أشهر مع تعديل جاد لنمط الحياة لتفادي الإصابة.', advice_en: 'Bi-annual checkups recommended with active lifestyle changes.' };
+      if (val1 <= 7.0) return { status: 'normal', title_ar: 'هدف علاجي ممتاز لمريض السكر', title_en: 'Good Diabetic Control Target', advice_ar: 'تحكم سليم يقي شرايين القلب والعين والكلى من التلف والمضاعفات.', advice_en: 'Good glycemic control protecting against microvascular damage.' };
       return { status: 'critical', title_ar: 'سكر تراكمي مرتفع غير منضبط', title_en: 'Uncontrolled Glycemia (High)', advice_ar: 'يتطلب تعديل فوري في جرعات أدوية السكر أو الإنسولين تحت إشراف الطبيب.', advice_en: 'Requires prompt medical review of anti-diabetic medications.' };
     }
 
+    // 5. Blood Pressure
     if (evalMetric === 'blood_pressure') {
       const sys = val1;
       const dia = val2;
@@ -433,16 +460,143 @@ export default function VitalRef() {
       return { status: 'high', title_ar: 'ارتفاع ضغط دم - مرحلة ثانية (Stage 2)', title_en: 'Hypertension Stage 2', advice_ar: 'يستلزم التزاماً بالعلاج الدوائي الخافض للضغط ومتابعة وظائف الكلى.', advice_en: 'Requires anti-hypertensive drug therapy and regular renal monitoring.' };
     }
 
+    // 6. Heart Rate
     if (evalMetric === 'heart_rate') {
-      if (val1 < 50) return { status: 'warning', title_ar: 'بطء نبضات القلب (Bradycardia)', title_en: 'Bradycardia', advice_ar: 'طبيعي جداً للرياضيين؛ استشر الطبيب فقط إذا شعرت بدوخة أو إغماء.', advice_en: 'Normal for conditioned athletes; check with MD if symptomatic.' };
+      if (val1 < 50) return { status: 'warning', title_ar: 'بطء نبضات القلب (Bradycardia)', title_en: 'Bradycardia', advice_ar: 'طبيعي جداً للرياضيين؛ استشر الطبيب فقط إذا شعرت بدوخة أو إجهاد غير مبرر.', advice_en: 'Normal for conditioned athletes; check with MD if symptomatic.' };
       if (val1 <= 100) return { status: 'optimal', title_ar: 'معدل نبض طبيعي للبالغين', title_en: 'Normal Resting Heart Rate', advice_ar: 'إيقاع قلبي منتظم وسليم.', advice_en: 'Healthy sinus rhythm.' };
       return { status: 'high', title_ar: 'تسارع ضربات القلب (Tachycardia)', title_en: 'Tachycardia', advice_ar: 'تجنب المنبهات والكافيين الزائد، وافحص نسبة الهيموجلوبين والغدة الدرقية.', advice_en: 'Limit caffeine; check hydration, thyroid function, and hemoglobin.' };
     }
 
+    // 7. Oxygen Saturation
     if (evalMetric === 'oxygen_saturation') {
       if (val1 >= 95) return { status: 'optimal', title_ar: 'تشبع أكسجين سليم ومثالي', title_en: 'Optimal Oxygenation', advice_ar: 'رئتان تؤديان وظيفتهما بكفاءة كاملة.', advice_en: 'Adequate pulmonary oxygen exchange.' };
-      if (val1 >= 91) return { status: 'warning', title_ar: 'نقص أكسجين خفيف (Mild Hypoxia)', title_en: 'Mild Hypoxia', advice_ar: 'اجلس مستقيماً وخذ أنفاساً عميقة؛ إذا كان لديك ربو استخدم بخاخك الطبي.', advice_en: 'Sit upright, take deep breaths, and monitor closely.' };
-      return { status: 'critical', title_ar: 'نقص أكسجين حرج يستدعي رعاية طبية', title_en: 'Critical Hypoxia (Urgent)', advice_ar: 'توجه للمستشفى أو اتصل بالطوارئ فوراً لتلقي دعم الأكسجين الطبي.', advice_en: 'Immediate emergency medical oxygen therapy needed.' };
+      if (val1 >= 91) return { status: 'warning', title_ar: 'نقص أكسجين خفيف (Mild Hypoxia)', title_en: 'Mild Hypoxia', advice_ar: 'اجلس مستقيماً وخذ أنفاساً عميقة؛ إذا كان لديك ربو استخدم بخاخك الطبي واقترب من نافذة.', advice_en: 'Sit upright, take deep breaths, and monitor closely.' };
+      return { status: 'critical', title_ar: 'نقص أكسجين حرج يستدعي رعاية طبية عاجلة', title_en: 'Critical Hypoxia (Urgent)', advice_ar: 'توجه للمستشفى أو اتصل بالطوارئ فوراً لتلقي دعم الأكسجين الطبي.', advice_en: 'Immediate emergency medical oxygen therapy needed.' };
+    }
+
+    // 8. Body Temperature
+    if (evalMetric === 'body_temp') {
+      if (val1 < 35.0) return { status: 'critical', title_ar: 'انخفاض حرارة الجسم (Hypothermia)', title_en: 'Hypothermia', advice_ar: 'تدفئة المريض بالملابس والأغطية فوراً ومراجعة الطوارئ.', advice_en: 'Warm patient immediately and seek medical attention.' };
+      if (val1 < 36.5) return { status: 'warning', title_ar: 'حرارة منخفضة طفيفة', title_en: 'Subnormal Temperature', advice_ar: 'احرص على التدفئة المناسبة والمشروبات الدافئة.', advice_en: 'Ensure adequate warmth and warm fluids.' };
+      if (val1 <= 37.5) return { status: 'optimal', title_ar: 'درجة حرارة طبيعية ومثالية', title_en: 'Normal Body Temperature', advice_ar: 'الجسم في نطاقه الفسيولوجي المعتدل.', advice_en: 'Physiological normal thermal balance.' };
+      if (val1 <= 38.2) return { status: 'warning', title_ar: 'حرارة مرتفعة طفيفة (Low-grade fever)', title_en: 'Low-grade Fever', advice_ar: 'الراحة، شرب كميات وافرة من السوائل، وكمادات ماء فاتر.', advice_en: 'Rest, hydration, and lukewarm compresses.' };
+      if (val1 <= 39.5) return { status: 'high', title_ar: 'حمى واضحة (Fever)', title_en: 'High Fever', advice_ar: 'استخدام خافض حرارة آمن مثل الباراسيتامول ومراجعة الطبيب لتحديد مصدر العدوى.', advice_en: 'Use antipyretic (paracetamol) and evaluate for infection source.' };
+      return { status: 'critical', title_ar: 'حمى شديدة مفرطة (Hyperpyrexia)', title_en: 'Dangerous Hyperpyrexia', advice_ar: 'طوارئ طبية عاجلة لتفادي التشنجات الحرارية وتلف الخلايا.', advice_en: 'Emergency medical intervention needed to prevent febrile seizures.' };
+    }
+
+    // 9. Creatinine
+    if (evalMetric === 'creatinine') {
+      const maxNormal = evalGender === 'male' ? 1.3 : 1.1;
+      const minNormal = evalGender === 'male' ? 0.7 : 0.6;
+
+      if (val1 < minNormal) return { status: 'normal', title_ar: 'كرياتينين منخفض', title_en: 'Low Creatinine', advice_ar: 'يرتبط عادة بنقص الكتلة العضلية أو التغذية، ليس له دلالة مرضية كلوية.', advice_en: 'Typically reflects low muscle mass; generally benign.' };
+      if (val1 <= maxNormal) return { status: 'optimal', title_ar: 'وظائف كلوية طبيعية ومثالية', title_en: 'Normal Renal Function', advice_ar: 'ترشيح كلوي سليم وكفاءة عالية في تنقية الفضلات.', advice_en: 'Excellent glomerular filtration and waste clearance.' };
+      if (val1 <= 2.0) return { status: 'high', title_ar: 'ارتفاع الكرياتينين (قصور كلوي)', title_en: 'Elevated Creatinine (Renal Impairment)', advice_ar: 'يستوجب فحص الطبيب وتعديل جرعات بعض الأدوية وحساب معدل الفلترة eGFR.', advice_en: 'Requires clinical review; adjust dosages of renal-cleared drugs.' };
+      return { status: 'critical', title_ar: 'ارتفاع حاد في الكرياتينين', title_en: 'Severe Renal Elevation', advice_ar: 'استشارة طبيب كلى فوراً ومراقبة توازن الأملاح والسوائل وتجنب مسكنات NSAIDs نهائياً.', advice_en: 'Urgent nephrology consult needed; strictly avoid NSAIDs.' };
+    }
+
+    // 10. eGFR
+    if (evalMetric === 'egfr') {
+      if (val1 >= 90) return { status: 'optimal', title_ar: 'وظائف كلوية طبيعية (المرحلة 1)', title_en: 'Normal Kidney Function (Stage 1)', advice_ar: 'كفاءة ترشيح كبيبي ممتازة.', advice_en: 'Optimal glomerular filtration.' };
+      if (val1 >= 60) return { status: 'normal', title_ar: 'انخفاض طفيف في وظائف الكلى (المرحلة 2)', title_en: 'Mild Decrease (Stage 2)', advice_ar: 'متابعة دورية مع شرب الماء الكافي وضبط الضغط والسكر.', advice_en: 'Regular monitoring; optimize blood pressure and glucose.' };
+      if (val1 >= 30) return { status: 'warning', title_ar: 'قصور كلوي معتدل (المرحلة 3)', title_en: 'Moderate Renal Impairment (Stage 3)', advice_ar: 'ممنوع الجرعات العالية من الميتفورمين ويجب ضبط جرعات الأدوية بدقة.', advice_en: 'Dose adjustment required for Metformin, antibiotics, and other drugs.' };
+      if (val1 >= 15) return { status: 'high', title_ar: 'قصور كلوي شديد (المرحلة 4)', title_en: 'Severe Impairment (Stage 4)', advice_ar: 'حظر كامل لمسكنات البروفين والفولتارين (NSAIDs) ومتابعة طبيب كلى دورياً.', advice_en: 'NSAIDs strictly contraindicated; close nephrology follow-up.' };
+      return { status: 'critical', title_ar: 'فشل كلوي نهائي (المرحلة 5)', title_en: 'Kidney Failure (Stage 5)', advice_ar: 'مرحلة الغسيل الكلوي أو زراعة الكلى.', advice_en: 'Renal replacement therapy (dialysis or transplant) required.' };
+    }
+
+    // 11. Uric Acid
+    if (evalMetric === 'uric_acid') {
+      const maxNormal = evalGender === 'male' ? 7.2 : 6.0;
+      if (val1 <= maxNormal) return { status: 'optimal', title_ar: 'حمض يوريك طبيعي', title_en: 'Normal Uric Acid', advice_ar: 'مستوى متوازن يقي من نوبات النقرس وتكون حصوات الكلى.', advice_en: 'Balanced level protecting from gout flares and urate stones.' };
+      if (val1 <= 8.5) return { status: 'high', title_ar: 'ارتفاع حمض اليوريك (Hyperuricemia)', title_en: 'Hyperuricemia', advice_ar: 'قلل اللحوم الحمراء والبقوليات ومأكولات البحر واشرب 3 لترات ماء يومياً.', advice_en: 'Reduce red meat, purine-rich foods, and drink plenty of water.' };
+      return { status: 'critical', title_ar: 'ارتفاع شديد في حمض اليوريك', title_en: 'Markedly Elevated Uric Acid', advice_ar: 'خطر مرتفع لنوبات نقرس حادة وحصوات بولية، راجع الطبيب لبدء علاج خافض لليوريك.', advice_en: 'High risk of acute gout flares and nephrolithiasis; consult doctor.' };
+    }
+
+    // 12. Potassium
+    if (evalMetric === 'potassium') {
+      if (val1 < 3.5) return { status: 'warning', title_ar: 'انخفاض بوتاسيوم الدم (Hypokalemia)', title_en: 'Hypokalemia (Low)', advice_ar: 'قد يسبب تقلصات عضلية وضعف؛ شائع مع مدرات البول مثل Lasix.', advice_en: 'Can cause muscle cramps and weakness; common with loop diuretics.' };
+      if (val1 <= 5.0) return { status: 'optimal', title_ar: 'بوتاسيوم طبيعي ومثالي', title_en: 'Normal Potassium Balance', advice_ar: 'يحافظ على انتظام ضربات القلب وسلامة الإشارات العصبية.', advice_en: 'Critical for cardiac electrical stability.' };
+      if (val1 <= 5.9) return { status: 'high', title_ar: 'ارتفاع بوتاسيوم الدم (Hyperkalemia)', title_en: 'Hyperkalemia (High)', advice_ar: 'حذر مع أدوية الضغط (ACEi/ARBs) ومكملات البوتاسيوم؛ راجع طبيبك.', advice_en: 'Caution with ACE-inhibitors, ARBs, and potassium supplements.' };
+      return { status: 'critical', title_ar: 'ارتفاع بوتاسيوم حرج مهدد للحياة (≥ 6.0)', title_en: 'Critical Hyperkalemia (Emergency)', advice_ar: 'طوارئ طبية عاجلة لخطر توقف عضلة القلب فجأة؛ توجه للمستشفى فوراً.', advice_en: 'Emergency medical care needed due to immediate lethal arrhythmia risk.' };
+    }
+
+    // 13. Sodium
+    if (evalMetric === 'sodium') {
+      if (val1 < 135) return { status: 'warning', title_ar: 'نقص صوديوم الدم (Hyponatremia)', title_en: 'Hyponatremia', advice_ar: 'يسبب دوار وصداع وتشوش ذهني؛ قد ينتج عن الإفراط في الماء أو أدوية معينة.', advice_en: 'May cause nausea and confusion; check diuretic use.' };
+      if (val1 <= 145) return { status: 'optimal', title_ar: 'صوديوم طبيعي ومثالي', title_en: 'Normal Sodium Level', advice_ar: 'توازن أسموزي ممتاز للخلايا والسوائل.', advice_en: 'Optimal extracellular fluid and electrolyte balance.' };
+      return { status: 'warning', title_ar: 'ارتفاع صوديوم الدم (Hypernatremia)', title_en: 'Hypernatremia', advice_ar: 'دلالة على جفاف أو نقص شرب السوائل؛ احرص على ترطيب الجسم بالماء.', advice_en: 'Indicates dehydration or fluid deficit; rehydrate adequately.' };
+    }
+
+    // 14. Total Cholesterol
+    if (evalMetric === 'cholesterol_total') {
+      if (val1 < 200) return { status: 'optimal', title_ar: 'كوليسترول كلي مثالي ومرغوب', title_en: 'Desirable Cholesterol (< 200)', advice_ar: 'مستوى ممتاز يقلل من احتمالية أمراض القلب وتصلب الشرايين.', advice_en: 'Low cardiovascular atherogenic risk.' };
+      if (val1 <= 239) return { status: 'warning', title_ar: 'حد مرتفع للكوليسترول (Borderline High)', title_en: 'Borderline High (200-239)', advice_ar: 'تعديل النظام الغذائي بالابتعاد عن الدهون المتحولة والمقليات وممارسة الرياضة.', advice_en: 'Adopt low saturated fat diet and 150 mins weekly aerobic exercise.' };
+      return { status: 'high', title_ar: 'كوليسترول كلي مرتفع (High Risk)', title_en: 'High Total Cholesterol (≥ 240)', advice_ar: 'يستوجب تقييم عوامل الخطورة القلبية واحتمالية الحاجة لأدوية الستاتين.', advice_en: 'Higher coronary risk; clinical evaluation for statin therapy.' };
+    }
+
+    // 15. LDL Cholesterol
+    if (evalMetric === 'ldl') {
+      if (val1 < 100) return { status: 'optimal', title_ar: 'كوليسترول ضار مثالي للشخص السليم', title_en: 'Optimal LDL (< 100)', advice_ar: 'حماية ممتازة لجدران الشرايين التاجية والدماغية.', advice_en: 'Protects arterial endothelium from atheroma formation.' };
+      if (val1 <= 129) return { status: 'normal', title_ar: 'قريب من المثالي', title_en: 'Near Optimal (100-129)', advice_ar: 'مقبول لغير المصابين بأمراض القلب أو السكري.', advice_en: 'Acceptable in individuals without vascular disease.' };
+      if (val1 <= 159) return { status: 'warning', title_ar: 'حد مرتفع (Borderline High)', title_en: 'Borderline High (130-159)', advice_ar: 'ينصح بالحمية الغذائية وزيادة الألياف والنشاط البدني.', advice_en: 'Dietary fiber and lifestyle management indicated.' };
+      if (val1 < 190) return { status: 'high', title_ar: 'كوليسترول ضار مرتفع', title_en: 'High LDL (160-189)', advice_ar: 'استشر الطبيب لتقييم الحاجة للعلاج الدوائي الخافض للدهون.', advice_en: 'Requires medical review for lipid-lowering pharmacotherapy.' };
+      return { status: 'critical', title_ar: 'كوليسترول ضار مرتفع جداً (≥ 190)', title_en: 'Very High LDL (≥ 190)', advice_ar: 'يتطلب علاجاً بستاتين مكثف فوراً لوجود خطر وراثي وتصلب شرايين صريح.', advice_en: 'High-intensity statin therapy strongly indicated.' };
+    }
+
+    // 16. HDL Cholesterol
+    if (evalMetric === 'hdl') {
+      if (val1 >= 60) return { status: 'optimal', title_ar: 'كوليسترول نافع ممتاز (وقاية للقلب)', title_en: 'Optimal & Cardioprotective (≥ 60)', advice_ar: 'عامل حماية فسيولوجي فعال يكنس الدهون من الشرايين.', advice_en: 'Actively clears plaque and protects coronary vasculature.' };
+      const minThreshold = evalGender === 'male' ? 40 : 50;
+      if (val1 >= minThreshold) return { status: 'normal', title_ar: 'كوليسترول نافع مقبول', title_en: 'Acceptable HDL', advice_ar: 'مستوى جيد؛ يمكن رفعه أكثر بممارسة الرياضة وزيت الزيتون والمكسرات.', advice_en: 'Healthy; can be enhanced with aerobic fitness and healthy fats.' };
+      return { status: 'warning', title_ar: 'كوليسترول نافع منخفض (عامل خطورة)', title_en: 'Low HDL (Cardiovascular Risk)', advice_ar: 'يزيد احتمالية أمراض القلب؛ تجنب التدخين، مارس المشي واستهلك أوميجا 3.', advice_en: 'Increases cardiovascular risk; quit smoking and exercise regularly.' };
+    }
+
+    // 17. Triglycerides
+    if (evalMetric === 'triglycerides') {
+      if (val1 < 150) return { status: 'optimal', title_ar: 'دهون ثلاثية طبيعية ومثالية', title_en: 'Normal Triglycerides (< 150)', advice_ar: 'مستوى صحي متوازن لتخزين طاقة الدهون.', advice_en: 'Normal metabolic clearance of dietary triglycerides.' };
+      if (val1 <= 199) return { status: 'warning', title_ar: 'حد مرتفع للدهون الثلاثية', title_en: 'Borderline High (150-199)', advice_ar: 'قلل المشروبات السكرية والحلويات والنشويات المكررة ومارس الرياضة.', advice_en: 'Cut refined sugars, sodas, and carbohydrates.' };
+      if (val1 < 500) return { status: 'high', title_ar: 'دهون ثلاثية مرتفعة', title_en: 'High Triglycerides (200-499)', advice_ar: 'ترتبط بمقاومة الإنسولين والكبد الدهني؛ استشر طبيبك لبدء خطة علاجية.', advice_en: 'Linked to insulin resistance and steatosis; review with doctor.' };
+      return { status: 'critical', title_ar: 'ارتفاع شديد مهدد بالتهاب البنكرياس (≥ 500)', title_en: 'Severe Hypertriglyceridemia (≥ 500)', advice_ar: 'خطر حاد لالتهاب البنكرياس الحاد؛ يتطلب تدخلاً دوائياً عاجلاً (Fibrates).', advice_en: 'Acute pancreatitis danger; urgent medication therapy required.' };
+    }
+
+    // 18. ALT
+    if (evalMetric === 'alt') {
+      if (val1 <= 56) return { status: 'optimal', title_ar: 'إنزيم ALT طبيعي (سلامة خلايا الكبد)', title_en: 'Normal ALT (Healthy Liver)', advice_ar: 'خلايا الكبد تؤدي وظائفها دون علامات التهاب أو سمية.', advice_en: 'No evidence of hepatocellular damage.' };
+      if (val1 <= 120) return { status: 'warning', title_ar: 'ارتفاع طفيف في إنزيم الكبد ALT', title_en: 'Mild Elevation (57-120)', advice_ar: 'شائع مع الكبد الدهني، الوزن الزائد، أو بعض الأدوية؛ راجع طبيبك.', advice_en: 'Common in fatty liver (NAFLD) or drug exposure; monitor.' };
+      return { status: 'critical', title_ar: 'ارتفاع ملحوظ إلى حاد في إنزيم ALT', title_en: 'Significant Hepatotoxicity (> 120)', advice_ar: 'يستوجب فحص فوري لوظائف الكبد وإيقاف أي أدوية سامة للكبد تحت إشراف طبي.', advice_en: 'Urgent evaluation needed; hold suspected hepatotoxic medications.' };
+    }
+
+    // 19. AST
+    if (evalMetric === 'ast') {
+      if (val1 <= 40) return { status: 'optimal', title_ar: 'إنزيم AST طبيعي وسليم', title_en: 'Normal AST (10-40)', advice_ar: 'مستوى فسيولوجي سليم.', advice_en: 'Normal transaminase baseline.' };
+      return { status: 'high', title_ar: 'ارتفاع إنزيم AST', title_en: 'Elevated AST (> 40)', advice_ar: 'قد ينتج عن إجهاد كبدي، عضلي، أو أدوية؛ يُفضل تقييمه بالتزامن مع ALT.', advice_en: 'May reflect liver or muscular origin; evaluate alongside ALT.' };
+    }
+
+    // 20. Bilirubin
+    if (evalMetric === 'bilirubin') {
+      if (val1 <= 1.2) return { status: 'optimal', title_ar: 'صفراء الدم طبيعية ومثالية', title_en: 'Normal Bilirubin (0.2-1.2)', advice_ar: 'تصريف سليم للمرارة وتكسير طبيعي لكرات الدم الحمراء.', advice_en: 'Adequate biliary excretion and RBC turnover.' };
+      if (val1 <= 2.0) return { status: 'warning', title_ar: 'ارتفاع طفيف في البيليروبين', title_en: 'Mild Elevation (1.3-2.0)', advice_ar: 'قد يكون مرتبطاً بمتلازمة جيلبرت الحميدة أو إجهاد؛ يُتابع مع الطبيب.', advice_en: 'May be Gilbert syndrome or mild hemolysis; clinical follow-up.' };
+      return { status: 'critical', title_ar: 'ارتفاع مسبب لصفار الجلد والعينين (يرقان)', title_en: 'Clinical Jaundice (> 2.0 mg/dL)', advice_ar: 'استشارة طبيب باطنة وجهاز هضمي فوراً لفحص القنوات المرارية وسبب اليرقان.', advice_en: 'Investigate biliary obstruction or acute hepatic disease immediately.' };
+    }
+
+    // 21. Hemoglobin
+    if (evalMetric === 'hemoglobin') {
+      const minNormal = evalGender === 'male' ? 13.5 : 12.0;
+      const maxNormal = evalGender === 'male' ? 17.5 : 15.5;
+
+      if (val1 < 7.0) return { status: 'critical', title_ar: 'أنيميا حرجة خطيرة (خطر هبوط تروية)', title_en: 'Critical Anemia (< 7.0 g/dL)', advice_ar: 'تستلزم نقل دم عاجل وطوارئ بالمستشفى لتفادي قصور عضلة القلب.', advice_en: 'Emergency transfusion threshold; seek ER immediately.' };
+      if (val1 < 10.0) return { status: 'high', title_ar: 'أنيميا معتدلة إلى شديدة', title_en: 'Moderate to Severe Anemia', advice_ar: 'تتطلب فحص مخزون الحديد (Ferritin) وفيتامين B12 وبدء كورس علاجي مكثف.', advice_en: 'Investigate ferritin, vitamin B12, and begin iron therapy.' };
+      if (val1 < minNormal) return { status: 'warning', title_ar: 'أنيميا خفيفة (فقر دم طفيف)', title_en: 'Mild Anemia', advice_ar: 'أكثر من الأغذية الغنية بالحديد وفيتامين C وتجنب شرب الشاي والقهوة مع الوجبات.', advice_en: 'Increase dietary iron and vitamin C; separate tea/coffee from meals.' };
+      if (val1 <= maxNormal) return { status: 'optimal', title_ar: 'هيموجلوبين طبيعي ومثالي جداً', title_en: 'Normal & Healthy Hemoglobin', advice_ar: 'تروية دموية وأكسجين سليم لكافة أنسجة وأعضاء الجسم.', advice_en: 'Optimal oxygen-carrying capacity and red cell mass.' };
+      return { status: 'warning', title_ar: 'ارتفاع الهيموجلوبين (زيادة كرات الدم الحمراء)', title_en: 'Elevated Hemoglobin (Polycythemia)', advice_ar: 'قد ينتج عن التدخين، الجفاف، أو العيش بالمرتفعات؛ يُنصح بشرب سوائل وافرة.', advice_en: 'Associated with dehydration, smoking, or polycythemia; hydrate well.' };
+    }
+
+    // 22. Platelets
+    if (evalMetric === 'platelets') {
+      if (val1 < 50000) return { status: 'critical', title_ar: 'نقص صفائح شديد (خطر نزيف عفوي)', title_en: 'Severe Thrombocytopenia (< 50,000)', advice_ar: 'حظر فوري وتام لمسيلات الدم والأسبرين والبروفين؛ توجه للمستشفى فوراً.', advice_en: 'Critical bleeding risk; immediately hold all anticoagulants and NSAIDs.' };
+      if (val1 < 150000) return { status: 'warning', title_ar: 'نقص صفائح طفيف إلى معتدل', title_en: 'Mild Thrombocytopenia', advice_ar: 'يستوجب فحص الأدوية المتناولة وأسباب النقص مع طبيب باطنة/أمراض دم.', advice_en: 'Investigate medication causes and viral or immune factors.' };
+      if (val1 <= 450000) return { status: 'optimal', title_ar: 'صفائح دموية طبيعية ومثالية', title_en: 'Normal Platelet Count', advice_ar: 'تخثر دم سليم ووقاية تامة من النزيف والتجلطات غير الطبيعية.', advice_en: 'Adequate hemostatic reserve.' };
+      return { status: 'warning', title_ar: 'ارتفاع الصفائح الدموية (Thrombocytosis)', title_en: 'Thrombocytosis (> 450,000)', advice_ar: 'قد يكون تفاعلياً ناتجاً عن التهاب أو نقص حديد؛ راجع الطبيب للمتابعة.', advice_en: 'Often reactive to inflammation or iron deficiency; monitor.' };
     }
 
     return null;
@@ -467,6 +621,49 @@ export default function VitalRef() {
     }
   };
 
+  // Helper to check if current metric needs gender selection
+  const needsGender = ['creatinine', 'uric_acid', 'hdl', 'hemoglobin'].includes(evalMetric);
+
+  // Helper to get unit for current eval metric
+  const getCurrentUnit = () => {
+    switch (evalMetric) {
+      case 'fasting_glucose':
+      case 'postprandial_glucose':
+      case 'random_glucose':
+      case 'cholesterol_total':
+      case 'ldl':
+      case 'hdl':
+      case 'triglycerides':
+      case 'creatinine':
+      case 'uric_acid':
+      case 'bilirubin':
+        return 'mg/dL';
+      case 'hba1c':
+      case 'oxygen_saturation':
+        return '%';
+      case 'blood_pressure':
+        return 'mmHg';
+      case 'heart_rate':
+        return 'bpm';
+      case 'body_temp':
+        return '°C';
+      case 'egfr':
+        return 'mL/min';
+      case 'potassium':
+      case 'sodium':
+        return 'mEq/L';
+      case 'alt':
+      case 'ast':
+        return 'U/L';
+      case 'hemoglobin':
+        return 'g/dL';
+      case 'platelets':
+        return '/µL';
+      default:
+        return '';
+    }
+  };
+
   return (
     <div className="max-w-6xl mx-auto py-8 animate-fade-in">
       {/* Header */}
@@ -481,8 +678,8 @@ export default function VitalRef() {
         </h1>
         <p className="text-gray-600 dark:text-gray-400 max-w-3xl mx-auto text-sm md:text-base leading-relaxed">
           {isAr 
-            ? 'مرجع سريري شامل للمعدلات الطبيعية، أهداف مرضى السكر والضغط والقلب والكلى، مع أداة تقييم فوري لقراءاتك لتوضيح دلالاتها الطبية بدقة.'
-            : 'Comprehensive clinical reference for normal values, therapeutic goals for diabetes, hypertension, and renal function, plus an instant interactive evaluator.'}
+            ? 'مرجع سريري شامل للمعدلات الطبيعية، أهداف مرضى السكر والضغط والقلب والكلى، مع أداة تقييم فوري شاملة لـ 22 فحصاً ومؤشراً حيوياً لتوضيح دلالاتها الطبية بدقة.'
+            : 'Comprehensive clinical reference for normal values, therapeutic goals for diabetes, hypertension, lipids, and renal function, plus an instant interactive evaluator for 22 vital biomarkers.'}
         </p>
       </div>
 
@@ -623,14 +820,15 @@ export default function VitalRef() {
             </h2>
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-6">
               {isAr 
-                ? 'اختر نوع الفحص، اكتب نتيجتك، واطلع على التوجيه الصيدلاني المعتمد فوراً.'
-                : 'Select the test, enter your reading, and receive immediate clinical feedback.'}
+                ? 'اختر أي فحص أو مؤشر حيوي من القائمة أدناه، واكتب نتيجتك لرؤية التوجيه الطبي المعتمد فوراً.'
+                : 'Select any biomarker or clinical test below and enter your reading to receive instant clinical guidance.'}
             </p>
 
             <div className="space-y-4 mb-6">
+              {/* Measurement Selector with Categories */}
               <div>
                 <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
-                  {isAr ? 'نوع القياس أو التحليل' : 'Measurement Type'}
+                  {isAr ? 'نوع القياس أو التحليل (22 مؤشراً حيوياً متاحاً)' : 'Measurement or Lab Test (22 Biomarkers Available)'}
                 </label>
                 <select
                   value={evalMetric}
@@ -639,42 +837,122 @@ export default function VitalRef() {
                     setEvalValue1('');
                     setEvalValue2('');
                   }}
-                  className="input-field w-full text-sm font-medium py-2.5 rounded-xl"
+                  className="input-field w-full text-sm font-medium py-3 rounded-xl"
                 >
-                  <option value="fasting_glucose">{isAr ? 'سكر الدم الصائم (Fasting Glucose - mg/dL)' : 'Fasting Blood Glucose (mg/dL)'}</option>
-                  <option value="postprandial_glucose">{isAr ? 'سكر فاطر بعد الأكل بساعتين (Postprandial - mg/dL)' : '2-Hour Postprandial Glucose (mg/dL)'}</option>
-                  <option value="hba1c">{isAr ? 'السكر التراكمي (HbA1c - %)' : 'Glycated Hemoglobin (HbA1c %)'}</option>
-                  <option value="blood_pressure">{isAr ? 'ضغط الدم الشرياني (Blood Pressure - mmHg)' : 'Blood Pressure (Systolic / Diastolic)'}</option>
-                  <option value="heart_rate">{isAr ? 'نبضات القلب أثناء الراحة (Pulse - bpm)' : 'Resting Heart Rate (bpm)'}</option>
-                  <option value="oxygen_saturation">{isAr ? 'تشبع الأكسجين في الدم (SpO2 - %)' : 'Oxygen Saturation (SpO2 %)'}</option>
+                  {/* Glucose */}
+                  <optgroup label={isAr ? '🩸 فحوصات السكر وضبط الجلوكوز' : '🩸 Blood Glucose & Diabetes'}>
+                    <option value="fasting_glucose">{isAr ? 'سكر الدم الصائم (Fasting Glucose - mg/dL)' : 'Fasting Blood Glucose (mg/dL)'}</option>
+                    <option value="postprandial_glucose">{isAr ? 'سكر فاطر بعد الأكل بساعتين (2-hr PPG - mg/dL)' : '2-Hour Postprandial Glucose (mg/dL)'}</option>
+                    <option value="random_glucose">{isAr ? 'السكر العشوائي (Random Glucose - mg/dL)' : 'Random Blood Sugar (mg/dL)'}</option>
+                    <option value="hba1c">{isAr ? 'السكر التراكمي (HbA1c - %)' : 'Glycated Hemoglobin (HbA1c %)'}</option>
+                  </optgroup>
+
+                  {/* Cardio & Vitals */}
+                  <optgroup label={isAr ? '❤️ القلب والعلامات الحيوية' : '❤️ Cardiovascular & Vital Signs'}>
+                    <option value="blood_pressure">{isAr ? 'ضغط الدم الشرياني (Blood Pressure - mmHg)' : 'Blood Pressure (Systolic / Diastolic)'}</option>
+                    <option value="heart_rate">{isAr ? 'نبضات القلب أثناء الراحة (Pulse - bpm)' : 'Resting Heart Rate (bpm)'}</option>
+                    <option value="oxygen_saturation">{isAr ? 'تشبع الأكسجين في الدم (SpO2 - %)' : 'Oxygen Saturation (SpO2 %)'}</option>
+                    <option value="body_temp">{isAr ? 'درجة حرارة الجسم (Temperature - °C)' : 'Body Temperature (°C)'}</option>
+                  </optgroup>
+
+                  {/* Renal & Electrolytes */}
+                  <optgroup label={isAr ? '💧 وظائف الكلى والأملاح' : '💧 Renal Function & Electrolytes'}>
+                    <option value="creatinine">{isAr ? 'الكرياتينين في الدم (Serum Creatinine - mg/dL)' : 'Serum Creatinine (mg/dL)'}</option>
+                    <option value="egfr">{isAr ? 'معدل الفلترة الكبيبية (eGFR - mL/min)' : 'Glomerular Filtration Rate eGFR (mL/min)'}</option>
+                    <option value="uric_acid">{isAr ? 'حمض اليوريك / النقرس (Uric Acid - mg/dL)' : 'Serum Uric Acid (mg/dL)'}</option>
+                    <option value="potassium">{isAr ? 'البوتاسيوم في الدم (Potassium K+ - mEq/L)' : 'Serum Potassium (mEq/L)'}</option>
+                    <option value="sodium">{isAr ? 'الصوديوم في الدم (Sodium Na+ - mEq/L)' : 'Serum Sodium (mEq/L)'}</option>
+                  </optgroup>
+
+                  {/* Lipids */}
+                  <optgroup label={isAr ? '🫀 دهون الدم والكوليسترول' : '🫀 Lipid Profile'}>
+                    <option value="cholesterol_total">{isAr ? 'الكوليسترول الكلي (Total Cholesterol - mg/dL)' : 'Total Cholesterol (mg/dL)'}</option>
+                    <option value="ldl">{isAr ? 'الكوليسترول الضار (LDL - mg/dL)' : 'LDL Cholesterol (mg/dL)'}</option>
+                    <option value="hdl">{isAr ? 'الكوليسترول الجيد النافع (HDL - mg/dL)' : 'HDL Cholesterol (mg/dL)'}</option>
+                    <option value="triglycerides">{isAr ? 'الدهون الثلاثية (Triglycerides - mg/dL)' : 'Serum Triglycerides (mg/dL)'}</option>
+                  </optgroup>
+
+                  {/* Liver */}
+                  <optgroup label={isAr ? '🧪 وظائف الكبد والمرارة' : '🧪 Liver Function Enzymes'}>
+                    <option value="alt">{isAr ? 'إنزيم الكبد (ALT / SGPT - U/L)' : 'Liver ALT / SGPT (U/L)'}</option>
+                    <option value="ast">{isAr ? 'إنزيم الكبد (AST / SGOT - U/L)' : 'Liver AST / SGOT (U/L)'}</option>
+                    <option value="bilirubin">{isAr ? 'الصفراء / البيليروبين الكلي (Bilirubin - mg/dL)' : 'Total Bilirubin (mg/dL)'}</option>
+                  </optgroup>
+
+                  {/* CBC */}
+                  <optgroup label={isAr ? '🩸 صورة الدم الكاملة (CBC)' : '🩸 Complete Blood Count (CBC)'}>
+                    <option value="hemoglobin">{isAr ? 'الهيموجلوبين / الأنيميا (Hemoglobin - g/dL)' : 'Hemoglobin Hb (g/dL)'}</option>
+                    <option value="platelets">{isAr ? 'الصفائح الدموية (Platelets - /µL)' : 'Platelet Count (/µL)'}</option>
+                  </optgroup>
                 </select>
               </div>
 
+              {/* Gender Selector if metric depends on sex */}
+              {needsGender && (
+                <div className="p-3 bg-gray-50 dark:bg-gray-800/40 rounded-2xl border border-gray-100 dark:border-gray-700/60">
+                  <span className="text-xs font-semibold text-gray-700 dark:text-gray-300 block mb-2 flex items-center gap-1.5">
+                    <User className="w-3.5 h-3.5 text-primary-500" />
+                    <span>{isAr ? 'الجنس (تختلف المعدلات الطبيعية حسب الجنس):' : 'Sex (Normal values differ by sex):'}</span>
+                  </span>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setEvalGender('male')}
+                      className={`py-2 px-3 rounded-xl text-xs font-bold transition-all ${
+                        evalGender === 'male'
+                          ? 'bg-primary-600 text-white shadow-sm'
+                          : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600'
+                      }`}
+                    >
+                      {isAr ? '👨 ذكر (Male)' : '👨 Male'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEvalGender('female')}
+                      className={`py-2 px-3 rounded-xl text-xs font-bold transition-all ${
+                        evalGender === 'female'
+                          ? 'bg-primary-600 text-white shadow-sm'
+                          : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600'
+                      }`}
+                    >
+                      {isAr ? '👩 أنثى (Female)' : '👩 Female'}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Input Fields */}
               {evalMetric === 'blood_pressure' ? (
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
                       {isAr ? 'الضغط الانقباضي (العالي - Systolic)' : 'Systolic (Top number)'}
                     </label>
-                    <input
-                      type="number"
-                      placeholder="e.g. 120"
-                      value={evalValue1}
-                      onChange={(e) => setEvalValue1(e.target.value)}
-                      className="input-field w-full text-base font-mono py-2.5 rounded-xl"
-                    />
+                    <div className="relative">
+                      <input
+                        type="number"
+                        placeholder="e.g. 120"
+                        value={evalValue1}
+                        onChange={(e) => setEvalValue1(e.target.value)}
+                        className="input-field w-full text-base font-mono py-2.5 rounded-xl pl-14 rtl:pl-3 rtl:pr-14"
+                      />
+                      <span className="absolute right-3 rtl:right-auto rtl:left-3 top-3 text-xs font-bold text-gray-400">mmHg</span>
+                    </div>
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1.5">
                       {isAr ? 'الضغط الانبساطي (الواطي - Diastolic)' : 'Diastolic (Bottom number)'}
                     </label>
-                    <input
-                      type="number"
-                      placeholder="e.g. 80"
-                      value={evalValue2}
-                      onChange={(e) => setEvalValue2(e.target.value)}
-                      className="input-field w-full text-base font-mono py-2.5 rounded-xl"
-                    />
+                    <div className="relative">
+                      <input
+                        type="number"
+                        placeholder="e.g. 80"
+                        value={evalValue2}
+                        onChange={(e) => setEvalValue2(e.target.value)}
+                        className="input-field w-full text-base font-mono py-2.5 rounded-xl pl-14 rtl:pl-3 rtl:pr-14"
+                      />
+                      <span className="absolute right-3 rtl:right-auto rtl:left-3 top-3 text-xs font-bold text-gray-400">mmHg</span>
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -685,12 +963,23 @@ export default function VitalRef() {
                   <div className="relative">
                     <input
                       type="number"
-                      step={evalMetric === 'hba1c' ? '0.1' : '1'}
-                      placeholder={evalMetric === 'hba1c' ? 'e.g. 6.2' : 'e.g. 95'}
+                      step={['hba1c', 'creatinine', 'uric_acid', 'potassium', 'bilirubin', 'hemoglobin', 'body_temp'].includes(evalMetric) ? '0.1' : '1'}
+                      placeholder={
+                        evalMetric === 'hba1c' ? 'e.g. 6.2' :
+                        evalMetric === 'fasting_glucose' ? 'e.g. 95' :
+                        evalMetric === 'body_temp' ? 'e.g. 37.0' :
+                        evalMetric === 'creatinine' ? 'e.g. 0.9' :
+                        evalMetric === 'potassium' ? 'e.g. 4.2' :
+                        evalMetric === 'platelets' ? 'e.g. 250000' :
+                        'e.g. 100'
+                      }
                       value={evalValue1}
                       onChange={(e) => setEvalValue1(e.target.value)}
-                      className="input-field w-full text-base font-mono py-2.5 rounded-xl"
+                      className="input-field w-full text-base font-mono py-2.5 rounded-xl pl-16 rtl:pl-3 rtl:pr-16"
                     />
+                    <span className="absolute right-3 rtl:right-auto rtl:left-3 top-3 text-xs font-mono font-bold text-gray-400">
+                      {getCurrentUnit()}
+                    </span>
                   </div>
                 </div>
               )}
@@ -725,7 +1014,7 @@ export default function VitalRef() {
               </motion.div>
             ) : (
               <div className="p-6 text-center border border-dashed border-gray-200 dark:border-gray-700 rounded-2xl text-gray-400 text-xs">
-                {isAr ? 'أدخل الأرقام في الخانة بالأعلى لرؤية التصنيف الطبي والإرشادات السريرية فوراً.' : 'Enter your numbers above to see immediate clinical classification & guidelines.'}
+                {isAr ? 'أدخل القيمة في الخانة بالأعلى لرؤية التصنيف الطبي والإرشادات السريرية فوراً.' : 'Enter your value above to see immediate clinical classification & guidelines.'}
               </div>
             )}
           </div>
