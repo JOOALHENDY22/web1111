@@ -60,8 +60,13 @@ export const checkInteractionsAI = async (drugs: string[]): Promise<any> => {
         .single();
       
       if (data && !error) {
-        console.log(`[Cache Hit] Serving interactions for [${drugs.join(', ')}] from Supabase.`);
-        return data.interactions_json;
+        const json = data.interactions_json;
+        const isBilingual = !Array.isArray(json) || json.length === 0 || json.some((item: any) => item.description_ar || item.description_en);
+        if (isBilingual) {
+          console.log(`[Cache Hit] Serving bilingual interactions for [${drugs.join(', ')}] from Supabase.`);
+          return json;
+        }
+        console.log(`[Cache Outdated] Legacy single-language interactions cache found for [${drugs.join(', ')}]. Upgrading to bilingual...`);
       }
     } catch (e: any) {
       console.error("[Cache Read Error] Interactions:", e.message || e);
@@ -165,8 +170,13 @@ export const compareDrugsAI = async (drugA: string, drugB: string): Promise<any>
         .single();
       
       if (data && !error) {
-        console.log(`[Cache Hit] Serving comparison for "${drugA}" vs "${drugB}" from Supabase.`);
-        return data.comparison_json;
+        const json = data.comparison_json;
+        const isBilingual = !Array.isArray(json) || json.length === 0 || json.some((item: any) => item.feature_ar || item.feature_en);
+        if (isBilingual) {
+          console.log(`[Cache Hit] Serving bilingual comparison for "${drugA}" vs "${drugB}" from Supabase.`);
+          return json;
+        }
+        console.log(`[Cache Outdated] Legacy single-language comparison cache found for "${drugA}" vs "${drugB}". Upgrading to bilingual...`);
       }
     } catch (e: any) {
       console.error("[Cache Read Error] Comparison:", e.message || e);
@@ -280,8 +290,13 @@ export const getDrugDetailsAI = async (drugName: string): Promise<any> => {
         .single();
       
       if (data && !error) {
-        console.log(`[Cache Hit] Serving details for "${drugName}" from Supabase.`);
-        return data.details_json;
+        const json = data.details_json;
+        const isBilingual = json && (json.purpose_ar || json.purpose_en || json.overview_ar || json.overview_en);
+        if (isBilingual) {
+          console.log(`[Cache Hit] Serving bilingual details for "${drugName}" from Supabase.`);
+          return json;
+        }
+        console.log(`[Cache Outdated] Legacy single-language details cache found for "${drugName}". Upgrading to bilingual...`);
       }
     } catch (e: any) {
       console.error("[Cache Read Error] Details:", e.message || e);
@@ -373,8 +388,13 @@ export const getDrugAlternativesAI = async (drugName: string): Promise<any> => {
         .single();
       
       if (data && !error) {
-        console.log(`[Cache Hit] Serving alternatives for "${drugName}" from Supabase.`);
-        return data.alternatives_json;
+        const json = data.alternatives_json;
+        const isBilingual = json && (json.active_ingredient_ar || json.active_ingredient_en);
+        if (isBilingual) {
+          console.log(`[Cache Hit] Serving bilingual alternatives for "${drugName}" from Supabase.`);
+          return json;
+        }
+        console.log(`[Cache Outdated] Legacy single-language alternatives cache found for "${drugName}". Upgrading to bilingual...`);
       }
     } catch (e: any) {
       console.error("[Cache Read Error] Alternatives:", e.message || e);
@@ -446,8 +466,13 @@ export const checkChronicSafetyAI = async (drugName: string, diseaseName: string
         .single();
       
       if (data && !error) {
-        console.log(`[Cache Hit] Serving disease safety for "${drugName}" + "${diseaseName}" from Supabase.`);
-        return data.safety_json;
+        const json = data.safety_json;
+        const isBilingual = json && (json.explanation_ar || json.explanation_en);
+        if (isBilingual) {
+          console.log(`[Cache Hit] Serving bilingual disease safety for "${drugName}" + "${diseaseName}" from Supabase.`);
+          return json;
+        }
+        console.log(`[Cache Outdated] Legacy single-language safety cache found for "${drugName}". Upgrading to bilingual...`);
       }
     } catch (e: any) {
       console.error("[Cache Read Error] Disease Safety:", e.message || e);
