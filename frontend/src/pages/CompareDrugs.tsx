@@ -24,6 +24,15 @@ export default function CompareDrugs() {
 
   const [loading, setLoading] = useState(false);
   const [comparisonData, setComparisonData] = useState<any[] | null>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (comparisonData && resultsRef.current) {
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [comparisonData]);
 
   // Click outside handlers
   useEffect(() => {
@@ -159,7 +168,7 @@ export default function CompareDrugs() {
 
       {/* Comparison Matrix AI Data */}
       {!loading && comparisonData && (
-        <div className="glass-panel overflow-hidden animate-fade-in shadow-2xl">
+        <div ref={resultsRef} className="glass-panel overflow-hidden animate-fade-in shadow-2xl scroll-mt-24">
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left rtl:text-right text-sm">

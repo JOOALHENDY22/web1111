@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { 
   HeartPulse, 
@@ -47,6 +47,7 @@ export default function VitalRef() {
   const [evalGender, setEvalGender] = useState<'male' | 'female'>('male');
   const [evalValue1, setEvalValue1] = useState<string>('');
   const [evalValue2, setEvalValue2] = useState<string>('');
+  const evalResultRef = useRef<HTMLDivElement>(null);
 
   const categories = [
     { id: 'all', name_ar: 'الكل', name_en: 'All Categories' },
@@ -604,6 +605,14 @@ export default function VitalRef() {
 
   const evalResult = getEvaluation();
 
+  useEffect(() => {
+    if (evalResult && evalResultRef.current) {
+      setTimeout(() => {
+        evalResultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 150);
+    }
+  }, [evalResult?.title_en, evalResult?.title_ar]);
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'optimal':
@@ -988,9 +997,10 @@ export default function VitalRef() {
             {/* Evaluation Result Card */}
             {evalResult ? (
               <motion.div
+                ref={evalResultRef}
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className={`p-5 rounded-2xl border-2 transition-all ${getStatusColor(evalResult.status)}`}
+                className={`p-5 rounded-2xl border-2 transition-all scroll-mt-24 ${getStatusColor(evalResult.status)}`}
               >
                 <div className="flex items-center gap-2.5 font-bold text-base mb-2">
                   {evalResult.status === 'optimal' || evalResult.status === 'normal' ? (

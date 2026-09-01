@@ -24,6 +24,15 @@ export default function FoodInteractions() {
   const [result, setResult] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
   const searchRef = useRef<HTMLDivElement>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (result && resultsRef.current) {
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [result]);
 
   // Popular Egyptian medications for quick testing
   const popularDrugs = [
@@ -217,9 +226,10 @@ export default function FoodInteractions() {
       {/* Results View */}
       {result && (
         <motion.div
+          ref={resultsRef}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="space-y-6"
+          className="space-y-6 scroll-mt-24"
         >
           {/* Timing Banner Card */}
           <div className="glass-panel p-6 md:p-8 rounded-3xl border-t-4 border-t-emerald-500 shadow-xl bg-gradient-to-br from-emerald-50/40 via-white to-white dark:from-emerald-950/20 dark:via-gray-900 dark:to-gray-900">

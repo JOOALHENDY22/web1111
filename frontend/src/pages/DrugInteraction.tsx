@@ -17,6 +17,15 @@ export default function DrugInteraction() {
   const [isChecking, setIsChecking] = useState(false);
   const [hasResults, setHasResults] = useState(false);
   const [interactions, setInteractions] = useState<any[]>([]);
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (hasResults && resultsRef.current) {
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [hasResults]);
 
   // Click outside to close suggestions
   useEffect(() => {
@@ -178,9 +187,10 @@ export default function DrugInteraction() {
 
       {hasResults && (
         <motion.div 
+          ref={resultsRef}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="space-y-6"
+          className="space-y-6 scroll-mt-24"
         >
           <h2 className="text-2xl font-bold border-b border-gray-200 dark:border-gray-800 pb-4">{t('interaction.results_title')}</h2>
           

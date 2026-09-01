@@ -22,6 +22,16 @@ export default function ChronicSafety() {
   const [safetyResult, setSafetyResult] = useState<any>(null);
   const [error, setError] = useState(false);
 
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (safetyResult && resultsRef.current) {
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [safetyResult]);
+
   const suggestionRef = useRef<HTMLDivElement>(null);
   const isArabic = i18n.language.startsWith('ar');
 
@@ -259,7 +269,7 @@ export default function ChronicSafety() {
         const Icon = display.icon;
         
         return (
-          <div className={`glass-panel p-6 space-y-4 animate-fade-in ${display.cardClass}`}>
+          <div ref={resultsRef} className={`glass-panel p-6 space-y-4 animate-fade-in scroll-mt-24 ${display.cardClass}`}>
             <div className="flex items-center gap-3 border-b border-gray-100 dark:border-gray-800 pb-3">
               <div className={`p-2 rounded-lg bg-white dark:bg-gray-800 shadow-sm ${display.iconClass}`}>
                 <Icon className="h-6 w-6" />

@@ -148,8 +148,15 @@ export default function MainLayout() {
               
               <div className="md:hidden">
                 <button
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  onClick={() => {
+                    const nextState = !isMobileMenuOpen;
+                    setIsMobileMenuOpen(nextState);
+                    if (nextState) {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                  }}
                   className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors focus:outline-none"
+                  aria-label="Toggle Navigation Menu"
                 >
                   {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                 </button>

@@ -12,6 +12,15 @@ export default function DrugAlternatives() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [alternatives, setAlternatives] = useState<any>(null);
   const [error, setError] = useState(false);
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (alternatives && resultsRef.current) {
+      setTimeout(() => {
+        resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [alternatives]);
   
   const suggestionRef = useRef<HTMLDivElement>(null);
 
@@ -147,7 +156,7 @@ export default function DrugAlternatives() {
 
       {/* Results Section */}
       {alternatives && !isSearching && (
-        <div className="space-y-6 animate-fade-in">
+        <div ref={resultsRef} className="space-y-6 animate-fade-in scroll-mt-24">
           {/* Active Ingredient Summary */}
           <div className="glass-panel p-6 bg-gradient-to-r from-primary-500/10 to-transparent border-l-4 border-l-primary-500">
             <div className="flex items-start gap-4">
