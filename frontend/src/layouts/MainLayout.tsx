@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Pill, Search, Activity, Scale, Heart, History, Info, Moon, Sun, Menu, X, Globe, RefreshCw, ShieldAlert } from 'lucide-react';
+import { Pill, Search, Activity, Scale, Heart, History, Info, Moon, Sun, Menu, X, Globe, RefreshCw, ShieldAlert, HeartPulse, Utensils } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -55,6 +55,8 @@ export default function MainLayout() {
     { name: t('nav.compare'), path: '/compare', icon: Scale },
     { name: t('nav.alternatives'), path: '/alternatives', icon: RefreshCw },
     { name: t('nav.chronic_safety'), path: '/chronic-safety', icon: ShieldAlert },
+    { name: t('nav.vitals'), path: '/vitals', icon: HeartPulse },
+    { name: t('nav.food_interactions'), path: '/food-interactions', icon: Utensils },
     { name: t('nav.favorites'), path: '/favorites', icon: Heart },
     { name: t('nav.history'), path: '/history', icon: History },
     { name: t('nav.about'), path: '/about', icon: Info },

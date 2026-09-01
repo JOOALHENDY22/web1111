@@ -157,7 +157,9 @@ export default function DrugAlternatives() {
               <div>
                 <h3 className="text-sm font-semibold text-primary-800 dark:text-primary-300 uppercase tracking-wider">{isArabic ? 'المادة الفعالة / الاسم العلمي' : 'Active Scientific Ingredient'}</h3>
                 <p className="text-xl font-bold text-gray-900 dark:text-white mt-1">
-                  {alternatives.active_ingredient}
+                  {isArabic 
+                    ? (alternatives.active_ingredient_ar || alternatives.active_ingredient) 
+                    : (alternatives.active_ingredient_en || alternatives.active_ingredient)}
                 </p>
               </div>
             </div>
@@ -185,7 +187,9 @@ export default function DrugAlternatives() {
                     </div>
                   </div>
                   <span className="px-3 py-1 text-xs font-semibold rounded-full bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400">
-                    {alt.price_category}
+                    {isArabic 
+                      ? (alt.price_category_ar || alt.price_category) 
+                      : (alt.price_category_en || alt.price_category)}
                   </span>
                 </Link>
               ))}

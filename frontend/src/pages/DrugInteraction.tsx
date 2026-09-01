@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { checkInteractions, fetchDrugSuggestions } from '../services/api';
 
 export default function DrugInteraction() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [drugs, setDrugs] = useState<string[]>(['Lisinopril', 'Ibuprofen']);
   const [inputVal, setInputVal] = useState('');
   
@@ -201,7 +201,9 @@ export default function DrugInteraction() {
                       {interaction.drugs.join(' + ')}
                     </h3>
                     <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed font-medium">
-                      {interaction.description}
+                      {i18n.language.startsWith('en')
+                        ? (interaction.description_en || interaction.description)
+                        : (interaction.description_ar || interaction.description)}
                     </p>
                   </div>
                 </div>

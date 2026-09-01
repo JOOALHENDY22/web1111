@@ -1,8 +1,8 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ShieldAlert, Info, Factory, Activity, Heart, ArrowLeft, Bookmark, Loader2, Baby, PersonStanding, AlertOctagon, HeartPulse, RefreshCw } from 'lucide-react';
+import { ShieldAlert, Info, Factory, Activity, Heart, ArrowLeft, Bookmark, Loader2, Baby, PersonStanding, AlertOctagon, HeartPulse, RefreshCw, Utensils, Clock } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { searchDrugFDA, fetchDrugAlternatives } from '../services/api';
+import { searchDrugFDA, fetchDrugAlternatives, fetchFoodInteractions } from '../services/api';
 import { translateText } from '../services/translator';
 
 export default function DrugDetails() {
@@ -16,6 +16,7 @@ export default function DrugDetails() {
   const [error, setError] = useState(false);
   const [alternativesData, setAlternativesData] = useState<any>(null);
   const [, setLoadingAlternatives] = useState(false);
+  const [foodData, setFoodData] = useState<any>(null);
 
   const searchName = id ? id.charAt(0).toUpperCase() + id.slice(1) : 'Unknown Drug';
 
@@ -45,26 +46,27 @@ export default function DrugDetails() {
       if (data) {
         const getField = (val: any) => Array.isArray(val) ? val[0] : (typeof val === 'string' ? val : '');
 
-        const purpose = getField(data.purpose) || getField(data.indications_and_usage) || 'No specific indications listed in the label.';
-        const warnings = getField(data.warnings) || getField(data.boxed_warning) || 'No major warnings provided in this label format.';
-        const dosage = getField(data.dosage_and_administration) || 'Consult a healthcare provider for dosage.';
-        const pregnancy = getField(data.pregnancy) || 'No specific pregnancy data provided.';
-        const pediatric = getField(data.pediatric_use) || 'No specific pediatric guidelines provided.';
-        const geriatric = getField(data.geriatric_use) || 'No specific geriatric guidelines provided.';
-        const contraindications = getField(data.contraindications) || 'No contraindications listed.';
-        const adverseReactions = getField(data.adverse_reactions) || 'No adverse reactions listed.';
+        const isEn = i18n.language.startsWith('en');
+        const purpose = (isEn ? data.purpose_en?.[0] : data.purpose_ar?.[0]) || getField(data.purpose) || getField(data.indications_and_usage) || 'No specific indications listed in the label.';
+        const warnings = (isEn ? data.warnings_en?.[0] : data.warnings_ar?.[0]) || getField(data.warnings) || getField(data.boxed_warning) || 'No major warnings provided in this label format.';
+        const dosage = (isEn ? data.dosage_and_administration_en?.[0] : data.dosage_and_administration_ar?.[0]) || getField(data.dosage_and_administration) || 'Consult a healthcare provider for dosage.';
+        const pregnancy = (isEn ? data.pregnancy_en?.[0] : data.pregnancy_ar?.[0]) || getField(data.pregnancy) || 'No specific pregnancy data provided.';
+        const pediatric = (isEn ? data.pediatric_use_en?.[0] : data.pediatric_use_ar?.[0]) || getField(data.pediatric_use) || 'No specific pediatric guidelines provided.';
+        const geriatric = (isEn ? data.geriatric_use_en?.[0] : data.geriatric_use_ar?.[0]) || getField(data.geriatric_use) || 'No specific geriatric guidelines provided.';
+        const contraindications = (isEn ? data.contraindications_en?.[0] : data.contraindications_ar?.[0]) || getField(data.contraindications) || 'No contraindications listed.';
+        const adverseReactions = (isEn ? data.adverse_reactions_en?.[0] : data.adverse_reactions_ar?.[0]) || getField(data.adverse_reactions) || 'No adverse reactions listed.';
 
         setDrugData({
           original: data,
           translated: {
-            purpose: await translateText(purpose, i18n.language),
-            warnings: await translateText(warnings, i18n.language),
-            dosage: await translateText(dosage, i18n.language),
-            pregnancy: await translateText(pregnancy, i18n.language),
-            pediatric: await translateText(pediatric, i18n.language),
-            geriatric: await translateText(geriatric, i18n.language),
-            contraindications: await translateText(contraindications, i18n.language),
-            adverseReactions: await translateText(adverseReactions, i18n.language),
+            purpose: (isEn ? data.purpose_en?.[0] : data.purpose_ar?.[0]) ? purpose : await translateText(purpose, i18n.language),
+            warnings: (isEn ? data.warnings_en?.[0] : data.warnings_ar?.[0]) ? warnings : await translateText(warnings, i18n.language),
+            dosage: (isEn ? data.dosage_and_administration_en?.[0] : data.dosage_and_administration_ar?.[0]) ? dosage : await translateText(dosage, i18n.language),
+            pregnancy: (isEn ? data.pregnancy_en?.[0] : data.pregnancy_ar?.[0]) ? pregnancy : await translateText(pregnancy, i18n.language),
+            pediatric: (isEn ? data.pediatric_use_en?.[0] : data.pediatric_use_ar?.[0]) ? pediatric : await translateText(pediatric, i18n.language),
+            geriatric: (isEn ? data.geriatric_use_en?.[0] : data.geriatric_use_ar?.[0]) ? geriatric : await translateText(geriatric, i18n.language),
+            contraindications: (isEn ? data.contraindications_en?.[0] : data.contraindications_ar?.[0]) ? contraindications : await translateText(contraindications, i18n.language),
+            adverseReactions: (isEn ? data.adverse_reactions_en?.[0] : data.adverse_reactions_ar?.[0]) ? adverseReactions : await translateText(adverseReactions, i18n.language),
           }
         });
 
@@ -77,6 +79,14 @@ export default function DrugDetails() {
           console.error("Failed to load alternatives inside details:", e);
         } finally {
           setLoadingAlternatives(false);
+        }
+
+        // Fetch food interactions in background
+        try {
+          const food = await fetchFoodInteractions(searchName);
+          setFoodData(food);
+        } catch (e) {
+          console.error("Failed to load food interactions inside details:", e);
         }
       } else {
         setError(true);
@@ -272,6 +282,46 @@ export default function DrugDetails() {
                   </Link>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Food Interactions Sidebar Card */}
+          {foodData && (
+            <div className="glass-panel p-6 border-t-4 border-t-emerald-500">
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-2 flex items-center">
+                <Utensils className="h-4 w-4 mr-2 rtl:ml-2 rtl:mr-0 text-emerald-500" />
+                {i18n.language.startsWith('ar') ? 'التفاعل مع الوجبات والأطعمة' : 'Food & Meal Interactions'}
+              </h3>
+              
+              <div className="p-3 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 text-xs font-semibold text-emerald-900 dark:text-emerald-200 mb-3 flex items-start gap-2">
+                <Clock className="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
+                <span>{i18n.language.startsWith('ar') ? (foodData.timing_ar || foodData.timing) : (foodData.timing_en || foodData.timing)}</span>
+              </div>
+
+              {foodData.interactions && foodData.interactions.length > 0 && (
+                <div className="space-y-2 mb-3">
+                  <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block">
+                    {i18n.language.startsWith('ar') ? 'أطعمة ومشروبات يُرجى الحذر منها:' : 'Foods to be cautious with:'}
+                  </span>
+                  {foodData.interactions.slice(0, 3).map((item: any, idx: number) => (
+                    <div key={idx} className="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/40 text-[11px] border border-gray-100 dark:border-gray-800">
+                      <span className="font-bold text-gray-900 dark:text-white block">
+                        {i18n.language.startsWith('ar') ? item.food_ar : (item.food_en || item.food_ar)}
+                      </span>
+                      <span className="text-gray-500 dark:text-gray-400 text-[10px]">
+                        {i18n.language.startsWith('ar') ? item.recommendation_ar : (item.recommendation_en || item.recommendation_ar)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <Link
+                to="/food-interactions"
+                className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 mt-2"
+              >
+                <span>{i18n.language.startsWith('ar') ? 'عرض الفحص الغذائي الكامل ⟵' : 'View full food interaction check ⟶'}</span>
+              </Link>
             </div>
           )}
           

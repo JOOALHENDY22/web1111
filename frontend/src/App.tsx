@@ -7,6 +7,8 @@ import DrugInteraction from './pages/DrugInteraction';
 import CompareDrugs from './pages/CompareDrugs';
 import DrugAlternatives from './pages/DrugAlternatives';
 import ChronicSafety from './pages/ChronicSafety';
+import VitalRef from './pages/VitalRef';
+import FoodInteractions from './pages/FoodInteractions';
 import Favorites from './pages/Favorites';
 import SearchHistory from './pages/SearchHistory';
 import About from './pages/About';
@@ -24,6 +26,8 @@ function App() {
           <Route path="compare" element={<CompareDrugs />} />
           <Route path="alternatives" element={<DrugAlternatives />} />
           <Route path="chronic-safety" element={<ChronicSafety />} />
+          <Route path="vitals" element={<VitalRef />} />
+          <Route path="food-interactions" element={<FoodInteractions />} />
           <Route path="favorites" element={<Favorites />} />
           <Route path="history" element={<SearchHistory />} />
           <Route path="about" element={<About />} />

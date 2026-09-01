@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { checkInteractionsAI, suggestDrugsAI, compareDrugsAI, getDrugDetailsAI, getDrugAlternativesAI, checkChronicSafetyAI } from '../services/aiService';
+import { checkInteractionsAI, suggestDrugsAI, compareDrugsAI, getDrugDetailsAI, getDrugAlternativesAI, checkChronicSafetyAI, getFoodInteractionsAI } from '../services/aiService';
 
 import fs from 'fs';
 import path from 'path';
@@ -118,6 +118,20 @@ router.post('/chronic-safety', async (req, res) => {
   } catch (error: any) {
     console.error(error);
     res.status(500).json({ error: 'Failed to verify chronic disease safety' });
+  }
+});
+
+router.post('/food-interactions', async (req, res) => {
+  try {
+    const { drugName } = req.body;
+    if (!drugName) {
+      return res.status(400).json({ error: 'Please provide a drugName' });
+    }
+    const data = await getFoodInteractionsAI(drugName);
+    res.json(data);
+  } catch (error: any) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to fetch food interactions' });
   }
 });
 

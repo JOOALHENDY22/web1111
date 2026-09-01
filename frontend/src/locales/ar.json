@@ -7,7 +7,9 @@
     "history": "السجل",
     "about": "حول",
     "alternatives": "البدائل",
-    "chronic_safety": "الأمراض المزمنة"
+    "chronic_safety": "الأمراض المزمنة",
+    "vitals": "المقاييس الحيوية",
+    "food_interactions": "تفاعلات الطعام"
   },
   "home": {
     "badge": "النسخة الأولى من YMH DRUG CHECK تعمل الآن",

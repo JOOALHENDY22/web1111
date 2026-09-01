@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { fetchDrugSuggestions, fetchDrugComparison } from '../services/api';
 
 export default function CompareDrugs() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
   
   // States for Drug A
@@ -174,13 +174,13 @@ export default function CompareDrugs() {
                 {comparisonData.map((row, idx) => (
                   <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-800/20 transition-colors group">
                     <td className="px-6 py-5 font-bold text-gray-900 dark:text-white bg-gray-50/30 dark:bg-gray-800/30 group-hover:bg-transparent transition-colors">
-                      {row.feature}
+                      {i18n.language.startsWith('en') ? (row.feature_en || row.feature) : (row.feature_ar || row.feature)}
                     </td>
                     <td className="px-6 py-5 border-l border-r border-gray-100 dark:border-gray-800 text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
-                      {row.drugA}
+                      {i18n.language.startsWith('en') ? (row.drugA_en || row.drugA) : (row.drugA_ar || row.drugA)}
                     </td>
                     <td className="px-6 py-5 text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
-                      {row.drugB}
+                      {i18n.language.startsWith('en') ? (row.drugB_en || row.drugB) : (row.drugB_ar || row.drugB)}
                     </td>
                   </tr>
                 ))}
@@ -193,16 +193,22 @@ export default function CompareDrugs() {
             {comparisonData.map((row, idx) => (
               <div key={idx} className="bg-white dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
                 <div className="bg-gray-50 dark:bg-gray-900/50 p-3 text-center border-b border-gray-100 dark:border-gray-800">
-                  <h4 className="font-bold text-gray-900 dark:text-white text-sm">{row.feature}</h4>
+                  <h4 className="font-bold text-gray-900 dark:text-white text-sm">
+                    {i18n.language.startsWith('en') ? (row.feature_en || row.feature) : (row.feature_ar || row.feature)}
+                  </h4>
                 </div>
                 <div className="grid grid-cols-2 divide-x rtl:divide-x-reverse divide-gray-100 dark:divide-gray-800">
                   <div className="p-4 text-center bg-primary-50/10 dark:bg-primary-900/5">
                     <p className="font-black text-primary-600 dark:text-primary-400 text-xs mb-2 bg-primary-50 dark:bg-primary-900/20 inline-block px-2 py-1 rounded-md">{inputA}</p>
-                    <p className="text-gray-700 dark:text-gray-300 font-medium text-sm leading-relaxed">{row.drugA}</p>
+                    <p className="text-gray-700 dark:text-gray-300 font-medium text-sm leading-relaxed">
+                      {i18n.language.startsWith('en') ? (row.drugA_en || row.drugA) : (row.drugA_ar || row.drugA)}
+                    </p>
                   </div>
                   <div className="p-4 text-center bg-blue-50/10 dark:bg-blue-900/5">
                     <p className="font-black text-blue-600 dark:text-blue-400 text-xs mb-2 bg-blue-50 dark:bg-blue-900/20 inline-block px-2 py-1 rounded-md">{inputB}</p>
-                    <p className="text-gray-700 dark:text-gray-300 font-medium text-sm leading-relaxed">{row.drugB}</p>
+                    <p className="text-gray-700 dark:text-gray-300 font-medium text-sm leading-relaxed">
+                      {i18n.language.startsWith('en') ? (row.drugB_en || row.drugB) : (row.drugB_ar || row.drugB)}
+                    </p>
                   </div>
                 </div>
               </div>

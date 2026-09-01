@@ -278,7 +278,9 @@ export default function ChronicSafety() {
                 {isArabic ? 'الإرشادات والتفسير العلمي:' : 'Scientific Details & Guidance:'}
               </h4>
               <p className="text-sm leading-relaxed text-gray-700 dark:text-gray-300">
-                {safetyResult.explanation}
+                {isArabic 
+                  ? (safetyResult.explanation_ar || safetyResult.explanation) 
+                  : (safetyResult.explanation_en || safetyResult.explanation)}
               </p>
             </div>
 

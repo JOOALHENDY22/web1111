@@ -139,3 +139,16 @@ export const fetchChronicSafety = async (drugName: string, diseaseName: string) 
     throw error;
   }
 };
+
+export const fetchFoodInteractions = async (drugName: string) => {
+  try {
+    const res = await axios.post(`${BACKEND_URL}/api/food-interactions`, { drugName });
+    if (res.data) {
+      return res.data;
+    }
+    return null;
+  } catch (error) {
+    console.error("Food Interactions API Error:", error);
+    throw error;
+  }
+};

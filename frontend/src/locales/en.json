@@ -7,7 +7,9 @@
     "history": "History",
     "about": "About",
     "alternatives": "Alternatives",
-    "chronic_safety": "Chronic Safety"
+    "chronic_safety": "Chronic Safety",
+    "vitals": "Vital Signs",
+    "food_interactions": "Food Interactions"
   },
   "home": {
     "badge": "YMH DRUG CHECK Phase 1 is Live",
