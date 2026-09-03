@@ -1,163 +1,452 @@
-import { motion } from 'framer-motion';
-import { Search, ShieldCheck, Zap, Activity } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { 
+  Search, 
+  Activity, 
+  Utensils, 
+  HeartPulse, 
+  RefreshCw, 
+  ShieldAlert, 
+  ArrowRight, 
+  Pill, 
+  Shield, 
+  Scale
+} from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { fetchDrugSuggestions } from '../services/api';
 
 export default function Home() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const isAr = i18n.language.startsWith('ar');
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
+  const [searchQuery, setSearchQuery] = useState('');
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+
+  // Trending & Essential Egyptian Medications
+  const popularDrugs = [
+    { name: 'Augmentin', label_ar: 'أوجمنتين (Augmentin)', label_en: 'Augmentin' },
+    { name: 'Concor', label_ar: 'كونكور (Concor)', label_en: 'Concor' },
+    { name: 'Panadol Extra', label_ar: 'بنادول إكسترا (Panadol)', label_en: 'Panadol Extra' },
+    { name: 'Cataflam', label_ar: 'كتافلام (Cataflam)', label_en: 'Cataflam' },
+    { name: 'Glucophage', label_ar: 'جلوكوفاج (Glucophage)', label_en: 'Glucophage' },
+    { name: 'Ciprofloxacin', label_ar: 'سيبروفلوكساسين (Cipro)', label_en: 'Ciprofloxacin' },
+  ];
+
+  // Hotkey listener: Press '/' to focus search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === '/' && document.activeElement !== searchInputRef.current) {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Close suggestions on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Autocomplete fetch
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (searchQuery.trim().length >= 2) {
+        const results = await fetchDrugSuggestions(searchQuery.trim());
+        setSuggestions(results);
+        setShowSuggestions(true);
+        setSelectedSuggestionIndex(-1);
+      } else {
+        setSuggestions([]);
+        setShowSuggestions(false);
+      }
+    }, 180);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/drug/${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (showSuggestions && suggestions.length > 0) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setSelectedSuggestionIndex(prev => (prev < suggestions.length - 1 ? prev + 1 : prev));
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setSelectedSuggestionIndex(prev => (prev > 0 ? prev - 1 : -1));
+      } else if (e.key === 'Enter' && selectedSuggestionIndex >= 0) {
+        e.preventDefault();
+        navigate(`/drug/${encodeURIComponent(suggestions[selectedSuggestionIndex])}`);
+      } else if (e.key === 'Escape') {
+        setShowSuggestions(false);
+      }
+    }
   };
 
-  return (
-    <div className="flex flex-col items-center">
-      {/* Hero Section */}
-      <section className="w-full py-12 md:py-24 flex flex-col items-center text-center relative overflow-hidden">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary-100/50 via-gray-50 to-gray-50 dark:from-primary-900/20 dark:via-gray-900 dark:to-gray-900"></div>
-        
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-          className="max-w-4xl mx-auto px-4"
-        >
-          <motion.div variants={itemVariants} className="inline-flex items-center space-x-2 rtl:space-x-reverse px-3 py-1 rounded-full bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-sm font-medium mb-8">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
-            </span>
-            <span>{t('home.badge')}</span>
-          </motion.div>
-          
-          <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
-            {t('home.title_part1')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-400">{t('home.title_highlight')}</span> {t('home.title_part2')}
-          </motion.h1>
-          
-          <motion.p variants={itemVariants} className="text-xl text-gray-600 dark:text-gray-400 mb-10 max-w-2xl mx-auto leading-relaxed">
-            {t('home.description')}
-          </motion.p>
-          
-          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4 rtl:space-x-reverse">
-            <Link to="/search" className="w-full sm:w-auto btn-primary text-base px-8 py-4 rounded-2xl shadow-lg shadow-primary-500/25">
-              <Search className="h-5 w-5 mr-2 rtl:ml-2 rtl:mr-0" />
-              {t('home.search_btn')}
-            </Link>
-            <Link to="/interaction" className="w-full sm:w-auto btn-secondary text-base px-8 py-4 rounded-2xl">
-              <Activity className="h-5 w-5 mr-2 rtl:ml-2 rtl:mr-0" />
-              {t('home.interact_btn')}
-            </Link>
-          </motion.div>
-        </motion.div>
-      </section>
+  // 6 Core Clinical Tools Showcase
+  const clinicalModules = [
+    {
+      title_ar: 'فاحص التفاعلات الدوائية',
+      title_en: 'Drug-Drug Interactions',
+      desc_ar: 'فحص فوري للتعارضات بين أدويتك المتعددة وتصنيف مستويات الخطورة (عالية، متوسطة، بسيطة) مع البروتوكول السريري لإدارتها.',
+      desc_en: 'Comprehensive cross-interaction analysis with severity stratification and evidence-based clinical management guidelines.',
+      icon: Activity,
+      path: '/interaction',
+      badge_ar: 'فحص متعدد الأدوية',
+      badge_en: 'Multi-Drug Checker',
+    },
+    {
+      title_ar: 'تفاعلات الأدوية مع الطعام والشراب',
+      title_en: 'Food-Drug Interactions & Timing',
+      desc_ar: 'تحديد المواعيد الدقيقة لتناول الجرعات (قبل أو بعد الوجبات)، وقائمة الأطعمة والمشروبات الممنوعة لتجنب تأثر الامتصاص.',
+      desc_en: 'Precise meal administration timing, prohibited foods & beverages, and pharmacological absorption mechanisms.',
+      icon: Utensils,
+      path: '/food-interactions',
+      badge_ar: 'جدول الوجبات',
+      badge_en: 'Meal Timing',
+    },
+    {
+      title_ar: 'دليل المقاييس الحيوية والتحاليل',
+      title_en: 'Vital Signs & Biomarkers Guide',
+      desc_ar: 'مرجع شامل لـ 22 مقياساً ومؤشراً مخبرياً (ضغط الدم، السكر التراكمي، وظائف الكلى والكبد) مع مقيّم رقمي فوري.',
+      desc_en: 'Clinical reference for 22 vital signs and laboratory biomarkers featuring an interactive numerical evaluator.',
+      icon: HeartPulse,
+      path: '/vitals',
+      badge_ar: '22 مقياس سريري',
+      badge_en: '22 Biomarkers',
+    },
+    {
+      title_ar: 'دليل البدائل والمثائل في مصر',
+      title_en: 'Egyptian Drug Alternatives',
+      desc_ar: 'البحث عن كافة الأدوية البديلة المسجلة في السوق المصري التي تشترك في نفس المادة الفعالة مع الفئات السعرية والشركات.',
+      desc_en: 'Find brand equivalents sharing the same active ingredient registered in the Egyptian market with price tiers.',
+      icon: RefreshCw,
+      path: '/alternatives',
+      badge_ar: 'السوق المصري',
+      badge_en: 'Egyptian Market',
+    },
+    {
+      title_ar: 'أمان وموانع الأمراض المزمنة',
+      title_en: 'Chronic Disease Safety Checker',
+      desc_ar: 'التحقق الدقيق من ملاءمة الأدوية وموانع استعمالها لمرضى الضغط، السكري، القصور الكلوي المزمن، وأمراض الكبد.',
+      desc_en: 'Evaluate safety profiles and contraindications for patients with Hypertension, Diabetes, CKD, and Hepatic disease.',
+      icon: ShieldAlert,
+      path: '/chronic-safety',
+      badge_ar: 'سلامة المرضى',
+      badge_en: 'Patient Safety',
+    },
+    {
+      title_ar: 'مصفوفة المقارنة الدوائية السريرية',
+      title_en: 'Side-by-Side Drug Comparison',
+      desc_ar: 'مقارنة مباشرة وجهاً لوجه بين دواءين في المادة الفعالة، والجرعات، والآثار الجانبية، وموانع الاستعمال لتسهيل الاختيار.',
+      desc_en: 'Side-by-side clinical matrix comparing two drugs across ingredients, dosing guidelines, side effects, and precautions.',
+      icon: Scale,
+      path: '/compare',
+      badge_ar: 'مقارنة مباشرة',
+      badge_en: 'Direct Comparison',
+    }
+  ];
 
-      {/* Stats Section */}
-      <section className="w-full py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-          {[
-            { label: t('home.stats.drugs_label'), value: '50,000+' },
-            { label: t('home.stats.interact_label'), value: '2M+' },
-            { label: t('home.stats.pro_label'), value: '10,000+' },
-            { label: t('home.stats.uptime_label'), value: '99.9%' },
-          ].map((stat, i) => (
-            <div key={i} className="glass-panel p-6 text-center flex flex-col items-center justify-center">
-              <span className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{stat.value}</span>
-              <span className="text-sm text-gray-500 dark:text-gray-400">{stat.label}</span>
+  return (
+    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-12">
+      
+      {/* 🏥 Hero Section: Academic & Human Medical Header */}
+      <header className="text-center max-w-3xl mx-auto pt-4 pb-2 space-y-4">
+        
+        {/* Academic University Pill */}
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-50 dark:bg-teal-950/50 border border-teal-200 dark:border-teal-800/80 text-teal-800 dark:text-teal-200 text-xs font-semibold shadow-subtle">
+          <span className="w-2 h-2 rounded-full bg-teal-600 dark:bg-teal-400"></span>
+          <span>{isAr ? 'الجامعة المصرية الصينية (ECU) • كلية الصيدلة' : 'Egyptian Chinese University (ECU) • Faculty of Pharmacy'}</span>
+        </div>
+
+        {/* Main Human Title */}
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+          {isAr ? (
+            <>
+              المرجع الصيدلاني السريري الذكي{' '}
+              <span className="text-teal-700 dark:text-teal-400 font-black">YoPharma</span>
+            </>
+          ) : (
+            <>
+              Evidence-Based Clinical Pharmacy{' '}
+              <span className="text-teal-700 dark:text-teal-400 font-black">YoPharma</span>
+            </>
+          )}
+        </h1>
+
+        {/* Human Editorial Subtitle */}
+        <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto">
+          {isAr 
+            ? 'منصة صيدلانية متخصصة لدعم اتخاذ القرارات السريرية، فحص تداخلات الأدوية والأغذية، ومطابقة بدائل ومثائل الأدوية في السوق المصري.'
+            : 'Dedicated clinical platform designed to empower healthcare practitioners with interaction checks, food timing, and Egyptian drug alternatives.'}
+        </p>
+
+        {/* 🔍 Primary Search Command Center */}
+        <div className="max-w-2xl mx-auto pt-2" ref={searchContainerRef}>
+          <form onSubmit={handleSearchSubmit} className="relative flex items-center shadow-clinical rounded-2xl bg-white dark:bg-slate-900">
+            <div className="absolute left-4 rtl:left-auto rtl:right-4 text-slate-400 pointer-events-none">
+              <Search className="h-5 w-5 text-teal-700 dark:text-teal-400" />
             </div>
+            
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onFocus={() => { if (suggestions.length > 0) setShowSuggestions(true); }}
+              placeholder={isAr ? 'ابحث عن أي دواء تجاري أو علمي (مثال: Augmentin, Concor, Cataflam)...' : 'Search any brand or generic drug (e.g. Augmentin, Concor, Panadol)...'}
+              className="w-full py-3.5 pl-11 pr-28 rtl:pl-28 rtl:pr-11 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-2xl text-sm sm:text-base text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-teal-600 dark:focus:border-teal-500 transition-all font-medium"
+            />
+
+            <div className="absolute right-2 rtl:right-auto rtl:left-2 flex items-center gap-1.5">
+              <button
+                type="submit"
+                className="px-4 sm:px-5 py-2 bg-teal-700 hover:bg-teal-800 active:bg-teal-900 text-white font-bold rounded-xl text-xs sm:text-sm transition-colors shadow-sm"
+              >
+                {isAr ? 'بحث سريري' : 'Search'}
+              </button>
+            </div>
+          </form>
+
+          {/* Autocomplete Dropdown */}
+          {showSuggestions && suggestions.length > 0 && (
+            <div className="absolute left-0 right-0 mt-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-xl overflow-hidden z-50 text-left rtl:text-right max-h-64 overflow-y-auto">
+              {suggestions.map((drug, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery(drug);
+                    setShowSuggestions(false);
+                    navigate(`/drug/${encodeURIComponent(drug)}`);
+                  }}
+                  className={`w-full px-4 py-3 text-xs sm:text-sm flex items-center justify-between border-b border-slate-100 dark:border-slate-800/80 last:border-none transition-colors ${
+                    idx === selectedSuggestionIndex 
+                      ? 'bg-teal-50 dark:bg-teal-950/60 text-teal-800 dark:text-teal-200 font-semibold' 
+                      : 'text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <span className="flex items-center gap-2 font-medium">
+                    <Pill className="w-4 h-4 text-teal-600" />
+                    {drug}
+                  </span>
+                  <span className="text-xs text-teal-600 dark:text-teal-400 font-semibold">
+                    {isAr ? 'عرض الملف الدوائي ←' : 'View Monograph →'}
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Quick Popular Medication Tags */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 pt-1">
+          <span className="font-bold text-slate-700 dark:text-slate-300">
+            {isAr ? 'أدوية متكررة:' : 'Common Drugs:'}
+          </span>
+          {popularDrugs.map((d, i) => (
+            <button
+              key={i}
+              onClick={() => navigate(`/drug/${encodeURIComponent(d.name)}`)}
+              className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-700 transition-colors font-medium"
+            >
+              {isAr ? d.label_ar : d.label_en}
+            </button>
           ))}
         </div>
-      </section>
 
-      {/* Creator Banner */}
-      <section className="w-full py-6 bg-primary-900 text-white dark:bg-gray-800">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <p className="text-sm font-medium text-primary-200 uppercase tracking-widest mb-1">{t('creator_banner.title')}</p>
-          <h3 className="text-2xl md:text-3xl font-bold mb-2">
-            {t('creator_banner.created_by')} <span className="text-primary-300">Youssef Mohamed</span>
-          </h3>
-          <p className="text-primary-100 dark:text-gray-300">
-            {t('creator_banner.desc')}
-          </p>
+      </header>
+
+      {/* 🧭 Quick Action Triage Bar */}
+      <section className="bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-teal-700 text-white flex items-center justify-center shrink-0 shadow-sm">
+            <Activity className="w-5 h-5" />
+          </div>
+          <div>
+            <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+              {isAr ? 'فحص الروشتة السريرية المجمعة' : 'Multi-Drug Prescription Triage'}
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              {isAr ? 'أدخل أدوية الروشتة معاً لفحص التداخلات، توقيت الجرعات، وموانع الاستعمال في شاشة واحدة.' : 'Evaluate multiple medications at once for drug-drug interactions and patient safety.'}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
+          <Link
+            to="/interaction"
+            className="w-full sm:w-auto px-4 py-2 bg-teal-700 hover:bg-teal-800 text-white text-xs sm:text-sm font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-sm transition-colors"
+          >
+            <span>{isAr ? 'بدء فحص الروشتة' : 'Launch Checker'}</span>
+            <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+          </Link>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="w-full py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('home.features_title')}</h2>
-          <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">{t('home.features_desc')}</p>
+      {/* 📚 6 Core Clinical Intelligence Modules */}
+      <section className="space-y-4">
+        <div className="border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center justify-between">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+              {isAr ? 'أدوات القرار الصيدلاني السريري' : 'Core Clinical Decision Modules'}
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+              {isAr ? 'منظومة متكاملة مصممة لتلبية احتياجات التدريب والصيدلة اليومية:' : 'Integrated evidence-based tools for daily practice and clinical rotation:'}
+            </p>
+          </div>
         </div>
-        
-        <div className="grid md:grid-cols-3 gap-8">
-          {[
-            {
-              icon: Search,
-              title: t('home.f1_title'),
-              desc: t('home.f1_desc'),
-              color: 'text-blue-500 bg-blue-100 dark:bg-blue-900/20'
-            },
-            {
-              icon: ShieldCheck,
-              title: t('home.f2_title'),
-              desc: t('home.f2_desc'),
-              color: 'text-emerald-500 bg-emerald-100 dark:bg-emerald-900/20'
-            },
-            {
-              icon: Zap,
-              title: t('home.f3_title'),
-              desc: t('home.f3_desc'),
-              color: 'text-purple-500 bg-purple-100 dark:bg-purple-900/20'
-            }
-          ].map((feature, i) => {
-            const Icon = feature.icon;
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          {clinicalModules.map((module, idx) => {
+            const Icon = module.icon;
             return (
-              <div key={i} className="glass-panel p-8 hover:-translate-y-1 transition-transform duration-300">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-6 ${feature.color}`}>
-                  <Icon className="h-6 w-6" />
+              <Link
+                key={idx}
+                to={module.path}
+                className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-teal-500/70 dark:hover:border-teal-500/70 rounded-2xl p-5 shadow-subtle hover:shadow-card-hover transition-all duration-200 flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-teal-700 dark:text-teal-400 flex items-center justify-center group-hover:bg-teal-700 group-hover:text-white transition-colors">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <span className="text-[11px] font-bold px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                      {isAr ? module.badge_ar : module.badge_en}
+                    </span>
+                  </div>
+
+                  <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2 group-hover:text-teal-700 dark:group-hover:text-teal-400 transition-colors">
+                    {isAr ? module.title_ar : module.title_en}
+                  </h3>
+
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+                    {isAr ? module.desc_ar : module.desc_en}
+                  </p>
                 </div>
-                <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                  {feature.desc}
-                </p>
-              </div>
-            )
+
+                <div className="flex items-center gap-1 text-xs font-bold text-teal-700 dark:text-teal-400 group-hover:underline pt-2 border-t border-slate-100 dark:border-slate-800/60">
+                  <span>{isAr ? 'فتح الأداة السريرية' : 'Open Clinical Tool'}</span>
+                  <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
+                </div>
+              </Link>
+            );
           })}
         </div>
       </section>
-      
-      {/* Footer */}
-      <footer className="w-full py-8 mt-auto border-t border-gray-200 dark:border-gray-800 flex flex-col items-center justify-center text-center text-sm text-gray-500 dark:text-gray-400">
-        <div className="flex flex-col md:flex-row items-center justify-between w-full max-w-4xl mx-auto px-4 gap-4">
-          <div>
-            <p>&copy; {new Date().getFullYear()} {t('footer.rights')}</p>
-            <p className="mt-1">{t('footer.disclaimer')}</p>
+
+      {/* 📊 Clinical Architecture & Reliability Matrix */}
+      <section className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-subtle">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center divide-y md:divide-y-0 md:divide-x rtl:md:divide-x-reverse divide-slate-100 dark:divide-slate-800">
+          <div className="p-3">
+            <span className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white font-mono">&lt; 1ms</span>
+            <span className="block text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
+              {isAr ? 'استجابة الكاش السريعة' : 'RAM Sub-ms Cache'}
+            </span>
           </div>
-          
-          <div className="flex flex-col items-center md:items-end">
-            <p className="font-medium text-gray-700 dark:text-gray-300 mb-2">{t('footer.designed_by')}</p>
+
+          <div className="p-3">
+            <span className="text-2xl sm:text-3xl font-bold text-teal-700 dark:text-teal-400 font-mono">22+</span>
+            <span className="block text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
+              {isAr ? 'مقياس حيوي ومختبري' : 'Vital Signs Biomarkers'}
+            </span>
+          </div>
+
+          <div className="p-3">
+            <span className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white font-mono">100%</span>
+            <span className="block text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
+              {isAr ? 'تغطية السوق الدوائي المصري' : 'Egyptian Market Coverage'}
+            </span>
+          </div>
+
+          <div className="p-3">
+            <span className="text-2xl sm:text-3xl font-bold text-teal-700 dark:text-teal-400 font-mono">AR / EN</span>
+            <span className="block text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
+              {isAr ? 'دعم لغوي سريري مزدوج' : 'Bilingual Clinical Data'}
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* 🎓 Academic Credential & ECU Faculty of Pharmacy Card */}
+      <section className="bg-slate-900 text-white rounded-2xl p-6 sm:p-7 border border-slate-800 shadow-clinical flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left rtl:sm:text-right">
+          <div className="p-3 bg-white rounded-xl shadow-sm shrink-0">
+            <img 
+              src="/ecu-logo.png" 
+              alt="Egyptian Chinese University Logo" 
+              className="h-14 w-auto object-contain"
+            />
+          </div>
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-teal-900/60 border border-teal-700 text-teal-300 text-xs font-semibold mb-1">
+              <Shield className="w-3 h-3" />
+              <span>{isAr ? 'الجامعة المصرية الصينية (ECU)' : 'Egyptian Chinese University'}</span>
+            </div>
+            <h3 className="text-lg sm:text-xl font-bold text-white">
+              {isAr ? 'مشروع بحث وتطوير صيدلاني سريري' : 'Academic Clinical Pharmacy Initiative'}
+            </h3>
+            <p className="text-xs text-slate-300 mt-1 max-w-xl leading-relaxed">
+              {isAr 
+                ? 'تم تطوير هذه المنصة بواسطة يوسف محمد تحت مظلة كلية الصيدلة بالجامعة المصرية الصينية، بهدف تمكين الطلاب والممارسين بأدوات اتخاذ القرار السريري السريع والموثوق.'
+                : 'Developed by Youssef Mohamed at ECU Faculty of Pharmacy to empower pharmacy learners with verified clinical tools.'}
+            </p>
+          </div>
+        </div>
+
+        <div className="shrink-0 flex items-center gap-2">
+          <Link 
+            to="/about"
+            className="px-4 py-2 bg-white text-slate-900 hover:bg-slate-100 font-bold text-xs rounded-xl shadow-sm transition-colors"
+          >
+            {isAr ? 'حول المنصة والمطور' : 'About Platform'}
+          </Link>
+        </div>
+      </section>
+
+      {/* 📄 Clean Human Footer */}
+      <footer className="border-t border-slate-200 dark:border-slate-800 pt-6 pb-4 text-center text-xs text-slate-500 dark:text-slate-400 space-y-3">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="font-medium text-slate-700 dark:text-slate-300">
+            &copy; {new Date().getFullYear()} YoPharma Clinical Suite. {t('footer.rights')}
+          </p>
+
+          <div className="flex items-center gap-3">
+            <span>{t('footer.designed_by')}</span>
             <a 
               href="https://wa.me/qr/2ZQYXCK7REOIC1" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-full transition-colors text-sm font-medium shadow-sm"
+              className="inline-flex items-center px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors text-xs font-bold shadow-sm"
             >
-              <svg className="w-4 h-4 mr-2 rtl:ml-2 rtl:mr-0" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
-              </svg>
-              WhatsApp
+              WhatsApp Contact
             </a>
           </div>
         </div>
+
+        <p className="text-[11px] text-slate-400 dark:text-slate-500 max-w-2xl mx-auto">
+          {t('footer.disclaimer')}
+        </p>
       </footer>
+
     </div>
   );
 }

@@ -69,19 +69,16 @@ export default function MainLayout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-3 group">
-              <div className="relative">
-                <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-primary-600 via-primary-500 to-teal-400 flex items-center justify-center shadow-lg shadow-primary-500/25 group-hover:scale-105 group-hover:shadow-primary-500/40 transition-all duration-300">
-                  <Pill className="h-5 w-5 text-white transform -rotate-45" />
-                </div>
-                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white dark:border-gray-900 shadow-sm"></div>
+            <Link to="/" className="flex items-center gap-2.5 group">
+              <div className="w-9 h-9 rounded-lg bg-emerald-600 flex items-center justify-center shadow-sm">
+                <Pill className="h-5 w-5 text-white transform -rotate-45" />
               </div>
               <div className="flex flex-col">
-                <span className="text-2xl font-black tracking-tight leading-none text-gray-900 dark:text-white">
-                  Yo<span className="bg-gradient-to-r from-primary-500 via-teal-500 to-emerald-500 bg-clip-text text-transparent">Pharma</span>
+                <span className="text-xl font-bold tracking-tight leading-none text-slate-900 dark:text-white">
+                  Yo<span className="text-emerald-600 dark:text-emerald-400">Pharma</span>
                 </span>
-                <span className="text-[9px] font-bold tracking-widest uppercase text-gray-400 dark:text-gray-500 font-mono mt-0.5">
-                  Clinical Intelligence
+                <span className="text-[9px] font-bold tracking-wider uppercase text-slate-400 dark:text-slate-500 font-mono mt-0.5">
+                  Clinical Workbench
                 </span>
               </div>
             </Link>
