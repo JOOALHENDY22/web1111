@@ -4,12 +4,12 @@ async function buildCompetitionDeck() {
   const pptx = new pptxgen();
 
   pptx.layout = 'LAYOUT_16x9';
-  pptx.author = 'Team PharmaMind - Youssef Mohamed';
+  pptx.author = 'Team PharmaMind';
   pptx.company = 'Egyptian Chinese University (ECU)';
   pptx.subject = 'Pharmacy Innovation & AI Competition';
   pptx.title = 'YoPharma Drug Check - Competition Presentation';
 
-  // Professional Human Clinical Palette
+  // High-Contrast Clinical Palette
   const TEAL_DARK = '0F766E';
   const TEAL_PRIMARY = '0D9488';
   const TEAL_LIGHT = 'F0FDFA';
@@ -31,7 +31,6 @@ async function buildCompetitionDeck() {
   function addSlideHeader(slide, slideNum, title, category = 'YoPharma Drug Check | Team PharmaMind') {
     slide.background = { color: SLATE_BG };
 
-    // Category + Slide Number Pill
     slide.addText(`SLIDE ${slideNum} • ${category.toUpperCase()}`, {
       x: 0.6,
       y: 0.35,
@@ -44,7 +43,6 @@ async function buildCompetitionDeck() {
       letterSpacing: 1,
     });
 
-    // Main Title
     slide.addText(title, {
       x: 0.6,
       y: 0.6,
@@ -56,7 +54,6 @@ async function buildCompetitionDeck() {
       bold: true,
     });
 
-    // Divider Line
     slide.addShape(pptx.ShapeType.line, {
       x: 0.6,
       y: 1.2,
@@ -67,7 +64,7 @@ async function buildCompetitionDeck() {
   }
 
   function addSlideFooter(slide) {
-    slide.addText('Pharmacy Innovation & AI Competition | Team PharmaMind • Egyptian Chinese University (ECU)', {
+    slide.addText('Team PharmaMind (يوسف محمد • نور عبدالمجيد • رنا ماهر • وفاء طه • نور جمال) | ECU Faculty of Pharmacy', {
       x: 0.6,
       y: 7.05,
       w: 12.1,
@@ -79,9 +76,7 @@ async function buildCompetitionDeck() {
     });
   }
 
-  // =============================================================
   // SLIDE 1: COVER
-  // =============================================================
   {
     const slide = pptx.addSlide();
     slide.background = { color: SLATE_DARK };
@@ -131,7 +126,6 @@ async function buildCompetitionDeck() {
       lineSpacing: 18,
     });
 
-    // 3 Highlight Boxes
     const coverBoxes = [
       { label: 'Team', val: 'PharmaMind' },
       { label: 'Track', val: 'Pharmacy Innovation & AI' },
@@ -173,7 +167,6 @@ async function buildCompetitionDeck() {
       });
     });
 
-    // Bottom Banner
     slide.addShape(pptx.ShapeType.roundRect, {
       x: 1.0,
       y: 5.3,
@@ -197,14 +190,11 @@ async function buildCompetitionDeck() {
     });
   }
 
-  // =============================================================
   // SLIDE 2: THE REAL PROBLEM
-  // =============================================================
   {
     const slide = pptx.addSlide();
     addSlideHeader(slide, '2', 'The Real Problem: Fragmented Clinical Information');
 
-    // Left Focus Hero Card
     slide.addShape(pptx.ShapeType.roundRect, {
       x: 0.6,
       y: 1.35,
@@ -247,7 +237,6 @@ async function buildCompetitionDeck() {
       lineSpacing: 16,
     });
 
-    // Right Visual: Jumping between 4 Fragmented Screens
     slide.addShape(pptx.ShapeType.roundRect, {
       x: 5.6,
       y: 1.35,
@@ -313,9 +302,7 @@ async function buildCompetitionDeck() {
     addSlideFooter(slide);
   }
 
-  // =============================================================
   // SLIDE 3: WHY CURRENT WORKFLOW IS NOT IDEAL
-  // =============================================================
   {
     const slide = pptx.addSlide();
     addSlideHeader(slide, '3', 'The Traditional 8-Step Fragmented Workflow');
@@ -411,7 +398,6 @@ async function buildCompetitionDeck() {
       });
     });
 
-    // 3 Bottlenecks Callout Card
     slide.addShape(pptx.ShapeType.roundRect, {
       x: 0.9,
       y: 4.6,
@@ -444,14 +430,11 @@ async function buildCompetitionDeck() {
     addSlideFooter(slide);
   }
 
-  // =============================================================
-  // SLIDE 4: OUR SOLUTION — YOPHARMA DRUG CHECK
-  // =============================================================
+  // SLIDE 4: OUR SOLUTION
   {
     const slide = pptx.addSlide();
     addSlideHeader(slide, '4', 'Our Solution: YoPharma Drug Check');
 
-    // Central Value Proposition Banner
     slide.addShape(pptx.ShapeType.roundRect, {
       x: 0.6,
       y: 1.35,
@@ -476,7 +459,6 @@ async function buildCompetitionDeck() {
       lineSpacing: 22,
     });
 
-    // 4 Pillars Grid
     const solPillars = [
       {
         tag: 'EXPLORE',
@@ -564,9 +546,7 @@ async function buildCompetitionDeck() {
     addSlideFooter(slide);
   }
 
-  // =============================================================
-  // SLIDE 5: HOW DRUG CHECK WORKS (Visual 5-Step Workflow)
-  // =============================================================
+  // SLIDE 5: HOW DRUG CHECK WORKS
   {
     const slide = pptx.addSlide();
     addSlideHeader(slide, '5', 'How Drug Check Works: 5-Step Streamlined Workflow');
@@ -582,36 +562,11 @@ async function buildCompetitionDeck() {
     });
 
     const workflow = [
-      {
-        num: '01',
-        title: 'Search & Add',
-        desc: 'Type Egyptian trade name or generic INN with "/" shortcut. Instant suggestion dropdown.',
-        badge: 'Input Phase',
-      },
-      {
-        num: '02',
-        title: 'Build Regimen Tray',
-        desc: 'Medications are organized in an active prescription queue with one-click removal and dosage forms.',
-        badge: 'Prescription Queue',
-      },
-      {
-        num: '03',
-        title: 'Set Patient Comorbidities',
-        desc: 'Select chronic conditions: Hypertension, Type 2 Diabetes, CKD, Hepatic, Asthma, Pregnancy.',
-        badge: 'Patient Profile',
-      },
-      {
-        num: '04',
-        title: 'Unified Clinical Triage',
-        desc: 'Engine simultaneously analyzes Drug-Drug, Food Timing, Chronic contraindications, and Alternatives.',
-        badge: 'AI & RAM Engine',
-      },
-      {
-        num: '05',
-        title: 'Actionable Guidance',
-        desc: 'Pharmacist gets color-coded severity (🔴/🟠/🔵), mechanism explanation, and spacing recommendations.',
-        badge: 'Clinical Output',
-      },
+      { num: '01', title: 'Search & Add', desc: 'Type Egyptian trade name or generic INN with "/" shortcut. Instant suggestion dropdown.', badge: 'Input Phase' },
+      { num: '02', title: 'Build Regimen Tray', desc: 'Medications are organized in an active prescription queue with one-click removal and dosage forms.', badge: 'Prescription Queue' },
+      { num: '03', title: 'Set Patient Comorbidities', desc: 'Select chronic conditions: Hypertension, Type 2 Diabetes, CKD, Hepatic, Asthma, Pregnancy.', badge: 'Patient Profile' },
+      { num: '04', title: 'Unified Clinical Triage', desc: 'Engine simultaneously analyzes Drug-Drug, Food Timing, Chronic contraindications, and Alternatives.', badge: 'AI & RAM Engine' },
+      { num: '05', title: 'Actionable Guidance', desc: 'Pharmacist gets color-coded severity (🔴/🟠/🔵), mechanism explanation, and spacing recommendations.', badge: 'Clinical Output' },
     ];
 
     workflow.forEach((wf, idx) => {
@@ -676,14 +631,11 @@ async function buildCompetitionDeck() {
     addSlideFooter(slide);
   }
 
-  // =============================================================
-  // SLIDE 6: THE CLINICAL WORKBENCH (Centerpiece Diagram)
-  // =============================================================
+  // SLIDE 6: THE CLINICAL WORKBENCH
   {
     const slide = pptx.addSlide();
     addSlideHeader(slide, '6', 'The Clinical Workbench: Single-Screen Command Center');
 
-    // Left Column: The Architecture Concept
     slide.addShape(pptx.ShapeType.roundRect, {
       x: 0.6,
       y: 1.35,
@@ -724,7 +676,6 @@ async function buildCompetitionDeck() {
       lineSpacing: 15,
     });
 
-    // Right Column: Workbench Annotated Diagram
     slide.addShape(pptx.ShapeType.roundRect, {
       x: 5.2,
       y: 1.35,
@@ -797,56 +748,18 @@ async function buildCompetitionDeck() {
     addSlideFooter(slide);
   }
 
-  // =============================================================
-  // SLIDE 7: FEATURE DEEP DIVE (6 Core Modules)
-  // =============================================================
+  // SLIDE 7: FEATURE DEEP DIVE
   {
     const slide = pptx.addSlide();
     addSlideHeader(slide, '7', 'Feature Deep Dive: 6 Core Clinical Modules');
 
     const modules = [
-      {
-        icon: '🔴',
-        title: 'Drug-Drug Checker',
-        points: '• Cross-interaction matrix\n• CYP450 enzyme pathways\n• Pharmacokinetic triage\n• Actionable spacing guidance',
-        color: RED,
-        bg: RED_BG,
-      },
-      {
-        icon: '🍽️',
-        title: 'Food & Meal Timing',
-        points: '• Meal schedule (pre/post food)\n• Dairy & calcium chelation\n• Grapefruit CYP3A4 alerts\n• Potassium rich food warnings',
-        color: AMBER,
-        bg: AMBER_BG,
-      },
-      {
-        icon: '🫀',
-        title: '22 Biomarkers & Vitals',
-        points: '• 22 lab tests (eGFR, INR, HbA1c)\n• Interactive digital evaluator\n• Normal range comparison\n• Instant clinical diagnosis',
-        color: TEAL_DARK,
-        bg: TEAL_LIGHT,
-      },
-      {
-        icon: '🇪🇬',
-        title: 'Egyptian Alternatives',
-        points: '• Chemical INN matching\n• Local pharma manufacturers\n• 3-tier price categorization\n• Verified market availability',
-        color: EMERALD,
-        bg: EMERALD_BG,
-      },
-      {
-        icon: '🛡️',
-        title: 'Chronic Disease Safety',
-        points: '• HTN, Diabetes, CKD, Liver, Asthma\n• Contraindication classification\n• Renal dose adjustment (CrCl)\n• Pregnancy/lactation safety',
-        color: 'BE123C',
-        bg: 'FFF1F2',
-      },
-      {
-        icon: '⚖️',
-        title: 'Side-by-Side Matrix',
-        points: '• Direct head-to-head compare\n• Ingredients & dosage forms\n• Adverse reaction profiles\n• Clinical preference verdict',
-        color: BLUE,
-        bg: BLUE_BG,
-      },
+      { icon: '🔴', title: 'Drug-Drug Checker', points: '• Cross-interaction matrix\n• CYP450 enzyme pathways\n• Pharmacokinetic triage\n• Actionable spacing guidance', color: RED, bg: RED_BG },
+      { icon: '🍽️', title: 'Food & Meal Timing', points: '• Meal schedule (pre/post food)\n• Dairy & calcium chelation\n• Grapefruit CYP3A4 alerts\n• Potassium rich food warnings', color: AMBER, bg: AMBER_BG },
+      { icon: '🫀', title: '22 Biomarkers & Vitals', points: '• 22 lab tests (eGFR, INR, HbA1c)\n• Interactive digital evaluator\n• Normal range comparison\n• Instant clinical diagnosis', color: TEAL_DARK, bg: TEAL_LIGHT },
+      { icon: '🇪🇬', title: 'Egyptian Alternatives', points: '• Chemical INN matching\n• Local pharma manufacturers\n• 3-tier price categorization\n• Verified market availability', color: EMERALD, bg: EMERALD_BG },
+      { icon: '🛡️', title: 'Chronic Disease Safety', points: '• HTN, Diabetes, CKD, Liver, Asthma\n• Contraindication classification\n• Renal dose adjustment (CrCl)\n• Pregnancy/lactation safety', color: 'BE123C', bg: 'FFF1F2' },
+      { icon: '⚖️', title: 'Side-by-Side Matrix', points: '• Direct head-to-head compare\n• Ingredients & dosage forms\n• Adverse reaction profiles\n• Clinical preference verdict', color: BLUE, bg: BLUE_BG },
     ];
 
     modules.forEach((m, idx) => {
@@ -891,14 +804,11 @@ async function buildCompetitionDeck() {
     addSlideFooter(slide);
   }
 
-  // =============================================================
   // SLIDE 8: REAL CLINICAL EXAMPLE
-  // =============================================================
   {
     const slide = pptx.addSlide();
     addSlideHeader(slide, '8', 'Real Clinical Example: Multi-Drug Patient Case');
 
-    // Left: Patient Case Profile
     slide.addShape(pptx.ShapeType.roundRect, {
       x: 0.6,
       y: 1.35,
@@ -942,7 +852,6 @@ async function buildCompetitionDeck() {
       lineSpacing: 16,
     });
 
-    // Right: 3 Clinical Findings
     slide.addShape(pptx.ShapeType.roundRect, {
       x: 5.2,
       y: 1.35,
@@ -1040,34 +949,16 @@ async function buildCompetitionDeck() {
     addSlideFooter(slide);
   }
 
-  // =============================================================
   // SLIDE 9: EGYPTIAN PHARMACY VALUE
-  // =============================================================
   {
     const slide = pptx.addSlide();
     addSlideHeader(slide, '9', 'Egyptian Pharmacy Value Proposition');
 
     const egPillars = [
-      {
-        num: '01',
-        title: 'Local Trade Name Recognition',
-        desc: 'Foreign clinical checkers only know generic US names. YoPharma indexes over 15,000 Egyptian registered brands (e.g. Concor, Cataflam, Antinal, Hibiotic, Curam).',
-      },
-      {
-        num: '02',
-        title: 'Generic Alternatives in Shortages',
-        desc: 'When an imported drug is unavailable, YoPharma identifies equivalent Egyptian manufactured brands sharing the exact chemical INN.',
-      },
-      {
-        num: '03',
-        title: '3-Tier Economic Transparency',
-        desc: 'Categorizes equivalents into Economy (رخيص), Moderate (متوسط), and Premium (مرتفع) to help pharmacists support patients with financial constraints.',
-      },
-      {
-        num: '04',
-        title: 'Bilingual Clinical Alignment (AR/EN)',
-        desc: 'Clinical mechanisms in English for doctor/pharmacist alignment; patient counseling instructions in clear Arabic for dispensing counters.',
-      },
+      { num: '01', title: 'Local Trade Name Recognition', desc: 'Foreign clinical checkers only know generic US names. YoPharma indexes over 15,000 Egyptian registered brands (e.g. Concor, Cataflam, Antinal, Hibiotic, Curam).' },
+      { num: '02', title: 'Generic Alternatives in Shortages', desc: 'When an imported drug is unavailable, YoPharma identifies equivalent Egyptian manufactured brands sharing the exact chemical INN.' },
+      { num: '03', title: '3-Tier Economic Transparency', desc: 'Categorizes equivalents into Economy (رخيص), Moderate (متوسط), and Premium (مرتفع) to help pharmacists support patients with financial constraints.' },
+      { num: '04', title: 'Bilingual Clinical Alignment (AR/EN)', desc: 'Clinical mechanisms in English for doctor/pharmacist alignment; patient counseling instructions in clear Arabic for dispensing counters.' },
     ];
 
     egPillars.forEach((p, idx) => {
@@ -1123,9 +1014,7 @@ async function buildCompetitionDeck() {
     addSlideFooter(slide);
   }
 
-  // =============================================================
   // SLIDE 10: TECHNOLOGY & AI ARCHITECTURE
-  // =============================================================
   {
     const slide = pptx.addSlide();
     addSlideHeader(slide, '10', 'Technology & AI Architecture Pipeline');
@@ -1199,7 +1088,6 @@ async function buildCompetitionDeck() {
       });
     });
 
-    // Technical Summary Box
     slide.addShape(pptx.ShapeType.roundRect, {
       x: 0.9,
       y: 4.5,
@@ -1232,42 +1120,16 @@ async function buildCompetitionDeck() {
     addSlideFooter(slide);
   }
 
-  // =============================================================
-  // SLIDE 11: IMPACT ACROSS 4 STAKEHOLDERS
-  // =============================================================
+  // SLIDE 11: IMPACT
   {
     const slide = pptx.addSlide();
     addSlideHeader(slide, '11', 'Clinical, Educational & Societal Impact');
 
     const impacts = [
-      {
-        icon: '🏪',
-        title: 'Community Pharmacists',
-        desc: '• 80% faster prescription safety verification.\n• Instant finding of in-stock generic alternatives.\n• Prevention of dispensing errors and liability.',
-        color: TEAL_DARK,
-        bg: TEAL_LIGHT,
-      },
-      {
-        icon: '🏥',
-        title: 'Hospital & Clinical Pharmacists',
-        desc: '• Multi-drug ward round regimen audits.\n• Renal (CrCl) & hepatic dose adjustments.\n• Monitoring of high-risk drug-drug combinations.',
-        color: BLUE,
-        bg: BLUE_BG,
-      },
-      {
-        icon: '🎓',
-        title: 'Pharmacy Students (ECU)',
-        desc: '• Interactive training for OSCE clinical exams.\n• Pharmacology case study simulation.\n• Bridging academic theory with Egyptian practice.',
-        color: AMBER,
-        bg: AMBER_BG,
-      },
-      {
-        icon: '🩺',
-        title: 'Patients & Public Health',
-        desc: '• Prevention of toxicities and hospital readmissions.\n• Affordable medicine options via price tiers.\n• Clear patient adherence instructions.',
-        color: EMERALD,
-        bg: EMERALD_BG,
-      },
+      { icon: '🏪', title: 'Community Pharmacists', desc: '• 80% faster prescription safety verification.\n• Instant finding of in-stock generic alternatives.\n• Prevention of dispensing errors and liability.', color: TEAL_DARK, bg: TEAL_LIGHT },
+      { icon: '🏥', title: 'Hospital & Clinical Pharmacists', desc: '• Multi-drug ward round regimen audits.\n• Renal (CrCl) & hepatic dose adjustments.\n• Monitoring of high-risk drug-drug combinations.', color: BLUE, bg: BLUE_BG },
+      { icon: '🎓', title: 'Pharmacy Students (ECU)', desc: '• Interactive training for OSCE clinical exams.\n• Pharmacology case study simulation.\n• Bridging academic theory with Egyptian practice.', color: AMBER, bg: AMBER_BG },
+      { icon: '🩺', title: 'Patients & Public Health', desc: '• Prevention of toxicities and hospital readmissions.\n• Affordable medicine options via price tiers.\n• Clear patient adherence instructions.', color: EMERALD, bg: EMERALD_BG },
     ];
 
     impacts.forEach((imp, idx) => {
@@ -1312,14 +1174,12 @@ async function buildCompetitionDeck() {
     addSlideFooter(slide);
   }
 
-  // =============================================================
-  // SLIDE 12: FINAL DEMO / CALL TO ACTION
-  // =============================================================
+  // SLIDE 12: FINAL TEAM SLIDE (With 5 Team Members)
   {
     const slide = pptx.addSlide();
     slide.background = { color: SLATE_DARK };
 
-    slide.addText('FINAL DEMO & COMPETITION SUMMARY', {
+    slide.addText('PROJECT CONTRIBUTORS & ACADEMIC TEAM', {
       x: 1.0,
       y: 0.8,
       w: 10,
@@ -1353,93 +1213,91 @@ async function buildCompetitionDeck() {
       italic: true,
     });
 
-    // Left: Project Info Card
+    // 5 Team Members Grid Card
     slide.addShape(pptx.ShapeType.roundRect, {
       x: 1.0,
       y: 2.8,
-      w: 7.2,
+      w: 11.3,
       h: 3.8,
       rectRadius: 0.12,
       fill: { color: SLATE_CARD },
       line: { color: '334155', width: 1 },
     });
 
-    slide.addText([
-      { text: '🏆  Team & Competition Details:\n', options: { bold: true, color: '5EEAD4', fontSize: 13 } },
-      { text: '• Team Name: ', options: { bold: true } },
-      { text: 'PharmaMind\n' },
-      { text: '• Competition Track: ', options: { bold: true } },
-      { text: 'Pharmacy Innovation & AI\n' },
-      { text: '• Lead Developer: ', options: { bold: true } },
-      { text: 'Youssef Mohamed\n' },
-      { text: '• Academic Sponsor: ', options: { bold: true } },
-      { text: 'Egyptian Chinese University (ECU) — Faculty of Pharmacy\n\n' },
-      { text: '• Live Deployed URL: ', options: { bold: true, color: '5EEAD4' } },
-      { text: 'https://web1111-three.vercel.app\n' },
-      { text: '• Interactive Slide Deck: ', options: { bold: true, color: '5EEAD4' } },
-      { text: 'https://web1111-three.vercel.app/presentation.html' }
-    ], {
+    slide.addText('🏆  فريق العمل المشارك في تطوير وتصميم المنصة (Team PharmaMind):', {
       x: 1.3,
       y: 3.0,
-      w: 6.6,
-      h: 3.4,
-      fontSize: 11,
-      fontFace: 'Arial',
-      color: WHITE,
-      lineSpacing: 18,
-    });
-
-    // Right: QR Code / Access Box
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: 8.5,
-      y: 2.8,
-      w: 3.8,
-      h: 3.8,
-      rectRadius: 0.12,
-      fill: { color: '134E4A' },
-      line: { color: TEAL_PRIMARY, width: 1.5 },
-    });
-
-    slide.addShape(pptx.ShapeType.roundRect, {
-      x: 9.3,
-      y: 3.1,
-      w: 2.2,
-      h: 2.2,
-      rectRadius: 0.1,
-      fill: { color: WHITE },
-      line: { color: 'CBD5E1', width: 1 },
-    });
-
-    slide.addText('SCAN QR\nTO TRY LIVE', {
-      x: 9.3,
-      y: 3.9,
-      w: 2.2,
-      h: 0.6,
-      fontSize: 11,
-      fontFace: 'Arial',
-      bold: true,
-      color: SLATE_DARK,
-      align: 'center',
-    });
-
-    slide.addText('Scan for Live Demo\nYoPharma Platform', {
-      x: 8.7,
-      y: 5.5,
-      w: 3.4,
-      h: 0.8,
-      fontSize: 11,
+      w: 10.7,
+      h: 0.35,
+      fontSize: 14,
       fontFace: 'Arial',
       bold: true,
       color: '5EEAD4',
+    });
+
+    const members = [
+      { nameAr: 'يوسف محمد', nameEn: 'Youssef Mohamed', role: 'Full-Stack Architecture & AI Integration' },
+      { nameAr: 'نور عبدالمجيد', nameEn: 'Nour Abdelmageed', role: 'Clinical Pharmacy Research & Interaction Matrix' },
+      { nameAr: 'رنا ماهر', nameEn: 'Rana Maher', role: 'Drug Database Curation & Egyptian Generics' },
+      { nameAr: 'وفاء طه', nameEn: 'Wafaa Taha', role: 'Biomarkers & Clinical Lab Normal Ranges' },
+      { nameAr: 'نور جمال', nameEn: 'Nour Gamal', role: 'Food-Drug Interactions & Dietary Guidelines' },
+    ];
+
+    members.forEach((m, idx) => {
+      const col = idx % 2;
+      const row = Math.floor(idx / 2);
+      const x = 1.3 + col * 5.4;
+      const y = 3.5 + row * 0.95;
+
+      slide.addShape(pptx.ShapeType.roundRect, {
+        x,
+        y,
+        w: 5.1,
+        h: 0.8,
+        rectRadius: 0.08,
+        fill: { color: '0F172A' },
+        line: { color: '0D9488', width: 1 },
+      });
+
+      slide.addText(`${idx + 1}. ${m.nameAr} (${m.nameEn})`, {
+        x: x + 0.2,
+        y: y + 0.1,
+        w: 4.7,
+        h: 0.3,
+        fontSize: 11,
+        fontFace: 'Arial',
+        bold: true,
+        color: WHITE,
+      });
+
+      slide.addText(m.role, {
+        x: x + 0.2,
+        y: y + 0.4,
+        w: 4.7,
+        h: 0.3,
+        fontSize: 9.5,
+        fontFace: 'Arial',
+        color: '94A3B8',
+      });
+    });
+
+    slide.addText('Faculty of Pharmacy — Egyptian Chinese University (ECU) • كلية الصيدلة بالجامعة المصرية الصينية', {
+      x: 1.3,
+      y: 6.15,
+      w: 10.7,
+      h: 0.3,
+      fontSize: 10.5,
+      fontFace: 'Arial',
+      color: '5EEAD4',
       align: 'center',
-      lineSpacing: 15,
+      bold: true,
     });
   }
 
   // Save presentation
   const outputPath = 'c:/Users/Lenovo/Downloads/Telegram Desktop/app/YoPharma_Drug_Check_Presentation.pptx';
   await pptx.writeFile({ fileName: outputPath });
-  console.log(`Competition Presentation generated successfully at: ${outputPath}`);
+  console.log(`Updated Presentation with 5 Team Members created successfully at: ${outputPath}`);
 }
 
 buildCompetitionDeck().catch(err => {
