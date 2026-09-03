@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YoPharma | Clinical Pharmacy Suite Presentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Cairo', 'Plus Jakarta Sans', system-ui, sans-serif;
+      background-color: #0F172A;
+      color: #F8FAFC;
+    }
+    .slide {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    .slide.active {
+      display: flex;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.99); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col justify-between select-none">
+
+  <!-- Top Presentation Header Bar -->
+  <header class="h-14 border-b border-slate-800 bg-slate-900/90 px-6 flex items-center justify-between z-20">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-teal-600 text-white flex items-center justify-center font-bold text-sm">
+        YP
+      </div>
+      <div>
+        <span class="font-bold text-sm text-white">YoPharma • العرض التقديمي السريري</span>
+        <span class="text-xs text-slate-400 hidden sm:inline mr-2">| الجامعة المصرية الصينية (ECU)</span>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <span id="slideCounter" class="text-xs font-mono bg-slate-800 text-teal-400 px-3 py-1 rounded-full font-bold border border-slate-700">
+        1 / 9
+      </span>
+      <a href="/YoPharma_Clinical_Presentation.pptx" download class="text-xs bg-teal-700 hover:bg-teal-600 text-white px-3 py-1.5 rounded-lg font-bold transition-colors flex items-center gap-1.5 shadow-sm">
+        <span>تحميل ملف PPTX</span>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- Slide Canvas Container -->
+  <main class="flex-1 w-full max-w-6xl mx-auto p-4 sm:p-8 flex items-center justify-center relative overflow-hidden">
+    
+    <!-- SLIDE 1: Title & Academic Identity -->
+    <div class="slide active w-full h-full flex-col justify-center items-center text-center space-y-6">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-950/80 border border-teal-700 text-teal-300 text-xs font-bold">
+        <span>🎓 كلية الصيدلة • الجامعة المصرية الصينية (ECU)</span>
+      </div>
+      <h1 class="text-4xl sm:text-6xl font-black text-white leading-tight">
+        منصة <span class="text-teal-400">YoPharma</span> السريرية
+      </h1>
+      <p class="text-lg sm:text-xl text-slate-300 max-w-3xl leading-relaxed">
+        المرجع الصيدلاني الذكي لدعم اتخاذ القرارات السريرية، فحص تداخلات الأدوية والأغذية، ومطابقة البدائل والمثائل في السوق المصري.
+      </p>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl pt-4">
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 text-right">
+          <span class="text-xs text-teal-400 block font-bold">إشراف وتطوير</span>
+          <span class="text-sm font-bold text-white">يوسف محمد</span>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 text-right">
+          <span class="text-xs text-teal-400 block font-bold">المؤسسة الأكاديمية</span>
+          <span class="text-sm font-bold text-white">Egyptian Chinese University</span>
+        </div>
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 text-right">
+          <span class="text-xs text-teal-400 block font-bold">زمن الاستجابة</span>
+          <span class="text-sm font-bold text-teal-400 font-mono">&lt; 1ms (RAM Cache)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: Executive Summary & Clinical Challenge -->
+    <div class="slide w-full h-full flex-col justify-center space-y-5 text-right">
+      <div class="border-b border-slate-800 pb-3">
+        <span class="text-xs text-teal-400 font-bold uppercase tracking-wider">1. المشكلة السريرية والحل</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">لماذا يحتاج الصيدلي والممارس إلى YoPharma؟</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div class="p-5 rounded-2xl bg-red-950/20 border border-red-900/50 space-y-3">
+          <h3 class="text-base font-bold text-red-400 flex items-center gap-2">
+            <span>⚠️ التحديات والمخاطر السريرية</span>
+          </h3>
+          <ul class="text-xs text-slate-300 space-y-2 leading-relaxed">
+            <li>• <strong>تعدد الأدوية (Polypharmacy):</strong> ارتفاع خطر التسمم الدوائي عند تناول المريض لأكثر من دواء.</li>
+            <li>• <strong>أخطاء مواعيد الوجبات:</strong> تفقد مضادات حيوية كبرى حتى 80% من امتصاصها مع منتجات الألبان والأغذية.</li>
+            <li>• <strong>ارتباك البدائل في مصر:</strong> صعوبة حصر أكثر من 15,000 اسم تجاري بالاسم العلمي وفئته السعرية.</li>
+            <li>• <strong>موانع الأمراض المزمنة:</strong> الحاجة لحساب وضبط الجرعات لمرضى القصور الكلوي (CKD) والكبد.</li>
+          </ul>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-teal-950/20 border border-teal-800/50 space-y-3">
+          <h3 class="text-base font-bold text-teal-400 flex items-center gap-2">
+            <span>✨ الحلول التي تقدمها منصة YoPharma</span>
+          </h3>
+          <ul class="text-xs text-slate-300 space-y-2 leading-relaxed">
+            <li>• <strong>فحص فوري للروشتة:</strong> تحليل شامل للتداخلات وتصنيف دقيق لمستويات الخطورة في أقل من ثانيتين.</li>
+            <li>• <strong>جدول مواعيد الجرعات:</strong> إرشادات التناول مع الطعام وقوائم المشروبات الممنوعة.</li>
+            <li>• <strong>تغطية السوق المصري:</strong> مطابقة فورية للبدائل المسجلة مع الشركات والأسعار (رخيص / متوسط / مرتفع).</li>
+            <li>• <strong>22 مؤشراً ومقياساً حيوياً:</strong> دليل مرجعي ومقيّم رقمي لمطابقة نتائج تحاليل المريض.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: System Architecture -->
+    <div class="slide w-full h-full flex-col justify-center space-y-5 text-right">
+      <div class="border-b border-slate-800 pb-3">
+        <span class="text-xs text-teal-400 font-bold uppercase tracking-wider">2. البنية التقنية وسرعة الاستجابة</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">بنية تحتية ثلاثية الطبقات فائقة السرعة</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+          <span class="text-2xl font-mono text-teal-400 font-bold">&lt; 1ms</span>
+          <h4 class="text-sm font-bold text-white">كاش الذاكرة العشوائية</h4>
+          <p class="text-xs text-slate-400">تخزين فوري للبيانات المتكررة على مستوى المتصفح وخادم Node.js للاسترجاع الفوري.</p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+          <span class="text-2xl font-bold text-blue-400">Failover AI</span>
+          <h4 class="text-sm font-bold text-white">نظام التدوير الذكي</h4>
+          <p class="text-xs text-slate-400">تبديل تلقائي بين نماذج Gemini Flash لمنع أي توقف في الخدمة أثناء انقطاع الـ API.</p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+          <span class="text-2xl font-bold text-amber-400">Postgres DB</span>
+          <h4 class="text-sm font-bold text-white">قاعدة بيانات دائمة</h4>
+          <p class="text-xs text-slate-400">تخزين ثنائي اللغة (عربي / إنجليزي) على Supabase PostgreSQL لضمان الاستمرارية.</p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+          <span class="text-2xl font-bold text-emerald-400">React + TS</span>
+          <h4 class="text-sm font-bold text-white">واجهة سريرية دقيقة</h4>
+          <p class="text-xs text-slate-400">مبنية بـ React 18 و Tailwind CSS بتصميم بشري هادئ ومتوافق مع كافة الشاشات.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: Module 1 — Drug-Drug Interactions -->
+    <div class="slide w-full h-full flex-col justify-center space-y-5 text-right">
+      <div class="border-b border-slate-800 pb-3">
+        <span class="text-xs text-teal-400 font-bold uppercase tracking-wider">3. الوحدة الأولى</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">فاحص التفاعلات الدوائية المتبادلة (Drug-Drug Interactions)</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="p-5 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+          <span class="text-xs font-bold text-red-400 block uppercase">🔴 خطورة عالية (High)</span>
+          <h4 class="text-sm font-bold text-white">موانع تزامن مطلقة</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">تفاعلات تهدد الحياة أو تؤدي إلى تسمم دوائي حاد (مثل: Warfarin مع جرعات عالية من مضادات الالتهاب أو Ciprofloxacin مع أدوية تطويل مسافة QT).</p>
+        </div>
+
+        <div class="p-5 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+          <span class="text-xs font-bold text-amber-400 block uppercase">🟠 خطورة متوسطة (Moderate)</span>
+          <h4 class="text-sm font-bold text-white">تعديل جرعات ومراقبة</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">تتطلب فصلاً زمنياً بين الجرعات (مثل فصل أدوية الكالسيوم أو الحديد عن المضادات الحيوية بساعتين على الأقل).</p>
+        </div>
+
+        <div class="p-5 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+          <span class="text-xs font-bold text-blue-400 block uppercase">🔵 خطورة بسيطة (Minor)</span>
+          <h4 class="text-sm font-bold text-white">ملاحظة ومتابعة دورية</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">تأثيرات طفيفة على الامتصاص أو الفاعلية لا تتطلب إيقاف العلاج ولكن تستوجب إعلام المريض.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: Module 2 — Food-Drug Interactions -->
+    <div class="slide w-full h-full flex-col justify-center space-y-5 text-right">
+      <div class="border-b border-slate-800 pb-3">
+        <span class="text-xs text-teal-400 font-bold uppercase tracking-wider">4. الوحدة الثانية</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">تفاعلات الأدوية مع الطعام وتوقيت الجرعات (Food Interactions)</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+          <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+            <span>⏰ جدول مواعيد الجرعات</span>
+          </h3>
+          <ul class="text-xs text-slate-300 space-y-2 leading-relaxed">
+            <li>• <strong>على معدة فارغة:</strong> قبل الأكل بساعة أو بعده بساعتين (مثل مثبطات مضخة البروتون PPIs وهرمون الغدة الدرقية).</li>
+            <li>• <strong>مع أو بعد الأكل مباشرة:</strong> لتقليل تهيج جدار المعدة وزيادة امتصاص الأدوية الدهنية (مثل مسكنات NSAIDs والميتفورمين).</li>
+            <li>• <strong>مواعيد ليلية / صباحية:</strong> أدوية الكوليسترول (الستاتينات) قبل النوم، ومدرات البول صباحاً.</li>
+          </ul>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+          <h3 class="text-sm font-bold text-red-400 flex items-center gap-2">
+            <span>🚫 الأغذية والمشروبات المتعارضة</span>
+          </h3>
+          <ul class="text-xs text-slate-300 space-y-2 leading-relaxed">
+            <li>• <strong>الألبان والكالسيوم:</strong> تلتصق بالسيبروفلوكساسين والتتراسيكلين وتمنع امتصاصه بنسبة 80%.</li>
+            <li>• <strong>عصير الجريب فروت:</strong> يثبط إنزيم CYP3A4 ويسبب تراكم خطير لأدوية الضغط والدهون.</li>
+            <li>• <strong>الأطعمة الغنية بالبوتاسيوم:</strong> تجنب الإفراط مع مثبطات ACE ومدرات البول الحافظة للبوتاسيوم.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: Module 3 — Vital Signs & 22 Biomarkers -->
+    <div class="slide w-full h-full flex-col justify-center space-y-5 text-right">
+      <div class="border-b border-slate-800 pb-3">
+        <span class="text-xs text-teal-400 font-bold uppercase tracking-wider">5. الوحدة الثالثة</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">دليل المقاييس الحيوية والتحاليل المخبرية (22 Biomarkers)</h2>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="p-3.5 rounded-xl bg-teal-950/40 border border-teal-800/80 space-y-1">
+          <span class="text-xs font-bold text-teal-300 block">🫀 القلب والضغط</span>
+          <p class="text-[11px] text-slate-300">ضغط الدم، النبض، معدل التنفس، الحرارة، تشبع الأكسجين SpO2، ومؤشر كتلة الجسم BMI.</p>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-teal-950/40 border border-teal-800/80 space-y-1">
+          <span class="text-xs font-bold text-teal-300 block">🩸 السكر والدهون</span>
+          <p class="text-[11px] text-slate-300">سكر الصائم FBG، السكر العشوائي، السكر التراكمي HbA1c، الكوليسترول، والدهون الثلاثية.</p>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-teal-950/40 border border-teal-800/80 space-y-1">
+          <span class="text-xs font-bold text-teal-300 block">🫘 الكلى والأملاح</span>
+          <p class="text-[11px] text-slate-300">الكرياتينين، معدل الفلترة eGFR، نيتروجين اليوريا BUN، البوتاسيوم K+، والصوديوم Na+.</p>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-teal-950/40 border border-teal-800/80 space-y-1">
+          <span class="text-xs font-bold text-teal-300 block">🩺 الكبد والسيولة</span>
+          <p class="text-[11px] text-slate-300">إنزيمات ALT/AST، البيليروبين، زمن البروثرومبين INR، الهيموجلوبين، والصفائح الدموية.</p>
+        </div>
+      </div>
+
+      <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 flex items-center justify-between">
+        <span>⚡ يتضمن القسم مقيّماً رقمياً تفاعلياً يُدخل فيه الصيدلي قيمة التحليل لتظهر النتيجة الفورية (طبيعي / مرتفع / منخفض) مع التوصية السريرية.</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: Module 4 — Egyptian Drug Alternatives -->
+    <div class="slide w-full h-full flex-col justify-center space-y-5 text-right">
+      <div class="border-b border-slate-800 pb-3">
+        <span class="text-xs text-teal-400 font-bold uppercase tracking-wider">6. الوحدة الرابعة</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">دليل البدائل والمثائل في السوق المصري (Egyptian Alternatives)</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="p-5 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+          <span class="text-xs font-bold text-teal-400 block">🧪 المادة الفعالة (INN)</span>
+          <h4 class="text-sm font-bold text-white">مطابقة كيميائية تامة</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">ربط الأسماء التجارية بالمادة الفعالة العلمية لضمان تقديم نفس التأثير العلاجي للمريض.</p>
+        </div>
+
+        <div class="p-5 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+          <span class="text-xs font-bold text-teal-400 block">🏭 الشركات المصنعة</span>
+          <h4 class="text-sm font-bold text-white">الشركات المصرية والعالمية</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">عرض الشركات المرخصة (إيبيكو، آمون، جلاكسو، نوفارتس، فايزر، إيفا فارما، فاركو).</p>
+        </div>
+
+        <div class="p-5 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+          <span class="text-xs font-bold text-teal-400 block">💰 الفئات السعرية</span>
+          <h4 class="text-sm font-bold text-white">توفير بدائل مناسبة للقدرة المالية</h4>
+          <p class="text-xs text-slate-400 leading-relaxed">تصنيف البدائل إلى (رخيص / متوسط / مرتفع) لمساعدة الصيدلي في مساعدة المريض عند نقص الدواء أو ارتفاع ثمنه.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: Chronic Safety & Side-by-Side Comparison -->
+    <div class="slide w-full h-full flex-col justify-center space-y-5 text-right">
+      <div class="border-b border-slate-800 pb-3">
+        <span class="text-xs text-teal-400 font-bold uppercase tracking-wider">7. الوحدتان الخامسة والسادسة</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">أمان الأمراض المزمنة والمقارنة الدوائية المباشرة</h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+          <h3 class="text-sm font-bold text-rose-400 flex items-center gap-2">
+            <span>🛡️ أمان الأمراض المزمنة (Chronic Safety)</span>
+          </h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            فحص أمان أي دواء لمرضى الحالات المزمنة: ارتفاع ضغط الدم، السكري، القصور الكلوي، الاعتلال الكبدي، قرحة المعدة، والربو مع إرشادات تعديل الجرعات بدقة.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
+          <h3 class="text-sm font-bold text-blue-400 flex items-center gap-2">
+            <span>⚖️ المقارنة الدوائية المباشرة (Side-by-Side)</span>
+          </h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            مصفوفة مقارنة وجهاً لوجه بين أي دواءين في السوق المصري، تقارن التركيب، الجرعات، الآثار الجانبية، وموانع الاستعمال لتسهيل اتخاذ القرار العلاجي.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: Summary & Contact -->
+    <div class="slide w-full h-full flex-col justify-center items-center text-center space-y-6">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-950/80 border border-teal-700 text-teal-300 text-xs font-bold">
+        <span>🏆 ملخص المشروع والأثر الأكاديمي</span>
+      </div>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white">
+        YoPharma • نقلة نوعية في الممارسة الصيدلانية الرقمية
+      </h2>
+      <p class="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed">
+        أداة متكاملة تخدم طلاب كليات الصيدلة أثناء التدريب الميداني والامتحانات السريرية، وتدعم الصيادلة بالمستشفيات والصيدليات العامة في منع الأخطاء الدوائية يومياً.
+      </p>
+
+      <div class="p-4 rounded-xl bg-teal-950/60 border border-teal-800 text-sm text-slate-200 max-w-xl">
+        <span class="font-bold text-teal-300 block mb-1">تطوير: يوسف محمد</span>
+        <span class="text-xs opacity-90">الجامعة المصرية الصينية (ECU) • كلية الصيدلة</span>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Bottom Navigation Controls Bar -->
+  <footer class="h-16 border-t border-slate-800 bg-slate-900/90 px-6 flex items-center justify-between z-20">
+    <button id="prevBtn" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-colors disabled:opacity-30 flex items-center gap-1.5">
+      <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+      <span>الشريحة السابقة (السهم الأيمن)</span>
+    </button>
+
+    <div class="flex items-center gap-1.5">
+      <button class="dot w-2.5 h-2.5 rounded-full bg-teal-500" onclick="goToSlide(0)"></button>
+      <button class="dot w-2.5 h-2.5 rounded-full bg-slate-700" onclick="goToSlide(1)"></button>
+      <button class="dot w-2.5 h-2.5 rounded-full bg-slate-700" onclick="goToSlide(2)"></button>
+      <button class="dot w-2.5 h-2.5 rounded-full bg-slate-700" onclick="goToSlide(3)"></button>
+      <button class="dot w-2.5 h-2.5 rounded-full bg-slate-700" onclick="goToSlide(4)"></button>
+      <button class="dot w-2.5 h-2.5 rounded-full bg-slate-700" onclick="goToSlide(5)"></button>
+      <button class="dot w-2.5 h-2.5 rounded-full bg-slate-700" onclick="goToSlide(6)"></button>
+      <button class="dot w-2.5 h-2.5 rounded-full bg-slate-700" onclick="goToSlide(7)"></button>
+      <button class="dot w-2.5 h-2.5 rounded-full bg-slate-700" onclick="goToSlide(8)"></button>
+    </div>
+
+    <button id="nextBtn" class="px-4 py-2 rounded-lg bg-teal-700 hover:bg-teal-600 text-white text-xs font-bold transition-colors disabled:opacity-30 flex items-center gap-1.5 shadow-sm">
+      <span>الشريحة التالية (السهم الأيسر)</span>
+      <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+    </button>
+  </footer>
+
+  <!-- Slide Navigation Script -->
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+    const counter = document.getElementById('slideCounter');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    function updateSlide() {
+      slides.forEach((s, idx) => {
+        s.classList.toggle('active', idx === currentSlide);
+      });
+      dots.forEach((d, idx) => {
+        d.className = `dot w-2.5 h-2.5 rounded-full \${idx === currentSlide ? 'bg-teal-500' : 'bg-slate-700'}`;
+      });
+      counter.textContent = `\${currentSlide + 1} / \${slides.length}`;
+      prevBtn.disabled = currentSlide === 0;
+      nextBtn.disabled = currentSlide === slides.length - 1;
+    }
+
+    function nextSlide() {
+      if (currentSlide < slides.length - 1) {
+        currentSlide++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        updateSlide();
+      }
+    }
+
+    function goToSlide(index) {
+      currentSlide = index;
+      updateSlide();
+    }
+
+    nextBtn.addEventListener('click', nextSlide);
+    prevBtn.addEventListener('click', prevSlide);
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') {
+        prevSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp' || e.key === ' ') {
+        nextSlide();
+      }
+    });
+
+    updateSlide();
+  </script>
+</body>
+</html>
