@@ -14,10 +14,13 @@ import SearchHistory from './pages/SearchHistory';
 import About from './pages/About';
 import NotFound from './pages/NotFound';
 
+import Presentation from './pages/Presentation';
+
 function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/presentation" element={<Presentation />} />
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
           <Route path="search" element={<SearchDrugs />} />

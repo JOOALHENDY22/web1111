@@ -107,6 +107,16 @@ export default function MainLayout() {
 
             {/* Actions */}
             <div className="flex items-center space-x-2 rtl:space-x-reverse relative">
+              {/* Competition Presentation Quick Link */}
+              <Link
+                to="/presentation"
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-50 dark:bg-teal-950/60 border border-teal-200 dark:border-teal-800 text-teal-700 dark:text-teal-300 text-xs font-bold hover:bg-teal-100 dark:hover:bg-teal-900 transition-colors shadow-sm"
+                title="عرض المسابقة التقديمي"
+              >
+                <span className="w-2 h-2 rounded-full bg-teal-500 animate-pulse"></span>
+                <span>العرض التقديمي (Deck)</span>
+              </Link>
+
               {/* Language Switcher */}
               <div className="relative" ref={langMenuRef}>
                 <button
