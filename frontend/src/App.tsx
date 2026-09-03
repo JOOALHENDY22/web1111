@@ -21,6 +21,9 @@ function App() {
     <Router>
       <Routes>
         <Route path="/presentation" element={<Presentation />} />
+        <Route path="/بريزينتيشن" element={<Presentation />} />
+        <Route path="/deck" element={<Presentation />} />
+        <Route path="/عرض" element={<Presentation />} />
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
           <Route path="search" element={<SearchDrugs />} />
