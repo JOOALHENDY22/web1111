@@ -3,768 +3,933 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YoPharma Drug Check | Competition Deck & Clinical Product Guide</title>
+  <title>YoPharma Drug Check | Presentation & Live Interactive Platform Guide</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
       font-family: 'Cairo', 'Plus Jakarta Sans', system-ui, sans-serif;
-      background-color: #090E17;
+      background-color: #060D17;
       color: #F8FAFC;
     }
     .slide {
       display: none;
-      animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: fadeInSlide 0.28s ease-out;
     }
     .slide.active {
       display: flex;
     }
-    @keyframes slideIn {
-      from { opacity: 0; transform: scale(0.985) translateY(6px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
+    @keyframes fadeInSlide {
+      from { opacity: 0; transform: translateY(6px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
-    .badge-clinical {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.375rem;
-      padding: 0.2rem 0.65rem;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 700;
+    /* Custom scrollbar for small code/mockup areas */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0F172A;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
     }
   </style>
 </head>
 <body class="h-screen w-screen overflow-hidden flex flex-col justify-between select-none">
 
-  <!-- TOP HEADER BAR -->
-  <header class="h-14 border-b border-slate-800 bg-slate-900/95 px-4 sm:px-6 flex items-center justify-between z-20 shrink-0">
-    <div class="flex items-center gap-3">
-      <div class="w-8 h-8 rounded-lg bg-teal-600 text-white flex items-center justify-center font-black text-sm shadow-md">
+  <!-- TOP APP HEADER -->
+  <header class="h-16 border-b border-slate-800 bg-slate-900/95 px-4 sm:px-8 flex items-center justify-between z-30 shrink-0 shadow-lg">
+    <div class="flex items-center gap-3.5">
+      <div class="w-10 h-10 rounded-xl bg-teal-600 text-white flex items-center justify-center font-black text-base shadow-md">
         YP
       </div>
       <div>
         <div class="flex items-center gap-2">
-          <span class="font-extrabold text-sm text-white">YoPharma Drug Check</span>
-          <span class="text-[10px] bg-teal-950 border border-teal-700 text-teal-300 px-2 py-0.5 rounded-full font-bold">Team PharmaMind</span>
+          <span class="font-black text-base sm:text-lg text-white tracking-tight">YoPharma <span class="text-teal-400 font-bold">Drug Check</span></span>
+          <span class="text-xs bg-teal-950 border border-teal-700 text-teal-300 px-2.5 py-0.5 rounded-full font-bold">Team PharmaMind</span>
         </div>
-        <span class="text-[11px] text-slate-400 hidden sm:inline">Pharmacy Innovation & AI Competition • ECU Faculty of Pharmacy</span>
+        <span id="headerSub" class="text-xs text-slate-400 hidden sm:inline font-medium">مسابقة الابتكار الصيدلاني والذكاء الاصطناعي • كلية الصيدلة بالجامعة المصرية الصينية (ECU)</span>
       </div>
     </div>
 
-    <!-- Controls: Language Toggle + Counter + PPTX Download -->
-    <div class="flex items-center gap-2 sm:gap-3">
-      <button id="langToggleBtn" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 py-1.5 rounded-lg font-bold transition-all flex items-center gap-1">
-        <span id="langLabel">🌐 English</span>
+    <!-- Right Controls: Bilingual Switcher + Slide Counter + Download -->
+    <div class="flex items-center gap-2.5 sm:gap-4">
+      <button id="langToggleBtn" class="text-xs sm:text-sm bg-slate-800 hover:bg-slate-700 text-teal-300 border border-teal-700/60 px-3.5 py-2 rounded-xl font-bold transition-all flex items-center gap-1.5 shadow-sm">
+        <span id="langBtnText">🌐 English</span>
       </button>
 
-      <span id="slideCounter" class="text-xs font-mono bg-slate-950 text-teal-400 px-3 py-1.5 rounded-lg font-bold border border-slate-800">
+      <span id="slideCounter" class="text-xs sm:text-sm font-mono bg-slate-950 text-teal-400 px-3.5 py-2 rounded-xl font-bold border border-slate-800">
         1 / 12
       </span>
 
-      <a href="/YoPharma_Drug_Check_Presentation.pptx" download class="text-xs bg-teal-600 hover:bg-teal-500 text-white px-3.5 py-1.5 rounded-lg font-bold transition-all flex items-center gap-1.5 shadow-sm">
-        <span>تحميل PPTX</span>
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+      <a href="/YoPharma_Drug_Check_Presentation.pptx" download class="text-xs sm:text-sm bg-teal-600 hover:bg-teal-500 text-white px-4 py-2 rounded-xl font-bold transition-all flex items-center gap-2 shadow-md">
+        <span id="downloadBtnText">تحميل PPTX</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
       </a>
     </div>
   </header>
 
-  <!-- MAIN PRESENTATION SLIDE CANVAS -->
-  <main class="flex-1 w-full max-w-7xl mx-auto p-3 sm:p-6 flex items-center justify-center relative overflow-hidden">
-
-    <!-- ========================================================= -->
-    <!-- SLIDE 1: COVER -->
-    <!-- ========================================================= -->
-    <div class="slide active w-full h-full flex-col justify-center items-center text-center space-y-5">
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-950 border border-teal-700 text-teal-300 text-xs font-bold shadow-sm">
-        <span>🏆 مسابقة الابتكار الصيدلاني والذكاء الاصطناعي 2026 • ECU Faculty of Pharmacy</span>
-      </div>
-      
-      <h1 class="text-4xl sm:text-6xl font-black text-white leading-tight">
-        YoPharma <span class="text-teal-400">Drug Check</span>
-      </h1>
-
-      <p class="text-base sm:text-xl text-teal-200 font-semibold italic max-w-2xl">
-        "Search it. Understand it. Compare it. Check it."
-      </p>
-
-      <div class="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed space-y-1">
-        <p class="font-medium">المنصة السريرية المتكاملة لفحص الروشتات، التداخلات الدوائية والغذائية، وبدائل السوق المصري.</p>
-        <p class="text-slate-400 text-xs font-sans">Evidence-Based Clinical Decision Support & Multi-Medication Triage Engine.</p>
-      </div>
-
-      <!-- 3 Metadata Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 w-full max-w-4xl pt-3">
-        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 text-right">
-          <span class="text-[11px] text-teal-400 font-bold block">الفريق المتسابق (Team)</span>
-          <span class="text-sm font-bold text-white">Team PharmaMind</span>
-          <span class="text-[11px] text-slate-400 block mt-0.5">Youssef Mohamed</span>
-        </div>
-        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 text-right">
-          <span class="text-[11px] text-teal-400 font-bold block">مسار المسابقة (Track)</span>
-          <span class="text-sm font-bold text-white">Pharmacy Innovation & AI</span>
-          <span class="text-[11px] text-slate-400 block mt-0.5">Clinical Decision Support</span>
-        </div>
-        <div class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 text-right">
-          <span class="text-[11px] text-teal-400 font-bold block">المؤسسة الأكاديمية (Institution)</span>
-          <span class="text-sm font-bold text-white">Egyptian Chinese University</span>
-          <span class="text-[11px] text-slate-400 block mt-0.5">Faculty of Pharmacy</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========================================================= -->
-    <!-- SLIDE 2: THE REAL PROBLEM -->
-    <!-- ========================================================= -->
-    <div class="slide w-full h-full flex-col justify-center space-y-4 text-right">
-      <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
-        <div>
-          <span class="text-[11px] text-red-400 font-bold uppercase tracking-wider">Slide 02 • المشكلة السريرية الواقعية</span>
-          <h2 class="text-xl sm:text-2xl font-black text-white">The Real Problem: Fragmented Clinical Information</h2>
-        </div>
-        <span class="text-xs bg-red-950 text-red-300 border border-red-800 px-2.5 py-1 rounded-full font-bold">5+ شاشات منفصلة</span>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-        <!-- Left Column: Problem Breakdown -->
-        <div class="lg:col-span-5 p-5 rounded-2xl bg-red-950/20 border border-red-900/40 flex flex-col justify-between space-y-3">
-          <div>
-            <span class="text-xs font-bold text-red-400 block mb-1">⚠️ واقع الممارسة الصيدلانية اليومية:</span>
-            <p class="text-xs text-slate-300 leading-relaxed">
-              عندما يأتي مريض بروشتة بها 3 إلى 5 أدوية، يحتاج الصيدلي لمراجعة 6 محاور حيوية (تداخلات الأدوية، توقيت الوجبات، موانع الأمراض المزمنة، ضبط الجرعات، وتوافر البدائل المصرية).
-            </p>
-          </div>
-          <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800">
-            <span class="text-xs font-bold text-white block mb-1">الخلل الجوهري (The Core Flaw):</span>
-            <p class="text-[11px] text-slate-300 leading-relaxed">
-              المعلومات مبعثرة بين كتب ومواقع أجنبية وقوائم أسعار منفصلة، مما يجعل فحص الروشتة الواحدة يستغرق 5-10 دقائق ويرفع احتمالية إغفال التداخلات القاتلة.
-            </p>
-          </div>
-        </div>
-
-        <!-- Right Column: Disjointed Workflow Map -->
-        <div class="lg:col-span-7 p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-2.5">
-          <span class="text-xs font-bold text-slate-200 block">📱 تشتت الصيدلي بين 4 مصادر غير مترابطة:</span>
-          
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
-              <span class="font-bold text-amber-400 block mb-0.5">1. موقع تداخلات أجنبي</span>
-              <span class="text-[11px] text-slate-400">يعرف فقط الأسماء الأمريكية ويجهل الأسماء والتركيزات المسجلة في مصر.</span>
-            </div>
-            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
-              <span class="font-bold text-sky-400 block mb-0.5">2. ملف PDF للجرعات</span>
-              <span class="text-[11px] text-slate-400">بحث يدوي بطيء عن معادلات ضبط جرعات مرضى الكلى (CrCl) والكبد.</span>
-            </div>
-            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
-              <span class="font-bold text-emerald-400 block mb-0.5">3. قائمة أسعار وبدائل مصرية</span>
-              <span class="text-[11px] text-slate-400">جداول أسماء تجارية صامتة لا توضح أي تداخل دوائي أو أمان سريري.</span>
-            </div>
-            <div class="p-3 rounded-xl bg-slate-900 border border-red-900/60 bg-red-950/20">
-              <span class="font-bold text-red-400 block mb-0.5">4. النتيجة الخطيرة</span>
-              <span class="text-[11px] text-slate-300">ضغط وقت عالي، إرهاق ذهني، وتفويت تداخلات دوائية وغذائية خطيرة.</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========================================================= -->
-    <!-- SLIDE 3: WHY CURRENT WORKFLOW IS NOT IDEAL -->
-    <!-- ========================================================= -->
-    <div class="slide w-full h-full flex-col justify-center space-y-4 text-right">
-      <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
-        <div>
-          <span class="text-[11px] text-amber-400 font-bold uppercase tracking-wider">Slide 03 • مسار العمل التقليدي البطيء</span>
-          <h2 class="text-xl sm:text-2xl font-black text-white">Why Current Workflow is Not Ideal: The 8-Step Bottleneck</h2>
-        </div>
-      </div>
-
-      <!-- Linear Step Sequence -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
-        <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-center">
-          <span class="w-6 h-6 rounded-full bg-slate-800 text-teal-400 font-bold text-xs mx-auto flex items-center justify-center mb-1.5">1</span>
-          <span class="text-[11px] font-bold text-white block">استلام الروشتة</span>
-          <span class="text-[10px] text-slate-400">3-5 أدوية</span>
-        </div>
-        <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-center">
-          <span class="w-6 h-6 rounded-full bg-slate-800 text-teal-400 font-bold text-xs mx-auto flex items-center justify-center mb-1.5">2</span>
-          <span class="text-[11px] font-bold text-white block">بحث الدواء 1</span>
-          <span class="text-[10px] text-slate-400">الجرعة والغرض</span>
-        </div>
-        <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-center">
-          <span class="w-6 h-6 rounded-full bg-slate-800 text-teal-400 font-bold text-xs mx-auto flex items-center justify-center mb-1.5">3</span>
-          <span class="text-[11px] font-bold text-white block">بحث الدواء 2</span>
-          <span class="text-[10px] text-slate-400">الموانع والآثار</span>
-        </div>
-        <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-center">
-          <span class="w-6 h-6 rounded-full bg-slate-800 text-teal-400 font-bold text-xs mx-auto flex items-center justify-center mb-1.5">4</span>
-          <span class="text-[11px] font-bold text-white block">فحص التداخل</span>
-          <span class="text-[10px] text-slate-400">موقع خارجي</span>
-        </div>
-        <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-center">
-          <span class="w-6 h-6 rounded-full bg-slate-800 text-teal-400 font-bold text-xs mx-auto flex items-center justify-center mb-1.5">5</span>
-          <span class="text-[11px] font-bold text-white block">توقيت الأكل</span>
-          <span class="text-[10px] text-slate-400">بحث منفصل</span>
-        </div>
-        <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-center">
-          <span class="w-6 h-6 rounded-full bg-slate-800 text-teal-400 font-bold text-xs mx-auto flex items-center justify-center mb-1.5">6</span>
-          <span class="text-[11px] font-bold text-white block">أمان المرض</span>
-          <span class="text-[10px] text-slate-400">ضغط / كلى / سكر</span>
-        </div>
-        <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-center">
-          <span class="w-6 h-6 rounded-full bg-slate-800 text-teal-400 font-bold text-xs mx-auto flex items-center justify-center mb-1.5">7</span>
-          <span class="text-[11px] font-bold text-white block">البدائل المصرية</span>
-          <span class="text-[10px] text-slate-400">عند نقص الصنف</span>
-        </div>
-        <div class="p-3 rounded-xl bg-teal-950/60 border border-teal-700 text-center">
-          <span class="w-6 h-6 rounded-full bg-teal-600 text-white font-bold text-xs mx-auto flex items-center justify-center mb-1.5">8</span>
-          <span class="text-[11px] font-bold text-teal-300 block">القرار السريري</span>
-          <span class="text-[10px] text-slate-300">بعد 8-10 دقائق!</span>
-        </div>
-      </div>
-
-      <!-- Time Lost Warning Card -->
-      <div class="p-4 rounded-2xl bg-amber-950/20 border border-amber-800/50 flex items-center justify-between text-xs">
-        <div class="space-y-1">
-          <span class="font-bold text-amber-400 block">⏱️ استهلاك 8 إلى 10 دقائق لكل روشتة معقدة:</span>
-          <p class="text-slate-300">في صيدليات المجتمع والمستشفيات المزدحمة، يضطر الصيدلي لاختصار الوقت، مما يؤدي لتفويت أخطاء امتصاص كبرى وتداخلات طعام شائعة.</p>
-        </div>
-        <div class="text-center px-4 shrink-0 hidden sm:block">
-          <span class="text-2xl font-black text-amber-400 font-mono">80%</span>
-          <span class="text-[10px] text-slate-400 block">وقت ضائع</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========================================================= -->
-    <!-- SLIDE 4: OUR SOLUTION -->
-    <!-- ========================================================= -->
-    <div class="slide w-full h-full flex-col justify-center space-y-4 text-right">
-      <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
-        <div>
-          <span class="text-[11px] text-teal-400 font-bold uppercase tracking-wider">Slide 04 • حل منصة YoPharma الموحد</span>
-          <h2 class="text-xl sm:text-2xl font-black text-white">Our Solution: Unified Clinical Decision Engine</h2>
-        </div>
-      </div>
-
-      <div class="p-4 rounded-2xl bg-gradient-to-r from-teal-950 to-slate-900 border border-teal-700 text-center space-y-1">
-        <p class="text-base sm:text-lg font-bold text-white">
-          "One platform to explore the medication, understand its risks, compare alternatives, and check the complete regimen in seconds."
-        </p>
-        <p class="text-xs text-teal-300 font-medium">منصة واحدة متكاملة لفحص الروشتة بالكامل، فهم آليات الخطورة، ومطابقة البدائل المصرية في ثوانٍ معدودة.</p>
-      </div>
-
-      <!-- 4 Pillars -->
-      <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-        <div class="p-4 rounded-xl bg-slate-900 border border-teal-800/80 space-y-1.5">
-          <span class="text-[10px] font-bold text-teal-400 block uppercase">1. EXPLORE (استكشف)</span>
-          <h4 class="text-xs font-bold text-white">بحث فوري للمادة والدواء</h4>
-          <p class="text-[11px] text-slate-400">استرجاع فوري لبيانات الدواء والتركيزات والاسم العلمي INN في أقل من 1ms.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-900 border border-sky-800/80 space-y-1.5">
-          <span class="text-[10px] font-bold text-sky-400 block uppercase">2. UNDERSTAND (افهم)</span>
-          <h4 class="text-xs font-bold text-white">آلية الخطورة السريرية</h4>
-          <p class="text-[11px] text-slate-400">شرح مبسط لمسار التفاعل الفارماكولوجي (CYP450 والتنافس الحيوي) وتصنيف صلب.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-900 border border-amber-800/80 space-y-1.5">
-          <span class="text-[10px] font-bold text-amber-400 block uppercase">3. COMPARE (قارن)</span>
-          <h4 class="text-xs font-bold text-white">البدائل والأسعار في مصر</h4>
-          <p class="text-[11px] text-slate-400">مطابقة المثائل المصرية بالشركات المصنعة مع 3 فئات سعرية تراعي ظروف المريض.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-900 border border-emerald-800/80 space-y-1.5">
-          <span class="text-[10px] font-bold text-emerald-400 block uppercase">4. CHECK (افحص الروشتة)</span>
-          <h4 class="text-xs font-bold text-white">فرز الروشتة المجمعة</h4>
-          <p class="text-[11px] text-slate-400">تحليل متزامن لكافة الأدوية والأغذية والأمراض المزمنة في مكان واحد.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========================================================= -->
-    <!-- SLIDE 5: HOW DRUG CHECK WORKS -->
-    <!-- ========================================================= -->
-    <div class="slide w-full h-full flex-col justify-center space-y-4 text-right">
-      <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
-        <div>
-          <span class="text-[11px] text-teal-400 font-bold uppercase tracking-wider">Slide 05 • مسار عمل فاحص الأدوية</span>
-          <h2 class="text-xl sm:text-2xl font-black text-white">How Drug Check Works: 5-Step Workflow</h2>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-5 gap-2.5">
-        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-1.5">
-          <span class="text-xl font-mono font-bold text-teal-400">01</span>
-          <h4 class="text-xs font-bold text-white">إدخال الأدوية (Input)</h4>
-          <p class="text-[11px] text-slate-400">كتابة الاسم التجاري أو العلمي مع اختصار [/] وقائمة إكمال ذكية.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-1.5">
-          <span class="text-xl font-mono font-bold text-teal-400">02</span>
-          <h4 class="text-xs font-bold text-white">سلة الروشتة (Tray)</h4>
-          <p class="text-[11px] text-slate-400">تجميع أدوية المريض في صينية تفاعلية مع إمكانية الحذف بنقرة واحدة.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-900 border border-teal-600 space-y-1.5 bg-teal-950/20">
-          <span class="text-xl font-mono font-bold text-teal-300">03</span>
-          <h4 class="text-xs font-bold text-white">الأمراض المزمنة (Profile)</h4>
-          <p class="text-[11px] text-slate-300">تحديد أمراض المريض (ضغط، سكر، قصور كلوي CKD، كبد، ربو، حمل).</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-1.5">
-          <span class="text-xl font-mono font-bold text-teal-400">04</span>
-          <h4 class="text-xs font-bold text-white">المعالجة الفورية (Triage)</h4>
-          <p class="text-[11px] text-slate-400">فحص متقاطع فوري في كاش الذاكرة وتوليد شبكة المخاطر السريرية.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-900 border border-emerald-600 space-y-1.5 bg-emerald-950/20">
-          <span class="text-xl font-mono font-bold text-emerald-400">05</span>
-          <h4 class="text-xs font-bold text-white">القرار السريري (Action)</h4>
-          <p class="text-[11px] text-slate-300">شارات خطورة واضحة، مواعيد الوجبات، وخطة تعديل الجرعات للصيدلي.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========================================================= -->
-    <!-- SLIDE 6: THE CLINICAL WORKBENCH (CENTERPIECE) -->
-    <!-- ========================================================= -->
-    <div class="slide w-full h-full flex-col justify-center space-y-3 text-right">
-      <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
-        <div>
-          <span class="text-[11px] text-teal-400 font-bold uppercase tracking-wider">Slide 06 • محطة العمل السريرية الموحدة</span>
-          <h2 class="text-xl sm:text-2xl font-black text-white">The Clinical Workbench: All-in-One Workspace</h2>
-        </div>
-        <span class="text-xs bg-teal-950 border border-teal-700 text-teal-300 px-3 py-1 rounded-full font-bold">شاشة موحدة بدون تنقل</span>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-3.5 items-stretch">
-        <!-- Left Explanatory Card -->
-        <div class="lg:col-span-4 p-4 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col justify-between space-y-3">
-          <div class="space-y-2">
-            <span class="text-xs font-bold text-teal-400 block">🎯 فلسفة التصميم البشري السريري:</span>
-            <p class="text-[11px] text-slate-300 leading-relaxed">
-              تم الاستغناء تماماً عن الصفحات المنفصلة وتجميع كافة العمليات في شاشة واحدة: سلة الأدوية على اليمين، ومصفوفة التقييم السريري الشامل على اليسار مع إمكانية التعديل الفوري.
-            </p>
-          </div>
-          <div class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-[11px] text-slate-400">
-            <span class="text-white font-bold block mb-0.5">زمن الاستجابة:</span>
-            أقل من 1ms عند تكرار الاستعلام بفضل كاش الذاكرة ثلاثي الطبقات.
-          </div>
-        </div>
-
-        <!-- Right Visual Callout Map -->
-        <div class="lg:col-span-8 p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
-          <span class="text-xs font-bold text-slate-200 block">🖥️ خريطة المناطق والأسهم الإرشادية (Interactive Zones):</span>
-          
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-            <div class="p-2.5 rounded-xl bg-slate-900 border border-teal-600 flex items-start gap-2">
-              <span class="w-4 h-4 rounded-full bg-teal-600 text-white font-bold text-[9px] flex items-center justify-center shrink-0">1</span>
-              <div>
-                <span class="font-bold text-white block">[1] شريط الأوامر السريع ➔</span>
-                <span class="text-[10px] text-slate-400">تركيز فوري بالزر [/] واقتراحات ذكية.</span>
-              </div>
-            </div>
-
-            <div class="p-2.5 rounded-xl bg-slate-900 border border-sky-600 flex items-start gap-2">
-              <span class="w-4 h-4 rounded-full bg-sky-600 text-white font-bold text-[9px] flex items-center justify-center shrink-0">2</span>
-              <div>
-                <span class="font-bold text-white block">[2] سلة الروشتة التفاعلية ➔</span>
-                <span class="text-[10px] text-slate-400">قائمة الأدوية المضافة مع خيار الحذف السريع.</span>
-              </div>
-            </div>
-
-            <div class="p-2.5 rounded-xl bg-slate-900 border border-rose-600 flex items-start gap-2">
-              <span class="w-4 h-4 rounded-full bg-rose-600 text-white font-bold text-[9px] flex items-center justify-center shrink-0">3</span>
-              <div>
-                <span class="font-bold text-white block">[3] محدد الأمراض المزمنة ➔</span>
-                <span class="text-[10px] text-slate-400">تحديد ضغط الدم، السكري، القصور الكلوي، الكبد.</span>
-              </div>
-            </div>
-
-            <div class="p-2.5 rounded-xl bg-slate-900 border border-red-600 flex items-start gap-2">
-              <span class="w-4 h-4 rounded-full bg-red-600 text-white font-bold text-[9px] flex items-center justify-center shrink-0">4</span>
-              <div>
-                <span class="font-bold text-white block">[4] مصفوفة التداخلات الدوائية ➔</span>
-                <span class="text-[10px] text-slate-400">شارات الخطورة (🔴/🟠/🔵) والتوصية.</span>
-              </div>
-            </div>
-
-            <div class="p-2.5 rounded-xl bg-slate-900 border border-amber-600 flex items-start gap-2">
-              <span class="w-4 h-4 rounded-full bg-amber-600 text-white font-bold text-[9px] flex items-center justify-center shrink-0">5</span>
-              <div>
-                <span class="font-bold text-white block">[5] جدول الوجبات والأغذية ➔</span>
-                <span class="text-[10px] text-slate-400">مواعيد الأكل والمشروبات الممنوعة (ألبان/جريب فروت).</span>
-              </div>
-            </div>
-
-            <div class="p-2.5 rounded-xl bg-slate-900 border border-emerald-600 flex items-start gap-2">
-              <span class="w-4 h-4 rounded-full bg-emerald-600 text-white font-bold text-[9px] flex items-center justify-center shrink-0">6</span>
-              <div>
-                <span class="font-bold text-white block">[6] جدول البدائل في مصر ➔</span>
-                <span class="text-[10px] text-slate-400">المطابقة الكيميائية INN والشركات والأسعار.</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========================================================= -->
-    <!-- SLIDE 7: FEATURE DEEP DIVE -->
-    <!-- ========================================================= -->
-    <div class="slide w-full h-full flex-col justify-center space-y-3 text-right">
-      <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
-        <div>
-          <span class="text-[11px] text-teal-400 font-bold uppercase tracking-wider">Slide 07 • الأدوات السريرية الست</span>
-          <h2 class="text-xl sm:text-2xl font-black text-white">Feature Deep Dive: 6 Integrated Clinical Tools</h2>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        <div class="p-3.5 rounded-xl bg-slate-900 border border-red-900/60 space-y-1">
-          <span class="text-xs font-bold text-red-400 block">🔴 1. فاحص التداخلات الدوائية</span>
-          <p class="text-[11px] text-slate-300">تحليل أزواج الأدوية المتقاطعة وتوضيح مسارات إنزيمات الكبد وتأثيرها على التركيز بالدم.</p>
-        </div>
-
-        <div class="p-3.5 rounded-xl bg-slate-900 border border-amber-900/60 space-y-1">
-          <span class="text-xs font-bold text-amber-400 block">🍽️ 2. توقيت الأغذية والوجبات</span>
-          <p class="text-[11px] text-slate-300">جدول زمني دقيق للجرعة قبل أو بعد الطعام مع تحذيرات الألبان وعصير الجريب فروت.</p>
-        </div>
-
-        <div class="p-3.5 rounded-xl bg-slate-900 border border-teal-800/80 space-y-1">
-          <span class="text-xs font-bold text-teal-300 block">🫀 3. دليل المقاييس والتحاليل (22)</span>
-          <p class="text-[11px] text-slate-300">مرجع شامل ومقيّم رقمي فوري لنتائج تحاليل السكر التراكمي والكرياتينين والسيولة INR.</p>
-        </div>
-
-        <div class="p-3.5 rounded-xl bg-slate-900 border border-emerald-800/80 space-y-1">
-          <span class="text-xs font-bold text-emerald-400 block">🇪🇬 4. دليل البدائل والمثائل بمصر</span>
-          <p class="text-[11px] text-slate-300">مطابقة المادة الفعالة العلمية مع الشركات المصرية و3 فئات سعرية (رخيص/متوسط/مرتفع).</p>
-        </div>
-
-        <div class="p-3.5 rounded-xl bg-slate-900 border border-rose-900/60 space-y-1">
-          <span class="text-xs font-bold text-rose-400 block">🛡️ 5. أمان الأمراض المزمنة</span>
-          <p class="text-[11px] text-slate-300">فحص أمان الدواء لمرضى الضغط والقصور الكلوي وحساب نسب تعديل الجرعات بدقة.</p>
-        </div>
-
-        <div class="p-3.5 rounded-xl bg-slate-900 border border-sky-800/80 space-y-1">
-          <span class="text-xs font-bold text-sky-400 block">⚖️ 6. المقارنة المباشرة وجهاً لوجه</span>
-          <p class="text-[11px] text-slate-300">مقارنة عمودية بين أي دوائين من نفس العائلة توضح الفروق في الآثار الجانبية وخلاصة التفضيل.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========================================================= -->
-    <!-- SLIDE 8: REAL CLINICAL EXAMPLE -->
-    <!-- ========================================================= -->
-    <div class="slide w-full h-full flex-col justify-center space-y-3 text-right">
-      <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
-        <div>
-          <span class="text-[11px] text-teal-400 font-bold uppercase tracking-wider">Slide 08 • حالة سريرية واقعية مدعومة</span>
-          <h2 class="text-xl sm:text-2xl font-black text-white">Real Clinical Example: Cipro + Antinal + Concor</h2>
-        </div>
-        <span class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-full font-bold">مريض 62 سنة • ضغط + قصور كلوي CKD</span>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">
-        <div class="lg:col-span-4 p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2 text-xs">
-          <span class="font-bold text-white block">📋 أدوية الروشتة المدخلة:</span>
-          <ul class="space-y-1 text-slate-300">
-            <li>• <strong>Ciprofloxacin 500mg</strong> (مضاد حيوي)</li>
-            <li>• <strong>Antinal 200mg</strong> (مطهر معوي)</li>
-            <li>• <strong>Concor 5mg</strong> (علاج الضغط)</li>
-          </ul>
-          <div class="pt-2 border-t border-slate-800 text-[11px] text-slate-400">
-            الحالة الصحية: ارتفاع ضغط دم مع قصور كلوي (eGFR = 38 mL/min).
-          </div>
-        </div>
-
-        <div class="lg:col-span-8 p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2 text-xs">
-          <span class="font-bold text-teal-300 block">🔍 نتائج الفحص والتوجيه السريري الفوري:</span>
-          
-          <div class="space-y-1.5">
-            <div class="p-2.5 rounded-xl bg-red-950/30 border border-red-800/60 flex items-start justify-between">
-              <div>
-                <span class="font-bold text-red-400 block">🔴 تداخل دوائي: Cipro ↔ Antinal</span>
-                <span class="text-[11px] text-slate-300">التصاق وامتصاص معدي ناقص ➔ <strong>التوصية: فصل الجرعات بساعتين على الأقل.</strong></span>
-              </div>
-            </div>
-
-            <div class="p-2.5 rounded-xl bg-amber-950/30 border border-amber-800/60 flex items-start justify-between">
-              <div>
-                <span class="font-bold text-amber-400 block">🍽️ تداخل طعام: Ciprofloxacin + منتجات الألبان</span>
-                <span class="text-[11px] text-slate-300">الكالسيوم يبطل 75% من فاعلية الدواء ➔ <strong>التوصية: يؤخذ على معدة فارغة.</strong></span>
-              </div>
-            </div>
-
-            <div class="p-2.5 rounded-xl bg-rose-950/30 border border-rose-800/60 flex items-start justify-between">
-              <div>
-                <span class="font-bold text-rose-400 block">🛡️ موانع القصور الكلوي: Cipro في CKD Stage 3</span>
-                <span class="text-[11px] text-slate-300">انخفاض التخلص الكلوي ➔ <strong>التوصية: خفض الجرعة للنصف (250mg مرتين يومياً).</strong></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========================================================= -->
-    <!-- SLIDE 9: EGYPTIAN PHARMACY VALUE -->
-    <!-- ========================================================= -->
-    <div class="slide w-full h-full flex-col justify-center space-y-4 text-right">
-      <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
-        <div>
-          <span class="text-[11px] text-teal-400 font-bold uppercase tracking-wider">Slide 09 • القيمة المضافة لسوق الدواء المصري</span>
-          <h2 class="text-xl sm:text-2xl font-black text-white">Egyptian Pharmacy Value: Local Market Adaptation</h2>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
-          <span class="text-lg font-mono font-bold text-teal-400">01</span>
-          <h4 class="text-xs font-bold text-white">تغطية الأسماء التجارية في مصر (15,000+ دواء)</h4>
-          <p class="text-[11px] text-slate-400">قواعد البيانات الأجنبية لا تتعرف على الأسماء المصرية. توفر YoPharma بحثاً مطابقاً لأسماء الصيدليات المصرية.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
-          <span class="text-lg font-mono font-bold text-teal-400">02</span>
-          <h4 class="text-xs font-bold text-white">حل أزمات نقص الأدوية المستوردة</h4>
-          <p class="text-[11px] text-slate-400">استخراج فوري للبدائل المصرية المسجلة والمصنعة من كبرى الشركات المحلية (إيبيكو، آمون، جلاكسو، إيفا، فاركو).</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
-          <span class="text-lg font-mono font-bold text-teal-400">03</span>
-          <h4 class="text-xs font-bold text-white">الشفافية السعرية للمريض (3 فئات)</h4>
-          <p class="text-[11px] text-slate-400">تصنيف البدائل إلى (اقتصادي رخيص / متوسط / مرتفع) لمساعدة الصيدلي في دعم المرضى الأكثر احتياجاً.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
-          <span class="text-lg font-mono font-bold text-teal-400">04</span>
-          <h4 class="text-xs font-bold text-white">لغة عربية سريرية مبسطة للصرف</h4>
-          <p class="text-[11px] text-slate-400">إرشادات تناول واضحة بالعربية يمكن للصيدلي توجيهها للمريض فوراً على شباك الصرف دون تعقيد مصطلحات.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========================================================= -->
-    <!-- SLIDE 10: TECHNOLOGY & AI ARCHITECTURE -->
-    <!-- ========================================================= -->
-    <div class="slide w-full h-full flex-col justify-center space-y-4 text-right">
-      <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
-        <div>
-          <span class="text-[11px] text-teal-400 font-bold uppercase tracking-wider">Slide 10 • البنية التقنية وهندسة الذكاء الاصطناعي</span>
-          <h2 class="text-xl sm:text-2xl font-black text-white">Technology & AI: Multi-Tier Resilient Pipeline</h2>
-        </div>
-      </div>
-
-      <!-- Architecture Pipeline -->
-      <div class="grid grid-cols-2 sm:grid-cols-6 gap-2 text-center text-xs">
-        <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
-          <span class="text-teal-400 font-bold block mb-1">1. المستخدم</span>
-          <span class="text-[10px] text-slate-400">إدخال الروشتة</span>
-        </div>
-        <div class="p-3 rounded-xl bg-slate-900 border border-slate-800">
-          <span class="text-teal-400 font-bold block mb-1">2. React 18</span>
-          <span class="text-[10px] text-slate-400">كاش المتصفح (0ms)</span>
-        </div>
-        <div class="p-3 rounded-xl bg-slate-900 border border-teal-600 bg-teal-950/20">
-          <span class="text-teal-300 font-bold block mb-1">3. Server RAM</span>
-          <span class="text-[10px] text-slate-300">كاش الخادم (&lt;1ms)</span>
-        </div>
-        <div class="p-3 rounded-xl bg-slate-900 border border-sky-600 bg-sky-950/20">
-          <span class="text-sky-400 font-bold block mb-1">4. Failover AI</span>
-          <span class="text-[10px] text-slate-300">تدوير تلقائي للنماذج</span>
-        </div>
-        <div class="p-3 rounded-xl bg-slate-900 border border-amber-600 bg-amber-950/20">
-          <span class="text-amber-400 font-bold block mb-1">5. Supabase DB</span>
-          <span class="text-[10px] text-slate-300">تخزين دائم ومطابقة</span>
-        </div>
-        <div class="p-3 rounded-xl bg-slate-900 border border-emerald-600 bg-emerald-950/20">
-          <span class="text-emerald-400 font-bold block mb-1">6. النتيجة السريرية</span>
-          <span class="text-[10px] text-slate-300">فرز وتوصية صريحة</span>
-        </div>
-      </div>
-
-      <!-- Technical Highlights Box -->
-      <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 space-y-1.5 leading-relaxed">
-        <span class="font-bold text-teal-300 block">🛡️ حدود الذكاء الاصطناعي مقابل قاعدة البيانات المحددة (Honest Demarcation):</span>
-        <p>• <strong>البيانات الصلبة:</strong> أسماء الأدوية المصرية، الأسعار، المواد الفعالة، والتحاليل تُسترجع من قواعد بيانات موثقة دون أي توليد عشوائي.</p>
-        <p>• <strong>الذكاء الاصطناعي:</strong> يُستخدم فقط لتحليل مسارات التداخل المعقدة، التوليف الدوائي المزدوج، وصياغة الشرح السريري الثنائي (عربي/إنجليزي).</p>
-      </div>
-    </div>
-
-    <!-- ========================================================= -->
-    <!-- SLIDE 11: IMPACT -->
-    <!-- ========================================================= -->
-    <div class="slide w-full h-full flex-col justify-center space-y-4 text-right">
-      <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
-        <div>
-          <span class="text-[11px] text-teal-400 font-bold uppercase tracking-wider">Slide 11 • الأثر السريري والتعليمي والمجتمعي</span>
-          <h2 class="text-xl sm:text-2xl font-black text-white">Impact: Value Across 4 Key Healthcare Stakeholders</h2>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-        <div class="p-4 rounded-xl bg-slate-900 border border-teal-800/80 space-y-1">
-          <span class="text-xs font-bold text-teal-300 block">🏪 صيادلة المجتمع (Community Pharmacists)</span>
-          <p class="text-[11px] text-slate-300">تسريع فحص سلامة الروشتات بنسبة 80%، إيجاد البدائل المتوفرة فوراً، ومنع الأخطاء الدوائية عند الصرف.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-900 border border-sky-800/80 space-y-1">
-          <span class="text-xs font-bold text-sky-300 block">🏥 صيادلة المستشفيات والمراكز (Clinical Pharmacists)</span>
-          <p class="text-[11px] text-slate-300">مراجعة بروتوكولات الأدوية المتعددة في الأقسام الداخلية، وضبط جرعات مرضى القصور الكلوي والكبدي.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-900 border border-amber-800/80 space-y-1">
-          <span class="text-xs font-bold text-amber-300 block">🎓 طلاب كليات الصيدلة (ECU Pharmacy Students)</span>
-          <p class="text-[11px] text-slate-300">أداة تدريب سريرية تفاعلية لربط علم الأدوية النظري بواقع السوق المصري والتحضير لامتحانات OSCE.</p>
-        </div>
-
-        <div class="p-4 rounded-xl bg-slate-900 border border-emerald-800/80 space-y-1">
-          <span class="text-xs font-bold text-emerald-300 block">🩺 المرضى والصحة العامة (Patients & Society)</span>
-          <p class="text-[11px] text-slate-300">حماية من التسمم الدوائي وفشل العلاج، وتوفير بدائل علاجية تراعي القدرة المالية للمريض.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========================================================= -->
-    <!-- SLIDE 12: FINAL DEMO & CALL TO ACTION -->
-    <!-- ========================================================= -->
-    <div class="slide w-full h-full flex-col justify-center items-center text-center space-y-5">
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-teal-950 border border-teal-700 text-teal-300 text-xs font-bold">
-        <span>🏆 شريحة الختام والتجربة المباشرة • Live Demo</span>
-      </div>
-
-      <h2 class="text-3xl sm:text-5xl font-black text-white">
-        YoPharma <span class="text-teal-400">Drug Check</span>
-      </h2>
-
-      <p class="text-base sm:text-lg text-teal-200 font-semibold italic">
-        "Search it. Understand it. Compare it. Check it."
-      </p>
-
-      <div class="p-4 sm:p-5 rounded-2xl bg-slate-900/90 border border-slate-800 max-w-xl w-full text-right space-y-2 text-xs">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-          <span class="text-slate-400">الفريق:</span>
-          <span class="font-bold text-white">Team PharmaMind (Youssef Mohamed)</span>
-        </div>
-        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-          <span class="text-slate-400">المسار الأكاديمي:</span>
-          <span class="font-bold text-white">Pharmacy Innovation & AI</span>
-        </div>
-        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-          <span class="text-slate-400">المؤسسة:</span>
-          <span class="font-bold text-teal-400">الجامعة المصرية الصينية (ECU) • كلية الصيدلة</span>
-        </div>
-        <div class="flex items-center justify-between pt-1">
-          <span class="text-slate-400">رابط المنصة المباشر:</span>
-          <a href="https://web1111-three.vercel.app" target="_blank" class="font-bold text-teal-300 hover:underline">web1111-three.vercel.app</a>
-        </div>
-      </div>
-    </div>
-
+  <!-- MAIN SLIDE CONTAINER -->
+  <main id="slideCanvas" class="flex-1 w-full max-w-7xl mx-auto p-3 sm:p-6 flex items-center justify-center relative overflow-hidden">
+    <!-- Slides will be rendered dynamically via JS based on the selected language -->
   </main>
 
-  <!-- BOTTOM NAVIGATION CONTROLS -->
-  <footer class="h-16 border-t border-slate-800 bg-slate-900/95 px-4 sm:px-6 flex items-center justify-between z-20 shrink-0">
-    <button id="prevBtn" class="px-3 sm:px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-all disabled:opacity-30 flex items-center gap-1.5">
+  <!-- BOTTOM SLIDE CONTROLS -->
+  <footer class="h-16 border-t border-slate-800 bg-slate-900/95 px-4 sm:px-8 flex items-center justify-between z-30 shrink-0 shadow-lg">
+    <button id="prevBtn" class="px-4 sm:px-6 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-bold transition-all disabled:opacity-30 flex items-center gap-2">
       <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-      <span>السابق</span>
+      <span id="prevBtnText">السابق</span>
     </button>
 
-    <!-- Slide Dots -->
-    <div class="flex items-center gap-1 sm:gap-1.5 overflow-x-auto max-w-[50vw] px-2 py-1">
-      <button class="dot w-2.5 h-2.5 rounded-full bg-teal-500 shrink-0" onclick="goToSlide(0)"></button>
-      <button class="dot w-2.5 h-2.5 rounded-full bg-slate-700 shrink-0" onclick="goToSlide(1)"></button>
-      <button class="dot w-2.5 h-2.5 rounded-full bg-slate-700 shrink-0" onclick="goToSlide(2)"></button>
-      <button class="dot w-2.5 h-2.5 rounded-full bg-slate-700 shrink-0" onclick="goToSlide(3)"></button>
-      <button class="dot w-2.5 h-2.5 rounded-full bg-slate-700 shrink-0" onclick="goToSlide(4)"></button>
-      <button class="dot w-2.5 h-2.5 rounded-full bg-slate-700 shrink-0" onclick="goToSlide(5)"></button>
-      <button class="dot w-2.5 h-2.5 rounded-full bg-slate-700 shrink-0" onclick="goToSlide(6)"></button>
-      <button class="dot w-2.5 h-2.5 rounded-full bg-slate-700 shrink-0" onclick="goToSlide(7)"></button>
-      <button class="dot w-2.5 h-2.5 rounded-full bg-slate-700 shrink-0" onclick="goToSlide(8)"></button>
-      <button class="dot w-2.5 h-2.5 rounded-full bg-slate-700 shrink-0" onclick="goToSlide(9)"></button>
-      <button class="dot w-2.5 h-2.5 rounded-full bg-slate-700 shrink-0" onclick="goToSlide(10)"></button>
-      <button class="dot w-2.5 h-2.5 rounded-full bg-slate-700 shrink-0" onclick="goToSlide(11)"></button>
+    <!-- Slide Indicators -->
+    <div id="dotsContainer" class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto max-w-[50vw] px-2 py-1">
+      <!-- Dots inserted via JS -->
     </div>
 
-    <button id="nextBtn" class="px-3 sm:px-4 py-2 rounded-lg bg-teal-700 hover:bg-teal-600 text-white text-xs font-bold transition-all disabled:opacity-30 flex items-center gap-1.5 shadow-sm">
-      <span>التالي</span>
+    <button id="nextBtn" class="px-4 sm:px-6 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs sm:text-sm font-bold transition-all disabled:opacity-30 flex items-center gap-2 shadow-md">
+      <span id="nextBtnText">التالي</span>
       <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
     </button>
   </footer>
 
-  <!-- PRESENTATION SCRIPT -->
+  <!-- PRESENTATION CONTENT & BILINGUAL ENGINE SCRIPT -->
   <script>
     let currentSlide = 0;
-    const slides = document.querySelectorAll('.slide');
-    const dots = document.querySelectorAll('.dot');
-    const counter = document.getElementById('slideCounter');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const langToggleBtn = document.getElementById('langToggleBtn');
-    const langLabel = document.getElementById('langLabel');
-    const htmlRoot = document.getElementById('htmlRoot');
+    let currentLang = 'ar'; // 'ar' or 'en'
 
-    let isArabic = true;
+    // COMPLETE BILINGUAL SLIDES CONTENT DATABASE
+    const deckData = {
+      ar: {
+        headerSub: "مسابقة الابتكار الصيدلاني والذكاء الاصطناعي • كلية الصيدلة بالجامعة المصرية الصينية (ECU)",
+        langBtn: "🌐 English",
+        downloadBtn: "تحميل PPTX",
+        prevBtn: "السابق",
+        nextBtn: "التالي",
+        slides: [
+          // SLIDE 1: COVER
+          {
+            type: "cover",
+            badge: "🏆 مسابقة الابتكار الصيدلاني والذكاء الاصطناعي 2026 • ECU Faculty of Pharmacy",
+            title: "YoPharma Drug Check",
+            motto: "\"Search it. Understand it. Compare it. Check it.\"",
+            subtitle: "المنصة السريرية المتكاملة لفحص الروشتات، التداخلات الدوائية والغذائية، وبدائل السوق المصري.",
+            meta: [
+              { label: "الفريق المتسابق (Team)", val: "Team PharmaMind", sub: "Youssef Mohamed" },
+              { label: "مسار المسابقة (Track)", val: "Pharmacy Innovation & AI", sub: "Clinical Decision Support" },
+              { label: "المؤسسة الأكاديمية (Institution)", val: "Egyptian Chinese University", sub: "Faculty of Pharmacy" }
+            ],
+            footerBadge: "منظومة فحص سريري فورية تدعم أكثر من 15,000 دواء مسجل بالسوق المصري مع كاش ذاكرة فائق السرعة (< 1ms)."
+          },
 
-    function updateSlide() {
-      slides.forEach((s, idx) => {
-        s.classList.toggle('active', idx === currentSlide);
-      });
-      dots.forEach((d, idx) => {
-        d.className = `dot w-2.5 h-2.5 rounded-full shrink-0 \${idx === currentSlide ? 'bg-teal-500 scale-125' : 'bg-slate-700'}`;
-      });
-      counter.textContent = `\${currentSlide + 1} / \${slides.length}`;
-      prevBtn.disabled = currentSlide === 0;
-      nextBtn.disabled = currentSlide === slides.length - 1;
+          // SLIDE 2: THE REAL PROBLEM
+          {
+            type: "split_tool",
+            slideTag: "الشريحة 02 • المشكلة السريرية الواقعية",
+            slideTitle: "المشكلة الحقيقية: تشتت المعلومات وبطء فحص الروشتة",
+            problemTitle: "⚠️ واقع الممارسة الصيدلانية اليومية:",
+            problemText: "عندما يستلم الصيدلي روشتة بها 3 إلى 5 أدوية، يضطر لمراجعة 6 محاور مختلفة (تداخلات الأدوية، توقيت الوجبات، موانع الأمراض المزمنة، ضبط الجرعات، وتوافر البدائل المصرية).",
+            solutionTitle: "💥 الخلل الجوهري (The Core Flaw):",
+            solutionText: "المعلومات مبعثرة بين مراجع ورقية، مواقع أجنبية لا تعرف الأدوية المصرية، وقوائم أسعار منفصلة، مما يجعل فحص الروشتة يستغرق 8-10 دقائق ويرفع احتمالية إغفال التداخلات الخطيرة.",
+            mockupTitle: "📱 تشتت الصيدلي بين 4 مصادر منفصلة:",
+            mockupContent: `
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+                  <span class="font-bold text-amber-400 block text-sm">1. موقع تداخلات أجنبي</span>
+                  <p class="text-slate-300">يعرف فقط الأسماء الأمريكية ويجهل الأسماء والتركيزات المسجلة في مصر.</p>
+                </div>
+                <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+                  <span class="font-bold text-sky-400 block text-sm">2. ملف PDF للجرعات</span>
+                  <p class="text-slate-300">بحث يدوي بطيء عن معادلات ضبط جرعات مرضى الكلى (CrCl) والكبد.</p>
+                </div>
+                <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+                  <span class="font-bold text-emerald-400 block text-sm">3. قائمة أسعار وبدائل مصرية</span>
+                  <p class="text-slate-300">جداول أسماء تجارية صامتة لا توضح أي تداخل دوائي أو أمان سريري.</p>
+                </div>
+                <div class="p-3.5 rounded-xl bg-red-950/30 border border-red-800/80 space-y-1">
+                  <span class="font-bold text-red-400 block text-sm">4. النتيجة الخطيرة</span>
+                  <p class="text-slate-300">ضغط وقت عالي، إرهاق ذهني، وتفويت تداخلات دوائية وغذائية خطيرة.</p>
+                </div>
+              </div>
+            `
+          },
+
+          // SLIDE 3: TRADITIONAL WORKFLOW BOTTLENECK
+          {
+            type: "workflow_steps",
+            slideTag: "الشريحة 03 • مسار العمل التقليدي البطيء",
+            slideTitle: "مسار العمل التقليدي: 8 خطوات يدوية تستهلك 10 دقائق",
+            steps: [
+              { num: "1", title: "استلام الروشتة", desc: "3 إلى 5 أدوية" },
+              { num: "2", title: "بحث الدواء 1", desc: "الغرض والجرعة" },
+              { num: "3", title: "بحث الدواء 2", desc: "الموانع والآثار" },
+              { num: "4", title: "فحص التداخل", desc: "موقع خارجي" },
+              { num: "5", title: "توقيت الأكل", desc: "بحث منفصل" },
+              { num: "6", title: "أمان المرض", desc: "ضغط / كلى / سكر" },
+              { num: "7", title: "البدائل المصرية", desc: "عند نقص الصنف" },
+              { num: "8", title: "القرار النهائي", desc: "بعد 10 دقائق!" }
+            ],
+            bottomWarning: "⏱️ النتيجة: في الصيدليات المزدحمة، يضطر الصيدلي لاختصار الفحص تحت ضغط طابور المرضى، مما يتسبب في صرف أدوية متعارضة أو تناولها مع أغذية تبطل مفعولها تماماً."
+          },
+
+          // SLIDE 4: OUR SOLUTION
+          {
+            type: "solution_pillars",
+            slideTag: "الشريحة 04 • حل منصة YoPharma الموحد",
+            slideTitle: "الحل: منصة واحدة موحدة تجمع الفحص والبدائل والتوقيت",
+            quote: "\"منصة واحدة لاستكشاف الدواء، فهم مخاطره، مقارنة بدائله، وفحص الروشتة بالكامل في ثوانٍ معدودة.\"",
+            pillars: [
+              { tag: "1. EXPLORE (استكشف)", title: "بحث سريع وفوري", desc: "استرجاع فوري لبيانات الدواء والاسم العلمي INN في أقل من 1ms.", color: "teal" },
+              { tag: "2. UNDERSTAND (افهم)", title: "آلية الخطورة السريرية", desc: "شرح مسار التفاعل الفارماكولوجي (CYP450) بتصنيف خطورة صلب (🔴/🟠/🔵).", color: "sky" },
+              { tag: "3. COMPARE (قارن)", title: "البدائل والأسعار بمصر", desc: "مطابقة فورية للمثائل المصرية والشركات مع 3 فئات سعرية تناسب المريض.", color: "amber" },
+              { tag: "4. CHECK (افحص الروشتة)", title: "فرز الروشتة المجمعة", desc: "تحليل متزامن لكافة الأدوية والأغذية والأمراض المزمنة بضغطة زر واحدة.", color: "emerald" }
+            ]
+          },
+
+          // SLIDE 5: 5-STEP STREAMLINED WORKFLOW
+          {
+            type: "streamlined_flow",
+            slideTag: "الشريحة 05 • مسار عمل فاحص الأدوية",
+            slideTitle: "كيف يعمل فاحص الأدوية Drug Check؟ (5 خطوات سهلة)",
+            steps: [
+              { num: "01", title: "إدخال الأدوية", desc: "كتابة الاسم التجاري أو العلمي مع اختصار [/] وقائمة إكمال ذكية.", badge: "الإدخال السريع" },
+              { num: "02", title: "سلة الروشتة", desc: "تجميع أدوية المريض في صينية تفاعلية مع خيار الحذف بنقرة واحدة.", badge: "قائمة الأدوية" },
+              { num: "03", title: "الأمراض المزمنة", desc: "تحديد أمراض المريض (ضغط، سكر، قصور كلوي CKD، كبد، ربو، حمل).", badge: "ملف المريض" },
+              { num: "04", title: "المعالجة الفورية", desc: "فحص متقاطع فوري في كاش الذاكرة وتوليد شبكة المخاطر السريرية.", badge: "محرك الذكاء والكاش" },
+              { num: "05", title: "القرار السريري", desc: "شارات خطورة واضحة، مواعيد الوجبات، وخطة تعديل الجرعات للصيدلي.", badge: "النتيجة والتوصية" }
+            ]
+          },
+
+          // SLIDE 6: THE CLINICAL WORKBENCH (CENTERPIECE)
+          {
+            type: "workbench_map",
+            slideTag: "الشريحة 06 • محطة العمل السريرية الموحدة",
+            slideTitle: "محطة العمل السريرية: كافة الأدوات في شاشة واحدة تفاعلية",
+            desc: "تم تصميم الواجهة بطابع بشري سريري هادئ يستغني تماماً عن التنقل بين الصفحات؛ حيث يدير الصيدلي الروشتة ويرى النتائج فورياً على نفس الشاشة.",
+            callouts: [
+              { num: "1", title: "[1] شريط الأوامر والبحث ➔", desc: "تركيز تلقائي بالزر [/] واقتراحات فورية لأشهر الأدوية المصرية.", color: "teal" },
+              { num: "2", title: "[2] سلة الروشتة التفاعلية ➔", desc: "قائمة الأدوية النشطة مع بطاقات الحذف بنقرة واحدة.", color: "sky" },
+              { num: "3", title: "[3] محدد الأمراض المزمنة ➔", desc: "أزرار اختيار سريعة للضغط والسكري والكلى والكبد والربو.", color: "rose" },
+              { num: "4", title: "[4] مصفوفة التداخلات الدوائية ➔", desc: "شارات الخطورة الثلاثية (🔴 عالي / 🟠 متوسط / 🔵 بسيط).", color: "red" },
+              { num: "5", title: "[5] جدول مواعيد الوجبات ➔", desc: "مواعيد الجرعات (قبل/بعد الأكل) والأطعمة الممنوعة (الألبان/الجريب فروت).", color: "amber" },
+              { num: "6", title: "[6] جدول البدائل في مصر ➔", desc: "مطابقة المادة الفعالة والشركات المصنعة والفئات السعرية.", color: "emerald" }
+            ]
+          },
+
+          // SLIDE 7: FEATURE DEEP DIVE (6 TOOLS)
+          {
+            type: "six_tools",
+            slideTag: "الشريحة 07 • الأدوات السريرية الست المتكاملة",
+            slideTitle: "تشريح الأدوات السريرية الست في منصة YoPharma",
+            tools: [
+              { icon: "🔴", title: "1. فاحص التداخلات الدوائية", desc: "تحليل كافة أزواج الأدوية المتقاطعة وتوضيح مسارات إنزيمات الكبد وتأثيرها على التركيز بالدم.", color: "red" },
+              { icon: "🍽️", title: "2. توقيت الأغذية والوجبات", desc: "جدول زمني دقيق للجرعة قبل أو بعد الطعام مع تحذيرات الألبان وعصير الجريب فروت والبوتاسيوم.", color: "amber" },
+              { icon: "🫀", title: "3. دليل المقاييس والتحاليل (22)", desc: "مرجع شامل ومقيّم رقمي فوري لنتائج تحاليل السكر التراكمي والكرياتينين والسيولة INR والضغط.", color: "teal" },
+              { icon: "🇪🇬", title: "4. دليل البدائل والمثائل بمصر", desc: "مطابقة المادة الفعالة العلمية مع الشركات المصرية و3 فئات سعرية (رخيص/متوسط/مرتفع).", color: "emerald" },
+              { icon: "🛡️", title: "5. أمان الأمراض المزمنة", desc: "فحص أمان الدواء لمرضى الضغط والقصور الكلوي وحساب نسب تعديل الجرعات (CrCl).", color: "rose" },
+              { icon: "⚖️", title: "6. المقارنة المباشرة وجهاً لوجه", desc: "مقارنة عمودية بين أي دوائين من نفس العائلة توضح الفروق في الآثار الجانبية وخلاصة التفضيل.", color: "sky" }
+            ]
+          },
+
+          // SLIDE 8: REAL CLINICAL EXAMPLE
+          {
+            type: "clinical_case",
+            slideTag: "الشريحة 08 • حالة سريرية واقعية مدعومة",
+            slideTitle: "حالة واقعية: فحص روشتة (Cipro + Antinal + Concor)",
+            patientProfile: "مريض يبلغ 62 عاماً يعاني من ارتفاع ضغط الدم وقصور كلوي (CKD Stage 3, eGFR = 38 mL/min).",
+            rxDrugs: ["Ciprofloxacin 500mg (مضاد حيوي)", "Antinal 200mg (مطهر معوي)", "Concor 5mg (علاج الضغط)"],
+            findings: [
+              { badge: "🔴 تداخل دوائي عالي الخطورة", title: "Ciprofloxacin ↔ Antinal (Nifuroxazide)", desc: "التصاق وامتصاص معوي ناقص ➔ التوصية: فصل الجرعات بساعتين على الأقل لمنع فشل المضاد الحيوي.", color: "red" },
+              { badge: "🍽️ تداخل غذائي محظور", title: "Ciprofloxacin + منتجات الألبان والكالسيوم", desc: "الكالسيوم يبطل 75% من امتصاص الدواء ➔ التوصية: يؤخذ على معدة فارغة بعيداً عن منتجات الألبان.", color: "amber" },
+              { badge: "🛡️ موانع القصور الكلوي", title: "Ciprofloxacin في مرضى الكلى (CKD Stage 3)", desc: "انخفاض معدل التخلص الكلوي ➔ التوصية: خفض الجرعة بنسبة 50% (250mg مرتين يومياً) ومراقبة الكرياتينين.", color: "rose" }
+            ]
+          },
+
+          // SLIDE 9: EGYPTIAN PHARMACY VALUE
+          {
+            type: "egypt_value",
+            slideTag: "الشريحة 09 • القيمة المضافة لسوق الدواء المصري",
+            slideTitle: "القيمة المضافة لصيدليات مصر: دعم كامل للسوق المحلي",
+            values: [
+              { num: "01", title: "تغطية الأسماء التجارية المصرية (15,000+)", desc: "المواقع الأجنبية لا تتعرف على الأسماء المصرية؛ توفر YoPharma بحثاً مطابقاً للأدوية المتداولة بالصيدليات." },
+              { num: "02", title: "حل أزمات نقص الأدوية المستوردة", desc: "استخراج فوري للبدائل المصرية المسجلة والمصنعة من كبرى الشركات المحلية (إيبيكو، آمون، جلاكسو، إيفا، فاركو)." },
+              { num: "03", title: "الشفافية السعرية للمريض (3 فئات)", desc: "تصنيف البدائل إلى (اقتصادي رخيص / متوسط / مرتفع) لمساعدة الصيدلي في دعم المرضى الأكثر احتياجاً." },
+              { num: "04", title: "لغة عربية سريرية مبسطة للصرف", desc: "إرشادات تناول واضحة بالعربية يمكن للصيدلي توجيهها للمريض فوراً على شباك الصرف دون تعقيد مصطلحات." }
+            ]
+          },
+
+          // SLIDE 10: TECHNOLOGY & AI ARCHITECTURE
+          {
+            type: "tech_arch",
+            slideTag: "الشريحة 10 • البنية التقنية وهندسة الذكاء الاصطناعي",
+            slideTitle: "البنية التقنية: كاش ثلاثي الطبقات وتدوير ذكي للذكاء الاصطناعي",
+            pipeline: [
+              { step: "1. المستخدم", desc: "إدخال الروشتة" },
+              { step: "2. React 18", desc: "كاش المتصفح (0ms)" },
+              { step: "3. Server RAM", desc: "كاش الخادم (<1ms)" },
+              { step: "4. Failover AI", desc: "تدوير النماذج" },
+              { step: "5. Supabase DB", desc: "تخزين دائم" },
+              { step: "6. النتيجة السريرية", desc: "توصية فورية" }
+            ],
+            notes: [
+              "• البيانات المحددة (قاعدة البيانات): أسماء الأدوية المصرية، المواد الفعالة، والأسعار تُسترجع بدقة 100% دون أي توليد عشوائي.",
+              "• الذكاء الاصطناعي (AI Reasoning): يُستخدم فقط لتحليل مسارات التداخل المعقدة، وصياغة الشرح السريري الثنائي.",
+              "• التدوير التلقائي (Failover): تبديل فوري بين Gemini Flash لمنع أي توقف وضمان استمرارية الخدمة بنسبة 99.9%."
+            ]
+          },
+
+          // SLIDE 11: IMPACT
+          {
+            type: "impact_grid",
+            slideTag: "الشريحة 11 • الأثر السريري والتعليمي والمجتمعي",
+            slideTitle: "الأثر المباشر على 4 فئات في المنظومة الصحية",
+            impacts: [
+              { icon: "🏪", title: "صيادلة المجتمع (Community Pharmacists)", desc: "تسريع فحص سلامة الروشتات بنسبة 80%، إيجاد البدائل المتوفرة فوراً، ومنع الأخطاء الدوائية عند الصرف.", color: "teal" },
+              { icon: "🏥", title: "صيادلة المستشفيات (Clinical Pharmacists)", desc: "مراجعة بروتوكولات الأدوية المتعددة في الأقسام الداخلية، وضبط جرعات مرضى القصور الكلوي والكبدي.", color: "sky" },
+              { icon: "🎓", title: "طلاب كليات الصيدلة (ECU Students)", desc: "أداة تدريب سريرية تفاعلية لربط علم الأدوية النظري بواقع السوق المصري والتحضير لامتحانات OSCE.", color: "amber" },
+              { icon: "🩺", title: "المرضى والصحة العامة (Patients & Public)", desc: "حماية من التسمم الدوائي وفشل العلاج، وتوفير بدائل علاجية تراعي القدرة المالية للمريض.", color: "emerald" }
+            ]
+          },
+
+          // SLIDE 12: FINAL DEMO & CALL TO ACTION
+          {
+            type: "final_cta",
+            slideTag: "الشريحة 12 • التجربة الحية وشريحة الختام",
+            title: "YoPharma Drug Check",
+            motto: "\"Search it. Understand it. Compare it. Check it.\"",
+            team: "Team PharmaMind",
+            lead: "تطوير: يوسف محمد (Youssef Mohamed)",
+            institution: "كلية الصيدلة • الجامعة المصرية الصينية (ECU)",
+            liveUrl: "https://web1111-three.vercel.app",
+            qrNote: "امسح الكود لتجربة المنصة الحية مباشرة عبر هاتفك أو حاسوبك."
+          }
+        ]
+      },
+
+      en: {
+        headerSub: "Pharmacy Innovation & AI Competition • Faculty of Pharmacy, Egyptian Chinese University (ECU)",
+        langBtn: "🌐 العربية",
+        downloadBtn: "Download PPTX",
+        prevBtn: "Previous",
+        nextBtn: "Next",
+        slides: [
+          // SLIDE 1: COVER
+          {
+            type: "cover",
+            badge: "🏆 Pharmacy Innovation & AI Competition 2026 • ECU Faculty of Pharmacy",
+            title: "YoPharma Drug Check",
+            motto: "\"Search it. Understand it. Compare it. Check it.\"",
+            subtitle: "Evidence-Based Decision Support & Medication Safety Platform for the Egyptian Healthcare Market.",
+            meta: [
+              { label: "Competition Team", val: "Team PharmaMind", sub: "Youssef Mohamed" },
+              { label: "Competition Track", val: "Pharmacy Innovation & AI", sub: "Clinical Decision Support" },
+              { label: "Academic Institution", val: "Egyptian Chinese University", sub: "Faculty of Pharmacy" }
+            ],
+            footerBadge: "High-speed multi-drug triage engine supporting 15,000+ Egyptian market medications with sub-millisecond RAM caching (< 1ms)."
+          },
+
+          // SLIDE 2: THE REAL PROBLEM
+          {
+            type: "split_tool",
+            slideTag: "Slide 02 • The Real Clinical Problem",
+            slideTitle: "The Real Problem: Fragmented Clinical Information",
+            problemTitle: "⚠️ Daily Pharmacy Dispensing Reality:",
+            problemText: "When evaluating a multi-drug prescription (3 to 5 drugs), a pharmacist must verify 6 vital aspects: drug-drug interactions, meal timing, chronic disease contraindications, organ dose adjustments, and local Egyptian generic availability.",
+            solutionTitle: "💥 The Core Flaw:",
+            solutionText: "Information is scattered across reference textbooks, US websites that lack Egyptian brands, and separate pricing lists. Checking a complete prescription takes 8–10 minutes and risks missing severe interactions.",
+            mockupTitle: "📱 Pharmacist Jumping Between 4 Disconnected Screens:",
+            mockupContent: `
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-sans">
+                <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+                  <span class="font-bold text-amber-400 block text-sm">1. Foreign Interaction Site</span>
+                  <p class="text-slate-300">Only recognizes US brand names; misses Egyptian trade names and local formulations.</p>
+                </div>
+                <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+                  <span class="font-bold text-sky-400 block text-sm">2. PDF Dosage Manual</span>
+                  <p class="text-slate-300">Slow manual lookup for renal clearance (CrCl) & hepatic dose adjustment formulas.</p>
+                </div>
+                <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+                  <span class="font-bold text-emerald-400 block text-sm">3. Egyptian Price Index</span>
+                  <p class="text-slate-300">Static tables listing brand names with zero clinical interaction or safety context.</p>
+                </div>
+                <div class="p-3.5 rounded-xl bg-red-950/30 border border-red-800/80 space-y-1">
+                  <span class="font-bold text-red-400 block text-sm">4. The Dangerous Outcome</span>
+                  <p class="text-slate-300">High time pressure, cognitive fatigue, and missed critical food/drug interactions.</p>
+                </div>
+              </div>
+            `
+          },
+
+          // SLIDE 3: TRADITIONAL WORKFLOW BOTTLENECK
+          {
+            type: "workflow_steps",
+            slideTag: "Slide 03 • The Traditional 8-Step Bottleneck",
+            slideTitle: "Traditional Manual Workflow: 8 Disjointed Steps Wasting 10 Minutes",
+            steps: [
+              { num: "1", title: "Receive Rx", desc: "3–5 medications" },
+              { num: "2", title: "Search Drug 1", desc: "Indication & dose" },
+              { num: "3", title: "Search Drug 2", desc: "Contraindications" },
+              { num: "4", title: "Cross Check", desc: "External website" },
+              { num: "5", title: "Food Timing", desc: "Separate search" },
+              { num: "6", title: "Disease Safety", desc: "HTN / CKD / Diabetes" },
+              { num: "7", title: "Find Generics", desc: "Local shortage search" },
+              { num: "8", title: "Clinical Verdict", desc: "After 10 minutes!" }
+            ],
+            bottomWarning: "⏱️ Result: In busy community and hospital dispensaries, pharmacists face heavy patient queues and are forced to rush checks, risking dangerous absorption failures and drug toxicities."
+          },
+
+          // SLIDE 4: OUR SOLUTION
+          {
+            type: "solution_pillars",
+            slideTag: "Slide 04 • The Unified Solution",
+            slideTitle: "Our Solution: Unified Clinical Decision Engine",
+            quote: "\"One platform to explore the medication, understand its risks, compare alternatives, and check the complete regimen in seconds.\"",
+            pillars: [
+              { tag: "1. EXPLORE", title: "Instant Drug Lookup", desc: "Instant retrieval of Egyptian brand data and active INN in < 1ms.", color: "teal" },
+              { tag: "2. UNDERSTAND", title: "Pharmacological Mechanism", desc: "Explains pharmacokinetic CYP450 pathways with solid severity triage (🔴/🟠/🔵).", color: "sky" },
+              { tag: "3. COMPARE", title: "Egyptian Generics & Prices", desc: "Direct chemical equivalence with verified manufacturers and 3-tier price brackets.", color: "amber" },
+              { tag: "4. CHECK", title: "Unified Regimen Triage", desc: "Simultaneous cross-checking for Drug-Drug, Food, and Chronic risks in one click.", color: "emerald" }
+            ]
+          },
+
+          // SLIDE 5: 5-STEP STREAMLINED WORKFLOW
+          {
+            type: "streamlined_flow",
+            slideTag: "Slide 05 • How Drug Check Works",
+            slideTitle: "How Drug Check Works: 5-Step Streamlined Clinical Workflow",
+            steps: [
+              { num: "01", title: "Search & Add", desc: "Type brand name or generic INN with [/] shortcut and live auto-complete.", badge: "Quick Input" },
+              { num: "02", title: "Prescription Tray", desc: "Organize patient medications in an active tray with 1-click removal.", badge: "Prescription Queue" },
+              { num: "03", title: "Comorbidities", desc: "Toggle patient conditions (Hypertension, Diabetes, CKD, Hepatic, Asthma, Pregnancy).", badge: "Patient Profile" },
+              { num: "04", title: "Instant Triage", desc: "Simultaneous cross-check in RAM cache generating a comprehensive risk matrix.", badge: "AI & RAM Engine" },
+              { num: "05", title: "Clinical Verdict", desc: "Clear severity badges, meal timing schedule, and dose adjustment instructions.", badge: "Actionable Output" }
+            ]
+          },
+
+          // SLIDE 6: THE CLINICAL WORKBENCH (CENTERPIECE)
+          {
+            type: "workbench_map",
+            slideTag: "Slide 06 • The Clinical Workbench",
+            slideTitle: "The Clinical Workbench: Single-Screen Command Center",
+            desc: "Designed with human clinical ergonomics: zero page reloads, zero tab switching. Pharmacists manage the prescription tray on the left and inspect realtime triage on the right.",
+            callouts: [
+              { num: "1", title: "[1] Quick Command Bar ➔", desc: "Auto-focus with [/] hotkey and instant suggestions for Egyptian medications.", color: "teal" },
+              { num: "2", title: "[2] Active Prescription Tray ➔", desc: "Active drug queue with dosage forms and one-click removal.", color: "sky" },
+              { num: "3", title: "[3] Comorbidity Selector ➔", desc: "Fast toggles for Hypertension, Diabetes, CKD, Hepatic, and Asthma.", color: "rose" },
+              { num: "4", title: "[4] Drug-Drug Matrix ➔", desc: "Color-coded severity badges (🔴 High / 🟠 Moderate / 🔵 Minor).", color: "red" },
+              { num: "5", title: "[5] Food & Meal Schedule ➔", desc: "Meal timing (Before/With/After) + prohibited foods (Dairy/Grapefruit).", color: "amber" },
+              { num: "6", title: "[6] Egyptian Alternatives ➔", desc: "Direct chemical INN match, licensed manufacturers, and price tiers.", color: "emerald" }
+            ]
+          },
+
+          // SLIDE 7: FEATURE DEEP DIVE (6 TOOLS)
+          {
+            type: "six_tools",
+            slideTag: "Slide 07 • 6 Core Integrated Clinical Tools",
+            slideTitle: "Feature Deep Dive: 6 Core Clinical Modules in YoPharma",
+            tools: [
+              { icon: "🔴", title: "1. Drug-Drug Checker", desc: "Multi-drug pair matrix analyzing hepatic CYP450 enzyme induction/inhibition and additive toxicities.", color: "red" },
+              { icon: "🍽️", title: "2. Food-Drug Timing", desc: "Precise meal timing schedules (empty stomach vs with food) + Dairy, Grapefruit, and Potassium alerts.", color: "amber" },
+              { icon: "🫀", title: "3. 22 Biomarkers & Vitals", desc: "Clinical reference and interactive digital evaluator for HbA1c, Serum Creatinine, INR, and Blood Pressure.", color: "teal" },
+              { icon: "🇪🇬", title: "4. Egyptian Alternatives Directory", desc: "INN chemical matching across Egyptian brands with manufacturers and 3-tier pricing (Economy/Mod/Prem).", color: "emerald" },
+              { icon: "🛡️", title: "5. Chronic Disease Safety", desc: "Safety verification across 7 chronic conditions with renal dose adjustment cutoffs (CrCl).", color: "rose" },
+              { icon: "⚖️", title: "6. Side-by-Side Comparison", desc: "Head-to-head clinical matrix comparing indications, mechanisms, side-effect profiles, and verdicts.", color: "sky" }
+            ]
+          },
+
+          // SLIDE 8: REAL CLINICAL EXAMPLE
+          {
+            type: "clinical_case",
+            slideTag: "Slide 08 • Real Supported Clinical Example",
+            slideTitle: "Clinical Case: Evaluating (Cipro + Antinal + Concor)",
+            patientProfile: "62-year-old male with Hypertension and Chronic Kidney Disease (CKD Stage 3, eGFR = 38 mL/min).",
+            rxDrugs: ["Ciprofloxacin 500mg (Antibiotic)", "Antinal 200mg (Intestinal Antiseptic)", "Concor 5mg (Beta-Blocker)"],
+            findings: [
+              { badge: "🔴 HIGH RISK DRUG-DRUG INTERACTION", title: "Ciprofloxacin ↔ Antinal (Nifuroxazide)", desc: "Gastrointestinal chelation and reduced absorption ➔ Management: Separate administration times by at least 2 hours.", color: "red" },
+              { badge: "🍽️ DIETARY RESTRICTION ALERT", title: "Ciprofloxacin + Dairy / Calcium Products", desc: "Calcium ions chelate fluoroquinolones reducing bioavailability by 75% ➔ Management: Take on empty stomach away from dairy.", color: "amber" },
+              { badge: "🛡️ CHRONIC RENAL CONTRAINDICATION", title: "Ciprofloxacin in Chronic Kidney Disease (CKD Stage 3)", desc: "Decreased renal elimination ➔ Management: Reduce dose by 50% (250mg q12h) and monitor serum creatinine.", color: "rose" }
+            ]
+          },
+
+          // SLIDE 9: EGYPTIAN PHARMACY VALUE
+          {
+            type: "egypt_value",
+            slideTag: "Slide 09 • Egyptian Pharmacy Value Proposition",
+            slideTitle: "Egyptian Market Adaptation: Built for Egyptian Dispensaries",
+            values: [
+              { num: "01", title: "15,000+ Egyptian Trade Names", desc: "Foreign clinical checkers fail with local brand names. YoPharma indexes over 15,000 Egyptian registered medications." },
+              { num: "02", title: "Solving Drug Shortages via Local Generics", desc: "Instant generic identification from top Egyptian manufacturers (EIPICO, Amoun, GlaxoSmithKline, EVA, Pharco)." },
+              { num: "03", title: "3-Tier Price Transparency for Patients", desc: "Categorizes alternatives into Economy, Moderate, and Premium to accommodate patient financial circumstances." },
+              { num: "04", title: "Bilingual Clinical & Patient Copy", desc: "Clear English clinical monographs for professionals + simple Arabic counseling notes for patient dispensing." }
+            ]
+          },
+
+          // SLIDE 10: TECHNOLOGY & AI ARCHITECTURE
+          {
+            type: "tech_arch",
+            slideTag: "Slide 10 • Technology & AI Architecture",
+            slideTitle: "System Architecture: 3-Tier Cache & Multi-Model AI Failover",
+            pipeline: [
+              { step: "1. User Input", desc: "Prescription Entry" },
+              { step: "2. React 18", desc: "Browser RAM (0ms)" },
+              { step: "3. Server RAM", desc: "Node Cache (<1ms)" },
+              { step: "4. Failover AI", desc: "Model Rotation" },
+              { step: "5. Supabase DB", desc: "Persistent Cache" },
+              { step: "6. Clinical Output", desc: "Instant Triage" }
+            ],
+            notes: [
+              "• Deterministic Database: Egyptian trade names, INN active ingredients, and pricing are retrieved from verified database without hallucinations.",
+              "• AI Reasoning Engine: Synthesizes complex pharmacokinetics, multi-drug pathways, and bilingual counseling instructions.",
+              "• Multi-Model Failover: Automatically rotates between Gemini Flash models to ensure 99.9% uptime with zero API downtime."
+            ]
+          },
+
+          // SLIDE 11: IMPACT
+          {
+            type: "impact_grid",
+            slideTag: "Slide 11 • Stakeholder Impact",
+            slideTitle: "Measurable Impact Across 4 Healthcare Stakeholders",
+            impacts: [
+              { icon: "🏪", title: "Community Pharmacists", desc: "80% faster prescription audits, instant generic finding during shortages, and prevention of dispensing liabilities.", color: "teal" },
+              { icon: "🏥", title: "Clinical & Hospital Pharmacists", desc: "Multi-drug ward round audits, renal (CrCl) and hepatic dose adjustments for acute care patients.", color: "sky" },
+              { icon: "🎓", title: "Pharmacy Students (ECU)", desc: "Interactive clinical training tool bridging theoretical pharmacology with Egyptian market reality for OSCE exams.", color: "amber" },
+              { icon: "🩺", title: "Patients & Public Health", desc: "Prevention of drug toxicities and hospital readmissions; access to affordable medicine choices.", color: "emerald" }
+            ]
+          },
+
+          // SLIDE 12: FINAL DEMO & CALL TO ACTION
+          {
+            type: "final_cta",
+            slideTag: "Slide 12 • Final Demo & Call to Action",
+            title: "YoPharma Drug Check",
+            motto: "\"Search it. Understand it. Compare it. Check it.\"",
+            team: "Team PharmaMind",
+            lead: "Lead Developer: Youssef Mohamed",
+            institution: "Faculty of Pharmacy • Egyptian Chinese University (ECU)",
+            liveUrl: "https://web1111-three.vercel.app",
+            qrNote: "Scan QR code to launch the live platform on your mobile device or laptop."
+          }
+        ]
+      }
+    };
+
+    // RENDER FUNCTIONS FOR DIFFERENT SLIDE LAYOUTS
+    function renderSlide(slideData, lang) {
+      const isAr = lang === 'ar';
+      const textDir = isAr ? 'text-right' : 'text-left';
+
+      if (slideData.type === 'cover') {
+        return `
+          <div class="slide active w-full h-full flex flex-col justify-center items-center text-center space-y-6">
+            <div class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-teal-950 border border-teal-700 text-teal-300 text-xs sm:text-sm font-bold shadow-md">
+              <span>${slideData.badge}</span>
+            </div>
+            
+            <h1 class="text-4xl sm:text-7xl font-black text-white leading-tight tracking-tight">
+              YoPharma <span class="text-teal-400">Drug Check</span>
+            </h1>
+
+            <p class="text-lg sm:text-2xl text-teal-200 font-bold italic max-w-3xl">
+              ${slideData.motto}
+            </p>
+
+            <p class="text-sm sm:text-base text-slate-300 max-w-3xl leading-relaxed font-medium">
+              ${slideData.subtitle}
+            </p>
+
+            <!-- 3 Metadata Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-4xl pt-2">
+              ${slideData.meta.map(m => `
+                <div class="p-4 sm:p-5 rounded-2xl bg-slate-900/90 border border-slate-800 ${textDir} shadow-md space-y-1">
+                  <span class="text-xs text-teal-400 font-bold block uppercase tracking-wider">${m.label}</span>
+                  <span class="text-base font-extrabold text-white block">${m.val}</span>
+                  <span class="text-xs text-slate-400 block">${m.sub}</span>
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="p-3 rounded-xl bg-teal-950/40 border border-teal-800/60 max-w-3xl text-xs text-teal-200 font-medium">
+              ${slideData.footerBadge}
+            </div>
+          </div>
+        `;
+      }
+
+      if (slideData.type === 'split_tool') {
+        return `
+          <div class="slide active w-full h-full flex flex-col justify-center space-y-4 ${textDir}">
+            <div class="border-b border-slate-800 pb-2.5 flex items-center justify-between">
+              <div>
+                <span class="text-xs text-teal-400 font-bold uppercase tracking-wider">${slideData.slideTag}</span>
+                <h2 class="text-xl sm:text-3xl font-black text-white mt-0.5">${slideData.slideTitle}</h2>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+              <!-- Left: Problem & Solution Explanation with Enriched Fonts -->
+              <div class="lg:col-span-5 p-5 sm:p-6 rounded-2xl bg-slate-900/95 border border-slate-800 flex flex-col justify-between space-y-4 shadow-md">
+                <div class="space-y-2">
+                  <span class="text-sm font-bold text-red-400 block uppercase tracking-wide">${slideData.problemTitle}</span>
+                  <p class="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
+                    ${slideData.problemText}
+                  </p>
+                </div>
+
+                <div class="space-y-2 pt-3 border-t border-slate-800">
+                  <span class="text-sm font-bold text-teal-400 block uppercase tracking-wide">${slideData.solutionTitle}</span>
+                  <p class="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
+                    ${slideData.solutionText}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Right: Visual Mockup Container -->
+              <div class="lg:col-span-7 p-5 sm:p-6 rounded-2xl bg-slate-950 border border-slate-800 space-y-3 shadow-md">
+                <span class="text-xs sm:text-sm font-bold text-teal-300 block">${slideData.mockupTitle}</span>
+                ${slideData.mockupContent}
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      if (slideData.type === 'workflow_steps') {
+        return `
+          <div class="slide active w-full h-full flex flex-col justify-center space-y-5 ${textDir}">
+            <div class="border-b border-slate-800 pb-2.5">
+              <span class="text-xs text-amber-400 font-bold uppercase tracking-wider">${slideData.slideTag}</span>
+              <h2 class="text-xl sm:text-3xl font-black text-white mt-0.5">${slideData.slideTitle}</h2>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
+              ${slideData.steps.map((st, i) => `
+                <div class="p-3 sm:p-4 rounded-xl ${i === 7 ? 'bg-teal-950/70 border-teal-600' : 'bg-slate-900 border-slate-800'} border text-center shadow-sm space-y-1">
+                  <span class="w-7 h-7 rounded-full ${i === 7 ? 'bg-teal-600 text-white' : 'bg-slate-800 text-teal-400'} font-bold text-xs mx-auto flex items-center justify-center font-mono">${st.num}</span>
+                  <span class="text-xs sm:text-sm font-bold ${i === 7 ? 'text-teal-300' : 'text-white'} block">${st.title}</span>
+                  <span class="text-[11px] text-slate-400 block">${st.desc}</span>
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="p-4 sm:p-5 rounded-2xl bg-amber-950/25 border border-amber-800/60 text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
+              ${slideData.bottomWarning}
+            </div>
+          </div>
+        `;
+      }
+
+      if (slideData.type === 'solution_pillars') {
+        return `
+          <div class="slide active w-full h-full flex flex-col justify-center space-y-5 ${textDir}">
+            <div class="border-b border-slate-800 pb-2.5">
+              <span class="text-xs text-teal-400 font-bold uppercase tracking-wider">${slideData.slideTag}</span>
+              <h2 class="text-xl sm:text-3xl font-black text-white mt-0.5">${slideData.slideTitle}</h2>
+            </div>
+
+            <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-teal-950 to-slate-900 border border-teal-700 text-center space-y-1.5 shadow-md">
+              <p class="text-base sm:text-xl font-black text-white">${slideData.quote}</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              ${slideData.pillars.map(p => `
+                <div class="p-4 sm:p-5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-teal-700 transition-all space-y-2 shadow-sm">
+                  <span class="text-xs font-bold text-teal-400 block uppercase tracking-wider">${p.tag}</span>
+                  <h4 class="text-sm sm:text-base font-extrabold text-white">${p.title}</h4>
+                  <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">${p.desc}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      if (slideData.type === 'streamlined_flow') {
+        return `
+          <div class="slide active w-full h-full flex flex-col justify-center space-y-5 ${textDir}">
+            <div class="border-b border-slate-800 pb-2.5">
+              <span class="text-xs text-teal-400 font-bold uppercase tracking-wider">${slideData.slideTag}</span>
+              <h2 class="text-xl sm:text-3xl font-black text-white mt-0.5">${slideData.slideTitle}</h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-5 gap-3.5">
+              ${slideData.steps.map((st, i) => `
+                <div class="p-4 sm:p-5 rounded-2xl ${i === 3 ? 'bg-teal-950/40 border-teal-600' : 'bg-slate-900 border-slate-800'} border flex flex-col justify-between space-y-2 shadow-sm">
+                  <div>
+                    <span class="text-2xl font-black text-teal-400 font-mono block mb-1">${st.num}</span>
+                    <span class="text-[11px] font-bold text-teal-300 uppercase tracking-wide block mb-1">${st.badge}</span>
+                    <h4 class="text-sm sm:text-base font-extrabold text-white">${st.title}</h4>
+                  </div>
+                  <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">${st.desc}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      if (slideData.type === 'workbench_map') {
+        return `
+          <div class="slide active w-full h-full flex flex-col justify-center space-y-4 ${textDir}">
+            <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
+              <div>
+                <span class="text-xs text-teal-400 font-bold uppercase tracking-wider">${slideData.slideTag}</span>
+                <h2 class="text-xl sm:text-3xl font-black text-white mt-0.5">${slideData.slideTitle}</h2>
+              </div>
+            </div>
+
+            <p class="text-xs sm:text-sm text-slate-300 font-medium">${slideData.desc}</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              ${slideData.callouts.map(c => `
+                <div class="p-3.5 sm:p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-1.5 shadow-sm">
+                  <span class="text-xs sm:text-sm font-bold text-teal-300 block">${c.title}</span>
+                  <p class="text-xs text-slate-300 font-medium leading-relaxed">${c.desc}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      if (slideData.type === 'six_tools') {
+        return `
+          <div class="slide active w-full h-full flex flex-col justify-center space-y-4 ${textDir}">
+            <div class="border-b border-slate-800 pb-2">
+              <span class="text-xs text-teal-400 font-bold uppercase tracking-wider">${slideData.slideTag}</span>
+              <h2 class="text-xl sm:text-3xl font-black text-white mt-0.5">${slideData.slideTitle}</h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+              ${slideData.tools.map(t => `
+                <div class="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-1.5 shadow-sm">
+                  <span class="text-xs sm:text-sm font-extrabold text-teal-300 block">${t.icon} ${t.title}</span>
+                  <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">${t.desc}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      if (slideData.type === 'clinical_case') {
+        return `
+          <div class="slide active w-full h-full flex flex-col justify-center space-y-4 ${textDir}">
+            <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
+              <div>
+                <span class="text-xs text-teal-400 font-bold uppercase tracking-wider">${slideData.slideTag}</span>
+                <h2 class="text-xl sm:text-3xl font-black text-white mt-0.5">${slideData.slideTitle}</h2>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+              <div class="lg:col-span-4 p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-3 shadow-md">
+                <span class="text-xs font-bold text-teal-400 block uppercase tracking-wider">Patient Profile & Regimen:</span>
+                <p class="text-xs sm:text-sm text-slate-200 font-bold">${slideData.patientProfile}</p>
+                <div class="pt-2 border-t border-slate-800 space-y-1.5">
+                  <span class="text-xs text-slate-400 font-bold block">Prescribed Drugs:</span>
+                  ${slideData.rxDrugs.map(d => `<div class="text-xs font-bold text-teal-300 bg-slate-950 p-2 rounded-lg border border-slate-800">• ${d}</div>`).join('')}
+                </div>
+              </div>
+
+              <div class="lg:col-span-8 p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-3 shadow-md">
+                <span class="text-xs sm:text-sm font-bold text-white block">Triage Engine Findings:</span>
+                <div class="space-y-2">
+                  ${slideData.findings.map(f => `
+                    <div class="p-3.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+                      <span class="text-xs font-bold text-teal-400 block uppercase">${f.badge}</span>
+                      <span class="text-xs sm:text-sm font-bold text-white block">${f.title}</span>
+                      <p class="text-xs text-slate-300 font-medium">${f.desc}</p>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      if (slideData.type === 'egypt_value') {
+        return `
+          <div class="slide active w-full h-full flex flex-col justify-center space-y-4 ${textDir}">
+            <div class="border-b border-slate-800 pb-2">
+              <span class="text-xs text-teal-400 font-bold uppercase tracking-wider">${slideData.slideTag}</span>
+              <h2 class="text-xl sm:text-3xl font-black text-white mt-0.5">${slideData.slideTitle}</h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              ${slideData.values.map(v => `
+                <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2 shadow-sm">
+                  <span class="text-2xl font-black text-teal-400 font-mono">${v.num}</span>
+                  <h4 class="text-sm sm:text-base font-extrabold text-white">${v.title}</h4>
+                  <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">${v.desc}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      if (slideData.type === 'tech_arch') {
+        return `
+          <div class="slide active w-full h-full flex flex-col justify-center space-y-4 ${textDir}">
+            <div class="border-b border-slate-800 pb-2">
+              <span class="text-xs text-teal-400 font-bold uppercase tracking-wider">${slideData.slideTag}</span>
+              <h2 class="text-xl sm:text-3xl font-black text-white mt-0.5">${slideData.slideTitle}</h2>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-6 gap-2.5 text-center">
+              ${slideData.pipeline.map(p => `
+                <div class="p-3 sm:p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-1 shadow-sm">
+                  <span class="text-xs sm:text-sm font-bold text-teal-400 block">${p.step}</span>
+                  <span class="text-[11px] text-slate-300 block">${p.desc}</span>
+                </div>
+              `).join('')}
+            </div>
+
+            <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2 text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
+              ${slideData.notes.map(n => `<p>${n}</p>`).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      if (slideData.type === 'impact_grid') {
+        return `
+          <div class="slide active w-full h-full flex flex-col justify-center space-y-4 ${textDir}">
+            <div class="border-b border-slate-800 pb-2">
+              <span class="text-xs text-teal-400 font-bold uppercase tracking-wider">${slideData.slideTag}</span>
+              <h2 class="text-xl sm:text-3xl font-black text-white mt-0.5">${slideData.slideTitle}</h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              ${slideData.impacts.map(im => `
+                <div class="p-5 rounded-2xl bg-slate-900 border border-slate-800 space-y-2 shadow-sm">
+                  <span class="text-sm sm:text-base font-extrabold text-teal-300 block">${im.icon} ${im.title}</span>
+                  <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">${im.desc}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      if (slideData.type === 'final_cta') {
+        return `
+          <div class="slide active w-full h-full flex flex-col justify-center items-center text-center space-y-6">
+            <div class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-teal-950 border border-teal-700 text-teal-300 text-xs sm:text-sm font-bold shadow-md">
+              <span>🏆 ${slideData.slideTag}</span>
+            </div>
+
+            <h2 class="text-4xl sm:text-6xl font-black text-white tracking-tight">
+              ${slideData.title}
+            </h2>
+
+            <p class="text-lg sm:text-2xl text-teal-200 font-bold italic max-w-2xl">
+              ${slideData.motto}
+            </p>
+
+            <div class="p-5 sm:p-6 rounded-2xl bg-slate-900/95 border border-slate-800 max-w-xl w-full ${textDir} space-y-3 text-xs sm:text-sm font-medium shadow-md">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <span class="text-slate-400">Team:</span>
+                <span class="font-bold text-white">${slideData.team}</span>
+              </div>
+              <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <span class="text-slate-400">Developer:</span>
+                <span class="font-bold text-white">${slideData.lead}</span>
+              </div>
+              <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <span class="text-slate-400">Institution:</span>
+                <span class="font-bold text-teal-400">${slideData.institution}</span>
+              </div>
+              <div class="flex items-center justify-between pt-1">
+                <span class="text-slate-400">Live URL:</span>
+                <a href="${slideData.liveUrl}" target="_blank" class="font-bold text-teal-300 hover:underline">web1111-three.vercel.app</a>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      return `<div>Slide</div>`;
+    }
+
+    function renderCurrentSlide() {
+      const data = deckData[currentLang];
+      const slide = data.slides[currentSlide];
+      
+      // Update Canvas
+      document.getElementById('slideCanvas').innerHTML = renderSlide(slide, currentLang);
+      
+      // Update UI Header & Footer labels
+      document.getElementById('headerSub').textContent = data.headerSub;
+      document.getElementById('langBtnText').textContent = data.langBtn;
+      document.getElementById('downloadBtnText').textContent = data.downloadBtn;
+      document.getElementById('prevBtnText').textContent = data.prevBtn;
+      document.getElementById('nextBtnText').textContent = data.nextBtn;
+
+      // Update Slide Counter
+      document.getElementById('slideCounter').textContent = `${currentSlide + 1} / ${data.slides.length}`;
+
+      // Update Dots
+      const dotsContainer = document.getElementById('dotsContainer');
+      dotsContainer.innerHTML = data.slides.map((_, i) => `
+        <button class="dot w-3 h-3 rounded-full shrink-0 transition-all ${i === currentSlide ? 'bg-teal-400 scale-125' : 'bg-slate-700'}" onclick="goToSlide(${i})"></button>
+      `).join('');
+
+      // Buttons State
+      document.getElementById('prevBtn').disabled = currentSlide === 0;
+      document.getElementById('nextBtn').disabled = currentSlide === data.slides.length - 1;
     }
 
     function nextSlide() {
-      if (currentSlide < slides.length - 1) {
+      const data = deckData[currentLang];
+      if (currentSlide < data.slides.length - 1) {
         currentSlide++;
-        updateSlide();
+        renderCurrentSlide();
       }
     }
 
     function prevSlide() {
       if (currentSlide > 0) {
         currentSlide--;
-        updateSlide();
+        renderCurrentSlide();
       }
     }
 
     function goToSlide(index) {
       currentSlide = index;
-      updateSlide();
+      renderCurrentSlide();
     }
 
-    nextBtn.addEventListener('click', nextSlide);
-    prevBtn.addEventListener('click', prevSlide);
+    document.getElementById('nextBtn').addEventListener('click', nextSlide);
+    document.getElementById('prevBtn').addEventListener('click', prevSlide);
 
-    langToggleBtn.addEventListener('click', () => {
-      isArabic = !isArabic;
-      if (isArabic) {
-        htmlRoot.setAttribute('dir', 'rtl');
-        htmlRoot.setAttribute('lang', 'ar');
-        langLabel.textContent = '🌐 English';
+    document.getElementById('langToggleBtn').addEventListener('click', () => {
+      currentLang = currentLang === 'ar' ? 'en' : 'ar';
+      const root = document.getElementById('htmlRoot');
+      if (currentLang === 'ar') {
+        root.setAttribute('dir', 'rtl');
+        root.setAttribute('lang', 'ar');
       } else {
-        htmlRoot.setAttribute('dir', 'ltr');
-        htmlRoot.setAttribute('lang', 'en');
-        langLabel.textContent = '🌐 العربية';
+        root.setAttribute('dir', 'ltr');
+        root.setAttribute('lang', 'en');
       }
+      renderCurrentSlide();
     });
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') {
-        if (isArabic) prevSlide(); else nextSlide();
+        if (currentLang === 'ar') prevSlide(); else nextSlide();
       } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp' || e.key === ' ') {
-        if (isArabic) nextSlide(); else prevSlide();
+        if (currentLang === 'ar') nextSlide(); else prevSlide();
       }
     });
 
-    updateSlide();
+    // Initial Render
+    renderCurrentSlide();
   </script>
 </body>
 </html>
