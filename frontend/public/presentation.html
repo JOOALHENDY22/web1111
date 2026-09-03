@@ -2,35 +2,42 @@
 <html lang="ar" dir="rtl" id="htmlRoot">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YoPharma Drug Check | Presentation & Live Interactive Platform Guide</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>YoPharma Drug Check | Mobile & Presentation Deck</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    /* iOS & Android dynamic viewport units */
+    :root {
+      --app-height: 100dvh;
+    }
     body {
       font-family: 'Cairo', 'Plus Jakarta Sans', system-ui, sans-serif;
       background-color: #060D17;
       color: #F8FAFC;
+      height: 100dvh;
+      min-height: -webkit-fill-available;
+      touch-action: pan-y; /* Allow vertical scroll, handle horizontal swipe via JS */
     }
     .slide {
       display: none;
-      animation: fadeInSlide 0.25s ease-out;
+      animation: fadeInSlide 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .slide.active {
       display: flex;
     }
     @keyframes fadeInSlide {
-      from { opacity: 0; transform: translateY(6px) scale(0.995); }
+      from { opacity: 0; transform: translateY(4px) scale(0.995); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
     .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 4px;
+      height: 4px;
     }
     .custom-scrollbar::-webkit-scrollbar-track {
-      background: #0F172A;
+      background: transparent;
     }
     .custom-scrollbar::-webkit-scrollbar-thumb {
       background: #334155;
@@ -38,81 +45,82 @@
     }
   </style>
 </head>
-<body class="h-screen w-screen overflow-hidden flex flex-col justify-between select-none">
+<body class="flex flex-col justify-between overflow-hidden select-none">
 
-  <!-- TOP APP HEADER -->
-  <header class="h-16 border-b border-slate-800 bg-slate-900/95 px-3 sm:px-8 flex items-center justify-between z-30 shrink-0 shadow-lg">
-    <div class="flex items-center gap-2.5 sm:gap-3.5">
-      <a href="/" target="_blank" class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-teal-600 hover:bg-teal-500 text-white flex items-center justify-center font-black text-sm sm:text-base shadow-md transition-transform active:scale-95" title="الذهاب للرئيسية">
+  <!-- TOP HEADER (Fixed height, mobile-optimized) -->
+  <header class="h-14 sm:h-16 border-b border-slate-800 bg-slate-900/95 px-3 sm:px-8 flex items-center justify-between z-30 shrink-0 shadow-lg">
+    <div class="flex items-center gap-2 sm:gap-3">
+      <a href="/" target="_blank" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-teal-600 hover:bg-teal-500 text-white flex items-center justify-center font-black text-xs sm:text-base shadow-md transition-transform active:scale-95 shrink-0">
         YP
       </a>
-      <div>
+      <div class="truncate">
         <div class="flex items-center gap-1.5 sm:gap-2">
-          <span class="font-black text-sm sm:text-lg text-white tracking-tight">YoPharma <span class="text-teal-400 font-bold">Drug Check</span></span>
-          <span class="text-[10px] sm:text-xs bg-teal-950 border border-teal-700 text-teal-300 px-2 py-0.5 rounded-full font-bold">Team PharmaMind</span>
+          <span class="font-black text-xs sm:text-lg text-white tracking-tight truncate">YoPharma <span class="text-teal-400 font-bold">Drug Check</span></span>
+          <span class="text-[9px] sm:text-xs bg-teal-950 border border-teal-700 text-teal-300 px-1.5 sm:px-2 py-0.5 rounded-full font-bold shrink-0">PharmaMind</span>
         </div>
-        <span id="headerSub" class="text-[11px] sm:text-xs text-slate-400 hidden sm:inline font-medium">كلية الصيدلة • الجامعة المصرية الصينية (ECU)</span>
+        <span id="headerSub" class="text-[10px] sm:text-xs text-slate-400 hidden sm:inline font-medium">كلية الصيدلة • الجامعة المصرية الصينية (ECU)</span>
       </div>
     </div>
 
-    <!-- Controls: Language Toggle + Counter + Try Main App Button + PPTX Download -->
-    <div class="flex items-center gap-1.5 sm:gap-3">
-      <a href="/" target="_blank" class="hidden lg:inline-flex text-xs sm:text-sm bg-slate-800 hover:bg-slate-700 text-teal-300 border border-teal-800/80 px-3 py-1.5 rounded-xl font-bold transition-all items-center gap-1.5 shadow-sm">
-        <span>🚀 فتح الموقع الرئيسي</span>
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-      </a>
-
-      <button id="langToggleBtn" class="text-xs sm:text-sm bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl font-bold transition-all flex items-center gap-1 shadow-sm">
+    <!-- Controls -->
+    <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
+      <button id="langToggleBtn" class="text-[11px] sm:text-sm bg-slate-800 hover:bg-slate-700 text-teal-300 border border-teal-800/80 px-2.5 sm:px-3 py-1.5 rounded-lg font-bold transition-all flex items-center gap-1 shadow-sm">
         <span id="langBtnText">🌐 English</span>
       </button>
 
-      <span id="slideCounter" class="text-xs sm:text-sm font-mono bg-slate-950 text-teal-400 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl font-bold border border-slate-800">
+      <span id="slideCounter" class="text-[11px] sm:text-sm font-mono bg-slate-950 text-teal-400 px-2.5 sm:px-3 py-1.5 rounded-lg font-bold border border-slate-800">
         1 / 12
       </span>
 
-      <a href="/YoPharma_Drug_Check_Presentation.pptx" download class="text-xs sm:text-sm bg-teal-600 hover:bg-teal-500 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl font-bold transition-all flex items-center gap-1.5 shadow-md">
-        <span id="downloadBtnText">تحميل PPTX</span>
-        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+      <a href="/YoPharma_Drug_Check_Presentation.pptx" download class="text-[11px] sm:text-sm bg-teal-600 hover:bg-teal-500 text-white px-2.5 sm:px-4 py-1.5 rounded-lg font-bold transition-all flex items-center gap-1 shadow-md">
+        <span id="downloadBtnText" class="hidden sm:inline">تحميل PPTX</span>
+        <span class="sm:hidden">PPTX</span>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
       </a>
     </div>
   </header>
 
-  <!-- MAIN SLIDE CANVAS -->
-  <main id="slideCanvas" class="flex-1 w-full max-w-7xl mx-auto p-2.5 sm:p-6 flex items-center justify-center relative overflow-y-auto custom-scrollbar">
+  <!-- MAIN SLIDE CANVAS (Fully scrollable on mobile, padded for comfortable reading) -->
+  <main id="slideCanvas" class="flex-1 w-full max-w-7xl mx-auto p-3 sm:p-6 overflow-y-auto custom-scrollbar flex flex-col justify-start sm:justify-center relative">
     <!-- Dynamic slide injection -->
   </main>
 
-  <!-- BOTTOM CONTROLS -->
-  <footer class="h-16 border-t border-slate-800 bg-slate-900/95 px-3 sm:px-8 flex items-center justify-between z-30 shrink-0 shadow-lg">
-    <button id="prevBtn" class="px-3.5 sm:px-6 py-2 sm:py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-bold transition-all disabled:opacity-30 flex items-center gap-1.5">
+  <!-- SWIPE HINT ON MOBILE -->
+  <div class="sm:hidden w-full text-center pb-1">
+    <span class="text-[10px] text-slate-500 font-bold tracking-wide">👈 اسحب يميناً أو يساراً للتقليب 👉</span>
+  </div>
+
+  <!-- BOTTOM FIXED CONTROLS BAR (Big touch targets, high z-index, always visible) -->
+  <footer class="h-16 border-t border-slate-800 bg-slate-900/98 px-3 sm:px-8 flex items-center justify-between z-30 shrink-0 shadow-2xl safe-area-bottom">
+    <button id="prevBtn" class="px-4 sm:px-6 py-2.5 rounded-xl bg-slate-800 active:bg-slate-700 text-slate-200 text-xs sm:text-sm font-bold transition-all disabled:opacity-20 flex items-center gap-1.5 shadow-sm active:scale-95">
       <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
       <span id="prevBtnText">السابق</span>
     </button>
 
     <!-- Slide Indicators -->
-    <div id="dotsContainer" class="flex items-center gap-1 sm:gap-2 overflow-x-auto max-w-[50vw] px-2 py-1">
+    <div id="dotsContainer" class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto max-w-[42vw] px-1 py-1">
       <!-- Injected by JS -->
     </div>
 
-    <button id="nextBtn" class="px-3.5 sm:px-6 py-2 sm:py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs sm:text-sm font-bold transition-all disabled:opacity-30 flex items-center gap-1.5 shadow-md">
+    <button id="nextBtn" class="px-5 sm:px-7 py-2.5 rounded-xl bg-teal-600 active:bg-teal-500 text-white text-xs sm:text-sm font-bold transition-all disabled:opacity-20 flex items-center gap-1.5 shadow-lg active:scale-95 ring-2 ring-teal-500/30">
       <span id="nextBtnText">التالي</span>
       <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
     </button>
   </footer>
 
-  <!-- DYNAMIC ENGINE SCRIPT -->
+  <!-- PRESENTATION SCRIPT WITH TOUCH SWIPES -->
   <script>
     let currentSlide = 0;
     let currentLang = 'ar';
 
     const presentationData = {
       ar: {
-        headerSub: "كلية الصيدلة • الجامعة المصرية الصينية (ECU) • مسار الابتكار والذكاء الاصطناعي",
+        headerSub: "كلية الصيدلة • الجامعة المصرية الصينية (ECU)",
         langBtn: "🌐 English",
         downloadBtn: "تحميل PPTX",
         prevBtn: "السابق",
         nextBtn: "التالي",
-        tryLiveLabel: "تجربة هذه الخانة مباشرة في الموقع 🚀",
+        tryLiveLabel: "تجربة هذه الخانة في الموقع 🚀",
         slides: [
           // 1. COVER
           {
@@ -164,7 +172,7 @@
             tag: "الخانة 1 • شريط البحث السريع والجرعات",
             title: "1. البحث الذكي واسترجاع بيانات الدواء (Drug Lookup)",
             route: "/search",
-            routeLabel: "فتح خانة البحث بالموقع ↗",
+            routeLabel: "فتح البحث ↗",
             problemTitle: "⚠️ المشكلة التي تحلها هذه الخانة:",
             problemDesc: "صعوبة تذكر أسماء 15 ألف دواء بالاسم التجاري والعلمي في نفس الوقت والوصول الفوري للجرعات واستخدامات الدواء.",
             solutionTitle: "✨ كيف تعمل في YoPharma؟",
@@ -178,7 +186,7 @@
             tag: "الخانة 2 • فاحص التفاعلات الدوائية المتبادلة",
             title: "2. فاحص التفاعلات الدوائية (Drug-Drug Interactions)",
             route: "/interaction",
-            routeLabel: "فتح فاحص التفاعلات بالموقع ↗",
+            routeLabel: "فتح التفاعلات ↗",
             problemTitle: "⚠️ المشكلة التي تحلها هذه الخانة:",
             problemDesc: "تناول المريض لأكثر من دواء يسبب تفاعلات تعطل الامتصاص أو تزيد سمية الدواء بالدم دون علم المريض أو الطبيب.",
             solutionTitle: "✨ كيف تعمل في YoPharma؟",
@@ -192,7 +200,7 @@
             tag: "الخانة 3 • تفاعلات الأغذية ومواعيد الوجبات",
             title: "3. مواعيد الوجبات والأغذية الممنوعة (Food-Drug Timing)",
             route: "/food-interactions",
-            routeLabel: "فتح جدول مواعيد الطعام بالموقع ↗",
+            routeLabel: "فتح جدول الطعام ↗",
             problemTitle: "⚠️ المشكلة التي تحلها هذه الخانة:",
             problemDesc: "أخذ الدواء مع الألبان أو عصير الجريب فروت يبطل مفعوله بنسبة 80% أو يسبب سمية خطيرة في الكبد.",
             solutionTitle: "✨ كيف تعمل في YoPharma؟",
@@ -206,7 +214,7 @@
             tag: "الخانة 4 • دليل المقاييس والتحاليل المخبرية",
             title: "4. دليل ومقيّم المقاييس الحيوية (22 Biomarkers)",
             route: "/vitals",
-            routeLabel: "فتح دليل المقاييس بالموقع ↗",
+            routeLabel: "فتح المقاييس ↗",
             problemTitle: "⚠️ المشكلة التي تحلها هذه الخانة:",
             problemDesc: "صعوبة تذكر النطاقات الطبيعية لـ 22 تحليلاً (eGFR, INR, HbA1c, CrCl) وتقييم خطورة نتائج تحاليل المريض في ثوانٍ.",
             solutionTitle: "✨ كيف تعمل في YoPharma؟",
@@ -220,7 +228,7 @@
             tag: "الخانة 5 • دليل البدائل والمثائل في السوق المصري",
             title: "5. دليل البدائل والشركات والأسعار (Egyptian Generics)",
             route: "/alternatives",
-            routeLabel: "فتح دليل البدائل بالموقع ↗",
+            routeLabel: "فتح البدائل ↗",
             problemTitle: "⚠️ المشكلة التي تحلها هذه الخانة:",
             problemDesc: "نقص الأدوية المستوردة وغلاء أسعارها، مع صعوبة حصر البدائل المصرية المتطابقة في المادة الفعالة وسعرها.",
             solutionTitle: "✨ كيف تعمل في YoPharma؟",
@@ -234,7 +242,7 @@
             tag: "الخانة 6 • أمان وموانع استعمال الأمراض المزمنة",
             title: "6. أمان الأمراض المزمنة وضبط الجرعات (Chronic Safety)",
             route: "/chronic-safety",
-            routeLabel: "فتح فاحص الأمراض المزمنة بالموقع ↗",
+            routeLabel: "فتح أمان المزمنة ↗",
             problemTitle: "⚠️ المشكلة التي تحلها هذه الخانة:",
             problemDesc: "صرف أدوية شائعة لمرضى الضغط أو السكري أو القصور الكلوي مما يسبب تدهوراً حاداً في الكلى أو ارتفاع الضغط.",
             solutionTitle: "✨ كيف تعمل في YoPharma؟",
@@ -248,7 +256,7 @@
             tag: "الخانة 7 • مصفوفة المقارنة الدوائية المباشرة",
             title: "7. المقارنة المباشرة وجهاً لوجه (Side-by-Side)",
             route: "/compare",
-            routeLabel: "فتح مصفوفة المقارنة بالموقع ↗",
+            routeLabel: "فتح المقارنة ↗",
             problemTitle: "⚠️ المشكلة التي تحلها هذه الخانة:",
             problemDesc: "الحيرة في اختيار الدواء الأنسب بين دوائين من نفس العائلة (مثل Concor vs Tenormin) ومعرفة فروق الآثار الجانبية.",
             solutionTitle: "✨ كيف تعمل في YoPharma؟",
@@ -289,12 +297,12 @@
       },
 
       en: {
-        headerSub: "Faculty of Pharmacy • Egyptian Chinese University (ECU) • Innovation & AI Track",
+        headerSub: "Faculty of Pharmacy • Egyptian Chinese University (ECU)",
         langBtn: "🌐 العربية",
         downloadBtn: "Download PPTX",
         prevBtn: "Previous",
         nextBtn: "Next",
-        tryLiveLabel: "Try this tool live on the website 🚀",
+        tryLiveLabel: "Try this tool in live app 🚀",
         slides: [
           // 1. COVER
           {
@@ -346,7 +354,7 @@
             tag: "Module 1 • Quick Search & Drug Monograph",
             title: "1. Intelligent Drug Search & Monograph Lookup",
             route: "/search",
-            routeLabel: "Open Search Module in App ↗",
+            routeLabel: "Open Search ↗",
             problemTitle: "⚠️ The Problem This Module Solves:",
             problemDesc: "Difficulty remembering 15,000 Egyptian trade and generic names simultaneously while retrieving fast dosage and clinical indications.",
             solutionTitle: "✨ How it Works in YoPharma:",
@@ -360,7 +368,7 @@
             tag: "Module 2 • Drug-Drug Interaction Checker",
             title: "2. Drug-Drug Interaction Checker & Risk Triage",
             route: "/interaction",
-            routeLabel: "Open Interactions Module in App ↗",
+            routeLabel: "Open Interactions ↗",
             problemTitle: "⚠️ The Problem This Module Solves:",
             problemDesc: "Multi-drug polypharmacy causing unspotted absorption failures or severe systemic toxicities.",
             solutionTitle: "✨ How it Works in YoPharma:",
@@ -374,7 +382,7 @@
             tag: "Module 3 • Food-Drug Timing & Restrictions",
             title: "3. Meal Timing & Dietary Precautions",
             route: "/food-interactions",
-            routeLabel: "Open Food Timing Module in App ↗",
+            routeLabel: "Open Food Timing ↗",
             problemTitle: "⚠️ The Problem This Module Solves:",
             problemDesc: "Taking medications with dairy or grapefruit juice reduces absorption by up to 80% or causes severe accumulation toxicity.",
             solutionTitle: "✨ How it Works in YoPharma:",
@@ -388,7 +396,7 @@
             tag: "Module 4 • Laboratory & Vital Biomarkers",
             title: "4. 22 Clinical Biomarkers & Digital Evaluator",
             route: "/vitals",
-            routeLabel: "Open Biomarkers Module in App ↗",
+            routeLabel: "Open Biomarkers ↗",
             problemTitle: "⚠️ The Problem This Module Solves:",
             problemDesc: "Memorizing reference ranges for 22 laboratory tests (eGFR, INR, HbA1c, CrCl) and interpreting patient severity in seconds.",
             solutionTitle: "✨ How it Works in YoPharma:",
@@ -402,7 +410,7 @@
             tag: "Module 5 • Egyptian Market Generic Alternatives",
             title: "5. Egyptian Generic Equivalents & Price Tiers",
             route: "/alternatives",
-            routeLabel: "Open Alternatives Module in App ↗",
+            routeLabel: "Open Alternatives ↗",
             problemTitle: "⚠️ The Problem This Module Solves:",
             problemDesc: "Frequent imported medication shortages and high prices with no quick way to map registered local chemical equivalents.",
             solutionTitle: "✨ How it Works in YoPharma:",
@@ -416,7 +424,7 @@
             tag: "Module 6 • Chronic Disease Safety Evaluator",
             title: "6. Chronic Disease Safety & Renal Dose Adjustment",
             route: "/chronic-safety",
-            routeLabel: "Open Chronic Safety Module in App ↗",
+            routeLabel: "Open Chronic Safety ↗",
             problemTitle: "⚠️ The Problem This Module Solves:",
             problemDesc: "Dispensing common drugs to patients with Hypertension, Diabetes, or CKD causing acute kidney injury or blood pressure spikes.",
             solutionTitle: "✨ How it Works in YoPharma:",
@@ -430,7 +438,7 @@
             tag: "Module 7 • Side-by-Side Drug Comparison",
             title: "7. Head-to-Head Side-by-Side Comparison Matrix",
             route: "/compare",
-            routeLabel: "Open Comparison Matrix in App ↗",
+            routeLabel: "Open Comparison ↗",
             problemTitle: "⚠️ The Problem This Module Solves:",
             problemDesc: "Clinical dilemma when choosing between two drugs in the same class (e.g. Concor vs Tenormin) regarding side-effect profiles.",
             solutionTitle: "✨ How it Works in YoPharma:",
@@ -477,29 +485,28 @@
 
       if (type === 'search_demo') {
         return `
-          <div class="space-y-3">
+          <div class="space-y-2.5">
             <div class="relative">
-              <input id="demoSearchInput" type="text" placeholder="${isAr ? 'اكتب اسم الدواء (مثال: Augmentin, Concor)...' : 'Type medication name (e.g. Augmentin, Concor)...'}" 
-                class="w-full bg-slate-900 border border-teal-600/80 rounded-xl px-4 py-2.5 sm:py-3 text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 font-medium"
+              <input id="demoSearchInput" type="text" placeholder="${isAr ? 'اكتب اسم الدواء (مثال: Augmentin)...' : 'Type medication (e.g. Augmentin)...'}" 
+                class="w-full bg-slate-900 border border-teal-600/80 rounded-xl px-3.5 py-2 sm:py-2.5 text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 font-medium"
                 value="Augmentin" oninput="handleDemoSearch(this.value)" />
-              <span class="absolute left-3 rtl:left-auto rtl:right-auto rtl:left-3 top-2.5 sm:top-3 text-[10px] bg-slate-800 text-teal-400 px-2 py-0.5 rounded font-mono font-bold">HotKey [/]</span>
+              <span class="absolute left-3 rtl:left-auto rtl:right-auto rtl:left-3 top-2 sm:top-2.5 text-[9px] bg-slate-800 text-teal-400 px-1.5 py-0.5 rounded font-mono font-bold">[/]</span>
             </div>
 
-            <!-- Autocomplete Results Box -->
-            <div id="demoSearchResults" class="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-2 text-xs">
+            <div id="demoSearchResults" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1.5 text-xs">
               <div class="flex items-center justify-between p-2 rounded-lg bg-slate-950 border border-teal-800/60">
                 <div>
                   <span class="font-bold text-teal-300 block text-xs sm:text-sm">Augmentin 1g Tablets</span>
-                  <span class="text-[10px] sm:text-[11px] text-slate-400 font-mono">Amoxicillin + Clavulanic Acid (GSK)</span>
+                  <span class="text-[10px] text-slate-400 font-mono">Amoxicillin/Clavulanate (GSK)</span>
                 </div>
-                <span class="text-[9px] sm:text-[10px] bg-teal-950 text-teal-300 border border-teal-700 px-2 py-1 rounded font-bold">${isAr ? 'مضاد واسع' : 'Broad Antibiotic'}</span>
+                <span class="text-[9px] bg-teal-950 text-teal-300 border border-teal-700 px-1.5 py-0.5 rounded font-bold">${isAr ? 'مضاد واسع' : 'Antibiotic'}</span>
               </div>
               <div class="flex items-center justify-between p-2 rounded-lg bg-slate-950/60 border border-slate-800">
                 <div>
                   <span class="font-bold text-white block text-xs">Curam 1g (Amoun)</span>
-                  <span class="text-[10px] text-slate-400">${isAr ? 'بديل مصري مطابق كيميائياً' : 'Exact generic equivalent'}</span>
+                  <span class="text-[10px] text-slate-400">${isAr ? 'بديل مصري مطابق' : 'Generic equivalent'}</span>
                 </div>
-                <span class="text-[9px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded">${isAr ? 'سعر متوسط' : 'Mod Price'}</span>
+                <span class="text-[9px] bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded">${isAr ? 'متوسط' : 'Mod Price'}</span>
               </div>
             </div>
           </div>
@@ -508,24 +515,24 @@
 
       if (type === 'interactions_demo') {
         return `
-          <div class="space-y-2.5 text-xs">
-            <span class="text-slate-400 font-bold block">${isAr ? 'اضغط لتجربة تفاعل دوائي حقيقي:' : 'Click to test real interaction pair:'}</span>
-            <div class="flex flex-wrap gap-1.5 sm:gap-2">
-              <button onclick="setInteractionDemo('cipro_antinal')" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-red-950/70 border border-red-700 text-red-200 font-bold text-xs hover:bg-red-900">
+          <div class="space-y-2 text-xs">
+            <span class="text-slate-400 font-bold block text-[11px]">${isAr ? 'اضغط لتجربة تفاعل حقيقي:' : 'Click to test real interaction:'}</span>
+            <div class="flex flex-wrap gap-1.5">
+              <button onclick="setInteractionDemo('cipro_antinal')" class="px-2.5 py-1 rounded-lg bg-red-950/70 border border-red-700 text-red-200 font-bold text-[11px] active:bg-red-900">
                 Cipro + Antinal
               </button>
-              <button onclick="setInteractionDemo('warfarin_cataflam')" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-red-950/70 border border-red-700 text-red-200 font-bold text-xs hover:bg-red-900">
+              <button onclick="setInteractionDemo('warfarin_cataflam')" class="px-2.5 py-1 rounded-lg bg-red-950/70 border border-red-700 text-red-200 font-bold text-[11px] active:bg-red-900">
                 Warfarin + Cataflam
               </button>
-              <button onclick="setInteractionDemo('panadol_concor')" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-teal-950/70 border border-teal-700 text-teal-200 font-bold text-xs hover:bg-teal-900">
+              <button onclick="setInteractionDemo('panadol_concor')" class="px-2.5 py-1 rounded-lg bg-teal-950/70 border border-teal-700 text-teal-200 font-bold text-[11px] active:bg-teal-900">
                 Panadol + Concor
               </button>
             </div>
 
-            <div id="interactionDemoResult" class="p-3 sm:p-3.5 rounded-xl bg-slate-900 border border-red-800/80 space-y-1.5">
-              <span class="text-[9px] sm:text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded uppercase">🔴 HIGH RISK (خطورة عالية)</span>
+            <div id="interactionDemoResult" class="p-2.5 sm:p-3 rounded-xl bg-slate-900 border border-red-800/80 space-y-1">
+              <span class="text-[9px] bg-red-600 text-white font-bold px-1.5 py-0.5 rounded uppercase">🔴 HIGH RISK (خطورة عالية)</span>
               <h5 class="text-xs sm:text-sm font-extrabold text-white">Ciprofloxacin ↔ Antinal</h5>
-              <p class="text-[11px] text-slate-300 leading-relaxed">
+              <p class="text-[10px] sm:text-[11px] text-slate-300 leading-relaxed">
                 ${isAr ? 'يحدث التصاق معوي يقلل امتصاص السيبروفلوكساسين بنسبة 60%. التوصية: فصل الجرعات بساعتين.' : 'Intestinal chelation reducing ciprofloxacin absorption by 60%. Action: Separate by 2 hours.'}
               </p>
             </div>
@@ -535,20 +542,20 @@
 
       if (type === 'food_demo') {
         return `
-          <div class="space-y-2.5 text-xs">
-            <span class="text-slate-400 font-bold block">${isAr ? 'اختر الدواء لمعرفة جدول طعامه:' : 'Select medication to view food timing:'}</span>
-            <div class="flex gap-1.5 sm:gap-2">
-              <button onclick="setFoodDemo('cipro')" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-slate-800 border border-teal-700 text-teal-300 font-bold">Ciprofloxacin</button>
-              <button onclick="setFoodDemo('glucophage')" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 font-bold">Glucophage</button>
-              <button onclick="setFoodDemo('concor')" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 font-bold">Concor</button>
+          <div class="space-y-2 text-xs">
+            <span class="text-slate-400 font-bold block text-[11px]">${isAr ? 'اختر الدواء لمعرفة جدول طعامه:' : 'Select medication to view food timing:'}</span>
+            <div class="flex gap-1.5">
+              <button onclick="setFoodDemo('cipro')" class="px-2.5 py-1 rounded-lg bg-slate-800 border border-teal-700 text-teal-300 font-bold text-[11px]">Ciprofloxacin</button>
+              <button onclick="setFoodDemo('glucophage')" class="px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 font-bold text-[11px]">Glucophage</button>
+              <button onclick="setFoodDemo('concor')" class="px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-slate-300 font-bold text-[11px]">Concor</button>
             </div>
 
-            <div id="foodDemoResult" class="p-3 sm:p-3.5 rounded-xl bg-slate-900 border border-amber-800/80 space-y-2">
+            <div id="foodDemoResult" class="p-2.5 sm:p-3 rounded-xl bg-slate-900 border border-amber-800/80 space-y-1.5">
               <div class="flex items-center justify-between">
-                <span class="font-bold text-amber-300 text-xs">⏰ ${isAr ? 'الموعد: على معدة فارغة' : 'Timing: On Empty Stomach'}</span>
-                <span class="text-[9px] sm:text-[10px] bg-amber-950 border border-amber-700 text-amber-300 px-2 py-0.5 rounded font-bold">${isAr ? 'قبل الأكل بساعة' : '1h before meal'}</span>
+                <span class="font-bold text-amber-300 text-[11px] sm:text-xs">⏰ ${isAr ? 'الموعد: على معدة فارغة' : 'Timing: On Empty Stomach'}</span>
+                <span class="text-[9px] bg-amber-950 border border-amber-700 text-amber-300 px-1.5 py-0.5 rounded font-bold">${isAr ? 'قبل الأكل بساعة' : '1h before meal'}</span>
               </div>
-              <div class="p-2 rounded-lg bg-red-950/40 border border-red-900/60 text-red-300 text-[10px] sm:text-[11px]">
+              <div class="p-1.5 sm:p-2 rounded-lg bg-red-950/40 border border-red-900/60 text-red-300 text-[10px] sm:text-[11px]">
                 🚫 <strong>${isAr ? 'ممنوع تماماً:' : 'Strictly Avoid:'}</strong> ${isAr ? 'منتجات الألبان والكالسيوم وعصير الجريب فروت أثناء وقت الجرعة.' : 'Dairy, Calcium-rich foods, and Grapefruit juice.'}
               </div>
             </div>
@@ -558,23 +565,23 @@
 
       if (type === 'vitals_demo') {
         return `
-          <div class="space-y-2.5 text-xs">
+          <div class="space-y-2 text-xs">
             <div class="grid grid-cols-2 gap-2">
               <div>
-                <label class="text-[10px] sm:text-[11px] text-slate-400 font-bold block mb-1">${isAr ? 'الكرياتينين (Creatinine mg/dL):' : 'Serum Creatinine (mg/dL):'}</label>
+                <label class="text-[10px] text-slate-400 font-bold block mb-0.5">${isAr ? 'الكرياتينين (Creatinine mg/dL):' : 'Serum Creatinine (mg/dL):'}</label>
                 <input id="demoCrInput" type="number" step="0.1" value="1.8" oninput="calculateVitalsDemo(this.value)"
-                  class="w-full bg-slate-900 border border-teal-600 rounded-lg px-2.5 py-1.5 sm:py-2 text-white font-bold font-mono focus:outline-none text-xs" />
+                  class="w-full bg-slate-900 border border-teal-600 rounded-lg px-2.5 py-1 text-white font-bold font-mono focus:outline-none text-xs" />
               </div>
               <div>
-                <label class="text-[10px] sm:text-[11px] text-slate-400 font-bold block mb-1">${isAr ? 'السكر التراكمي (HbA1c %):' : 'Glycated HbA1c (%):'}</label>
+                <label class="text-[10px] text-slate-400 font-bold block mb-0.5">${isAr ? 'السكر التراكمي (HbA1c %):' : 'Glycated HbA1c (%):'}</label>
                 <input type="number" step="0.1" value="8.2" readonly
-                  class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 sm:py-2 text-amber-400 font-bold font-mono text-xs" />
+                  class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1 text-amber-400 font-bold font-mono text-xs" />
               </div>
             </div>
 
-            <div id="vitalsDemoResult" class="p-2.5 sm:p-3 rounded-xl bg-red-950/40 border border-red-800 text-xs space-y-1">
-              <span class="font-bold text-red-400 block">🔴 ${isAr ? 'النتيجة: مرتفع (High / Renal Alert)' : 'Status: Elevated (Renal Alert)'}</span>
-              <p class="text-[10px] sm:text-[11px] text-slate-300">
+            <div id="vitalsDemoResult" class="p-2 sm:p-2.5 rounded-xl bg-red-950/40 border border-red-800 text-xs space-y-0.5">
+              <span class="font-bold text-red-400 block text-xs">🔴 ${isAr ? 'النتيجة: مرتفع (High / Renal Alert)' : 'Status: Elevated (Renal Alert)'}</span>
+              <p class="text-[10px] text-slate-300">
                 ${isAr ? 'يشير لانخفاض وظائف الكلى (eGFR < 45). يلزم تعديل جرعات المضادات ومسكنات NSAIDs.' : 'Indicates reduced kidney function (eGFR < 45). Renal dose reduction required for antibiotics.'}
               </p>
             </div>
@@ -584,28 +591,24 @@
 
       if (type === 'alternatives_demo') {
         return `
-          <div class="space-y-2 text-xs">
-            <div class="p-2 sm:p-2.5 rounded-xl bg-slate-900 border border-teal-600 flex items-center justify-between">
+          <div class="space-y-1.5 text-xs">
+            <div class="p-1.5 sm:p-2 rounded-xl bg-slate-900 border border-teal-600 flex items-center justify-between">
               <div>
-                <span class="text-xs font-bold text-teal-300 block">Augmentin 1g (Original)</span>
-                <span class="text-[9px] sm:text-[10px] text-slate-400">GSK • Amoxicillin/Clavulanate</span>
+                <span class="text-xs font-bold text-teal-300 block">Augmentin 1g</span>
+                <span class="text-[9px] text-slate-400">GSK • Amoxicillin/Clavulanate</span>
               </div>
-              <span class="text-[9px] sm:text-[10px] bg-slate-800 text-amber-400 px-2 py-0.5 rounded font-bold">${isAr ? 'سعر مرتفع' : 'Premium'}</span>
+              <span class="text-[9px] bg-slate-800 text-amber-400 px-1.5 py-0.5 rounded font-bold">${isAr ? 'سعر مرتفع' : 'Premium'}</span>
             </div>
 
-            <span class="text-[10px] sm:text-[11px] text-slate-400 font-bold block pt-0.5">${isAr ? 'المثائل المصرية المعتمدة بنفس المادة:' : 'Registered Egyptian Generics:'}</span>
+            <span class="text-[10px] text-slate-400 font-bold block pt-0.5">${isAr ? 'المثائل المصرية بنفس المادة:' : 'Registered Egyptian Generics:'}</span>
             <div class="space-y-1">
-              <div class="p-1.5 sm:p-2 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-between">
+              <div class="p-1.5 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-between">
                 <span class="font-bold text-white text-xs">Curam 1g (Amoun)</span>
-                <span class="text-[9px] bg-emerald-950 text-emerald-300 border border-emerald-700 px-2 py-0.5 rounded font-bold">${isAr ? 'سعر متوسط' : 'Moderate'}</span>
+                <span class="text-[9px] bg-emerald-950 text-emerald-300 border border-emerald-700 px-1.5 py-0.5 rounded font-bold">${isAr ? 'سعر متوسط' : 'Moderate'}</span>
               </div>
-              <div class="p-1.5 sm:p-2 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-between">
+              <div class="p-1.5 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-between">
                 <span class="font-bold text-white text-xs">Hibiotic 1g (Amoun)</span>
-                <span class="text-[9px] bg-emerald-950 text-emerald-300 border border-emerald-700 px-2 py-0.5 rounded font-bold">${isAr ? 'سعر متوسط' : 'Moderate'}</span>
-              </div>
-              <div class="p-1.5 sm:p-2 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-between">
-                <span class="font-bold text-white text-xs">Megamox 1g (Hikma)</span>
-                <span class="text-[9px] bg-teal-950 text-teal-300 border border-teal-700 px-2 py-0.5 rounded font-bold">${isAr ? 'اقتصادي' : 'Economy'}</span>
+                <span class="text-[9px] bg-emerald-950 text-emerald-300 border border-emerald-700 px-1.5 py-0.5 rounded font-bold">${isAr ? 'سعر متوسط' : 'Moderate'}</span>
               </div>
             </div>
           </div>
@@ -614,20 +617,20 @@
 
       if (type === 'chronic_demo') {
         return `
-          <div class="space-y-2 text-xs">
-            <span class="text-slate-400 font-bold block">${isAr ? 'حدد الحالة المزمنة لفحص أمان Cataflam 50mg:' : 'Select chronic condition for Cataflam 50mg:'}</span>
+          <div class="space-y-1.5 text-xs">
+            <span class="text-slate-400 font-bold block text-[11px]">${isAr ? 'حدد الحالة لفحص أمان Cataflam 50mg:' : 'Select condition for Cataflam 50mg:'}</span>
             <div class="grid grid-cols-2 gap-1.5">
-              <button onclick="setChronicDemo('ckd')" class="p-1.5 sm:p-2 rounded-lg bg-red-950/70 border border-red-700 text-red-200 font-bold text-right rtl:text-right ltr:text-left text-xs">
+              <button onclick="setChronicDemo('ckd')" class="p-1.5 rounded-lg bg-red-950/70 border border-red-700 text-red-200 font-bold text-right rtl:text-right ltr:text-left text-xs">
                 🔴 ${isAr ? 'قصور كلوي (CKD)' : 'Kidney (CKD)'}
               </button>
-              <button onclick="setChronicDemo('htn')" class="p-1.5 sm:p-2 rounded-lg bg-amber-950/70 border border-amber-700 text-amber-200 font-bold text-right rtl:text-right ltr:text-left text-xs">
+              <button onclick="setChronicDemo('htn')" class="p-1.5 rounded-lg bg-amber-950/70 border border-amber-700 text-amber-200 font-bold text-right rtl:text-right ltr:text-left text-xs">
                 🟠 ${isAr ? 'ارتفاع ضغط الدم' : 'Hypertension'}
               </button>
             </div>
 
-            <div id="chronicDemoResult" class="p-2.5 sm:p-3 rounded-xl bg-red-950/40 border border-red-800 space-y-1">
-              <span class="font-bold text-red-400 block">${isAr ? '🚫 ممنوع تماماً (Contraindicated)' : '🚫 Strictly Contraindicated'}</span>
-              <p class="text-[10px] sm:text-[11px] text-slate-300">
+            <div id="chronicDemoResult" class="p-2 rounded-xl bg-red-950/40 border border-red-800 space-y-0.5">
+              <span class="font-bold text-red-400 block text-[11px]">${isAr ? '🚫 ممنوع تماماً (Contraindicated)' : '🚫 Strictly Contraindicated'}</span>
+              <p class="text-[10px] text-slate-300">
                 ${isAr ? 'مسكنات NSAIDs تقلل تدفق الدم الكلوي وتفاقم القصور الكلوي. استبدله بالباراسيتامول (Panadol).' : 'NSAIDs reduce renal blood flow and precipitate acute renal failure. Substitute with Paracetamol.'}
               </p>
             </div>
@@ -637,28 +640,24 @@
 
       if (type === 'compare_demo') {
         return `
-          <div class="space-y-2 text-xs">
-            <div class="grid grid-cols-2 gap-2 text-center">
-              <div class="p-1.5 sm:p-2 rounded-xl bg-slate-900 border border-teal-600">
+          <div class="space-y-1.5 text-xs">
+            <div class="grid grid-cols-2 gap-1.5 text-center">
+              <div class="p-1.5 rounded-xl bg-slate-900 border border-teal-600">
                 <span class="font-bold text-teal-300 block text-xs">Concor 5mg</span>
                 <span class="text-[9px] text-slate-400">Bisoprolol (Merck)</span>
               </div>
-              <div class="p-1.5 sm:p-2 rounded-xl bg-slate-900 border border-sky-600">
+              <div class="p-1.5 rounded-xl bg-slate-900 border border-sky-600">
                 <span class="font-bold text-sky-300 block text-xs">Tenormin 50mg</span>
                 <span class="text-[9px] text-slate-400">Atenolol (AstraZeneca)</span>
               </div>
             </div>
 
-            <div class="p-2.5 sm:p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
-              <div class="flex justify-between border-b border-slate-800 pb-1 text-[11px]">
+            <div class="p-2 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+              <div class="flex justify-between border-b border-slate-800 pb-0.5 text-[10px] sm:text-[11px]">
                 <span class="text-slate-400">${isAr ? 'الانتقائية القلبية:' : 'Cardioselectivity:'}</span>
                 <span class="font-bold text-teal-300">${isAr ? 'عالية جداً (B1)' : 'High (B1 selective)'}</span>
               </div>
-              <div class="flex justify-between border-b border-slate-800 pb-1 text-[11px]">
-                <span class="text-slate-400">${isAr ? 'التخلص الحيوي:' : 'Elimination:'}</span>
-                <span class="font-bold text-slate-200">50% Renal / 50% Hepatic</span>
-              </div>
-              <div class="p-1.5 sm:p-2 rounded-lg bg-teal-950/40 border border-teal-800 text-[10px] sm:text-[11px] text-teal-200">
+              <div class="p-1.5 rounded-lg bg-teal-950/40 border border-teal-800 text-[10px] text-teal-200">
                 💡 <strong>${isAr ? 'التوصية السريرية:' : 'Clinical Verdict:'}</strong> ${isAr ? 'يُفضل Concor لمرضى القصور الكلوي واعتلال الشعب الهوائية لاستقراره الدوائي.' : 'Concor preferred in renal/asthma patients due to balanced clearance.'}
               </div>
             </div>
@@ -677,8 +676,8 @@
 
       if (slide.type === 'cover') {
         return `
-          <div class="slide active w-full h-full flex flex-col justify-center items-center text-center space-y-4 sm:space-y-6 my-auto">
-            <div class="inline-flex items-center gap-2 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full bg-teal-950 border border-teal-700 text-teal-300 text-xs sm:text-sm font-bold shadow-md">
+          <div class="slide active w-full flex flex-col justify-center items-center text-center space-y-3 sm:space-y-6 my-auto py-2">
+            <div class="inline-flex items-center gap-1.5 px-3 sm:px-5 py-1 sm:py-2 rounded-full bg-teal-950 border border-teal-700 text-teal-300 text-[10px] sm:text-sm font-bold shadow-md">
               <span>${slide.badge}</span>
             </div>
             
@@ -686,7 +685,7 @@
               YoPharma <span class="text-teal-400">Drug Check</span>
             </h1>
 
-            <p class="text-base sm:text-2xl text-teal-200 font-bold italic max-w-3xl">
+            <p class="text-sm sm:text-2xl text-teal-200 font-bold italic max-w-3xl">
               ${slide.motto}
             </p>
 
@@ -694,17 +693,17 @@
               ${slide.subtitle}
             </p>
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 w-full max-w-4xl pt-1">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-4 w-full max-w-4xl pt-1">
               ${slide.meta.map(m => `
-                <div class="p-3.5 sm:p-5 rounded-2xl bg-slate-900/90 border border-slate-800 ${textDir} shadow-md space-y-0.5 sm:space-y-1">
+                <div class="p-3 sm:p-5 rounded-2xl bg-slate-900/90 border border-slate-800 ${textDir} shadow-md space-y-0.5 sm:space-y-1">
                   <span class="text-[10px] sm:text-xs text-teal-400 font-bold block uppercase tracking-wider">${m.label}</span>
-                  <span class="text-sm sm:text-base font-extrabold text-white block">${m.val}</span>
-                  <span class="text-[11px] sm:text-xs text-slate-400 block">${m.sub}</span>
+                  <span class="text-xs sm:text-base font-extrabold text-white block">${m.val}</span>
+                  <span class="text-[10px] sm:text-xs text-slate-400 block">${m.sub}</span>
                 </div>
               `).join('')}
             </div>
 
-            <div class="p-2.5 sm:p-3 rounded-xl bg-teal-950/40 border border-teal-800/60 max-w-3xl text-[11px] sm:text-xs text-teal-200 font-medium">
+            <div class="p-2 sm:p-3 rounded-xl bg-teal-950/40 border border-teal-800/60 max-w-3xl text-[10px] sm:text-xs text-teal-200 font-medium">
               ${slide.footer}
             </div>
           </div>
@@ -713,28 +712,28 @@
 
       if (slide.type === 'problem') {
         return `
-          <div class="slide active w-full h-full flex flex-col justify-center space-y-4 sm:space-y-5 ${textDir} my-auto">
-            <div class="border-b border-slate-800 pb-2">
-              <span class="text-xs text-red-400 font-bold uppercase tracking-wider">${slide.tag}</span>
-              <h2 class="text-lg sm:text-3xl font-black text-white mt-0.5">${slide.title}</h2>
+          <div class="slide active w-full flex flex-col justify-center space-y-3 sm:space-y-5 ${textDir} my-auto py-2">
+            <div class="border-b border-slate-800 pb-1.5">
+              <span class="text-[11px] text-red-400 font-bold uppercase tracking-wider">${slide.tag}</span>
+              <h2 class="text-base sm:text-3xl font-black text-white mt-0.5">${slide.title}</h2>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-stretch">
-              <div class="lg:col-span-6 p-4 sm:p-6 rounded-2xl bg-red-950/20 border border-red-900/50 space-y-3 shadow-md flex flex-col justify-between">
-                <div class="space-y-2">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-5 items-stretch">
+              <div class="lg:col-span-6 p-3.5 sm:p-6 rounded-2xl bg-red-950/20 border border-red-900/50 space-y-2.5 shadow-md flex flex-col justify-between">
+                <div class="space-y-1.5">
                   <span class="text-xs sm:text-sm font-bold text-red-400 block uppercase">⚠️ واقع الممارسة والتحديات:</span>
                   <p class="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">${slide.p1}</p>
                 </div>
-                <div class="p-3.5 sm:p-4 rounded-xl bg-slate-900 border border-slate-800">
-                  <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">${slide.p2}</p>
+                <div class="p-2.5 sm:p-4 rounded-xl bg-slate-900 border border-slate-800">
+                  <p class="text-[11px] sm:text-sm text-slate-300 leading-relaxed font-medium">${slide.p2}</p>
                 </div>
               </div>
 
-              <div class="lg:col-span-6 p-4 sm:p-6 rounded-2xl bg-slate-950 border border-slate-800 space-y-2.5 shadow-md">
+              <div class="lg:col-span-6 p-3.5 sm:p-6 rounded-2xl bg-slate-950 border border-slate-800 space-y-2 shadow-md">
                 <span class="text-xs sm:text-sm font-bold text-teal-300 block">📱 أسباب قصور المصادر الحالية:</span>
-                <div class="space-y-2 text-xs sm:text-sm">
+                <div class="space-y-1.5 text-xs sm:text-sm">
                   ${slide.points.map(p => `
-                    <div class="p-2.5 sm:p-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 font-medium">${p}</div>
+                    <div class="p-2 sm:p-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-200 font-medium">${p}</div>
                   `).join('')}
                 </div>
               </div>
@@ -745,22 +744,22 @@
 
       if (slide.type === 'solution') {
         return `
-          <div class="slide active w-full h-full flex flex-col justify-center space-y-4 sm:space-y-5 ${textDir} my-auto">
-            <div class="border-b border-slate-800 pb-2">
-              <span class="text-xs text-teal-400 font-bold uppercase tracking-wider">${slide.tag}</span>
-              <h2 class="text-lg sm:text-3xl font-black text-white mt-0.5">${slide.title}</h2>
+          <div class="slide active w-full flex flex-col justify-center space-y-3 sm:space-y-5 ${textDir} my-auto py-2">
+            <div class="border-b border-slate-800 pb-1.5">
+              <span class="text-[11px] text-teal-400 font-bold uppercase tracking-wider">${slide.tag}</span>
+              <h2 class="text-base sm:text-3xl font-black text-white mt-0.5">${slide.title}</h2>
             </div>
 
-            <div class="p-3.5 sm:p-5 rounded-2xl bg-gradient-to-r from-teal-950 to-slate-900 border border-teal-700 text-center space-y-1 shadow-md">
-              <p class="text-sm sm:text-xl font-black text-white">${slide.quote}</p>
+            <div class="p-3 sm:p-5 rounded-2xl bg-gradient-to-r from-teal-950 to-slate-900 border border-teal-700 text-center space-y-1 shadow-md">
+              <p class="text-xs sm:text-xl font-black text-white">${slide.quote}</p>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
               ${slide.pillars.map(p => `
-                <div class="p-3.5 sm:p-5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-teal-700 transition-all space-y-1.5 shadow-sm">
-                  <span class="text-xs font-bold text-teal-400 block uppercase tracking-wider">${p.tag}</span>
+                <div class="p-3 sm:p-5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-teal-700 transition-all space-y-1 shadow-sm">
+                  <span class="text-[10px] font-bold text-teal-400 block uppercase tracking-wider">${p.tag}</span>
                   <h4 class="text-xs sm:text-base font-extrabold text-white">${p.title}</h4>
-                  <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">${p.desc}</p>
+                  <p class="text-[11px] sm:text-sm text-slate-300 leading-relaxed font-medium">${p.desc}</p>
                 </div>
               `).join('')}
             </div>
@@ -770,51 +769,51 @@
 
       if (slide.type === 'interactive_tool') {
         return `
-          <div class="slide active w-full h-full flex flex-col justify-center space-y-3 ${textDir} my-auto">
-            <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
+          <div class="slide active w-full flex flex-col justify-center space-y-2.5 sm:space-y-3.5 ${textDir} my-auto py-2">
+            <div class="border-b border-slate-800 pb-1.5 flex items-center justify-between">
               <div>
-                <span class="text-[11px] sm:text-xs text-teal-400 font-bold uppercase tracking-wider">${slide.tag}</span>
-                <h2 class="text-base sm:text-2xl font-black text-white mt-0.5">${slide.title}</h2>
+                <span class="text-[10px] sm:text-xs text-teal-400 font-bold uppercase tracking-wider">${slide.tag}</span>
+                <h2 class="text-sm sm:text-2xl font-black text-white mt-0.5">${slide.title}</h2>
               </div>
 
               <!-- DIRECT ROUTE LINK BUTTON -->
-              <a href="${slide.route}" target="_blank" class="text-[11px] sm:text-xs bg-teal-600 hover:bg-teal-500 text-white font-bold px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 shadow-sm shrink-0">
+              <a href="${slide.route}" target="_blank" class="text-[10px] sm:text-xs bg-teal-600 active:bg-teal-500 text-white font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg transition-all flex items-center gap-1 shadow-sm shrink-0">
                 <span>${slide.routeLabel}</span>
               </a>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 items-stretch">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-2.5 sm:gap-4 items-stretch">
               <!-- Left: Problem & Solution Explanation -->
-              <div class="lg:col-span-6 p-3.5 sm:p-5 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col justify-between space-y-2.5 shadow-md">
-                <div class="space-y-1.5">
-                  <span class="text-xs sm:text-sm font-bold text-red-400 block uppercase">${slide.problemTitle}</span>
-                  <p class="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">${slide.problemDesc}</p>
+              <div class="lg:col-span-6 p-3 sm:p-5 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col justify-between space-y-2 shadow-md">
+                <div class="space-y-1">
+                  <span class="text-[11px] sm:text-sm font-bold text-red-400 block uppercase">${slide.problemTitle}</span>
+                  <p class="text-[11px] sm:text-sm text-slate-200 leading-relaxed font-medium">${slide.problemDesc}</p>
                 </div>
 
-                <div class="space-y-1.5 pt-2 border-t border-slate-800">
-                  <span class="text-xs sm:text-sm font-bold text-teal-400 block uppercase">${slide.solutionTitle}</span>
-                  <p class="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">${slide.solutionDesc}</p>
+                <div class="space-y-1 pt-1.5 border-t border-slate-800">
+                  <span class="text-[11px] sm:text-sm font-bold text-teal-400 block uppercase">${slide.solutionTitle}</span>
+                  <p class="text-[11px] sm:text-sm text-slate-200 leading-relaxed font-medium">${slide.solutionDesc}</p>
                 </div>
 
-                <a href="${slide.route}" target="_blank" class="w-full text-center py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-teal-300 font-bold text-xs border border-teal-700/60 transition-colors block mt-1">
+                <a href="${slide.route}" target="_blank" class="w-full text-center py-1.5 sm:py-2 rounded-xl bg-slate-800 active:bg-slate-700 text-teal-300 font-bold text-[11px] sm:text-xs border border-teal-700/60 transition-colors block mt-0.5">
                   ${tryLiveBtnText}
                 </a>
               </div>
 
               <!-- Right: Live Interactive Sandbox -->
-              <div class="lg:col-span-6 p-3.5 sm:p-5 rounded-2xl bg-slate-950 border border-slate-800 flex flex-col justify-between space-y-2 shadow-md">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-1.5">
-                  <span class="text-xs font-bold text-teal-300 flex items-center gap-1.5">
+              <div class="lg:col-span-6 p-3 sm:p-5 rounded-2xl bg-slate-950 border border-slate-800 flex flex-col justify-between space-y-1.5 shadow-md">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-1">
+                  <span class="text-[11px] font-bold text-teal-300 flex items-center gap-1">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>${isAr ? 'تجربة تفاعلية مباشرة داخل العرض:' : 'Live Interactive Demo Sandbox:'}</span>
+                    <span>${isAr ? 'تجربة تفاعلية مباشرة:' : 'Interactive Sandbox:'}</span>
                   </span>
-                  <span class="text-[10px] text-slate-400 font-mono hidden sm:inline">Route: ${slide.route}</span>
+                  <span class="text-[9px] text-slate-400 font-mono hidden sm:inline">Route: ${slide.route}</span>
                 </div>
 
                 ${getInteractiveSandbox(slide.interactiveType, lang)}
 
-                <div class="text-[10px] text-slate-400 text-center pt-1 border-t border-slate-900">
-                  ${isAr ? 'مربوط مباشرة بقاعدة بيانات ومنطق الموقع' : 'Directly bound to live platform data logic'}
+                <div class="text-[9px] text-slate-500 text-center pt-0.5 border-t border-slate-900">
+                  ${isAr ? 'مربوط مباشرة بقاعدة بيانات ومنطق الموقع' : 'Directly bound to live platform data'}
                 </div>
               </div>
             </div>
@@ -824,23 +823,23 @@
 
       if (slide.type === 'clinical_case') {
         return `
-          <div class="slide active w-full h-full flex flex-col justify-center space-y-3.5 ${textDir} my-auto">
-            <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
+          <div class="slide active w-full flex flex-col justify-center space-y-2.5 sm:space-y-3.5 ${textDir} my-auto py-2">
+            <div class="border-b border-slate-800 pb-1.5 flex items-center justify-between">
               <div>
-                <span class="text-xs text-teal-400 font-bold uppercase tracking-wider">${slide.tag}</span>
-                <h2 class="text-lg sm:text-2xl font-black text-white mt-0.5">${slide.title}</h2>
+                <span class="text-[10px] sm:text-xs text-teal-400 font-bold uppercase tracking-wider">${slide.tag}</span>
+                <h2 class="text-sm sm:text-2xl font-black text-white mt-0.5">${slide.title}</h2>
               </div>
             </div>
 
-            <div class="p-3.5 sm:p-4 rounded-xl bg-slate-900 border border-slate-800 text-xs sm:text-sm text-slate-200 font-bold">
+            <div class="p-2.5 sm:p-4 rounded-xl bg-slate-900 border border-slate-800 text-xs sm:text-sm text-slate-200 font-bold">
               👤 ${slide.profile}
             </div>
 
-            <div class="space-y-2">
+            <div class="space-y-1.5 sm:space-y-2">
               ${slide.findings.map(f => `
-                <div class="p-3.5 sm:p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-1 text-xs sm:text-sm">
-                  <span class="font-extrabold text-teal-300 block">${f.badge}</span>
-                  <p class="text-slate-300 font-medium">${f.desc}</p>
+                <div class="p-2.5 sm:p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-0.5 text-xs sm:text-sm">
+                  <span class="font-extrabold text-teal-300 block text-[11px] sm:text-sm">${f.badge}</span>
+                  <p class="text-slate-300 font-medium text-[11px] sm:text-sm">${f.desc}</p>
                 </div>
               `).join('')}
             </div>
@@ -850,37 +849,37 @@
 
       if (slide.type === 'team_slide') {
         return `
-          <div class="slide active w-full h-full flex flex-col justify-center items-center text-center space-y-4 sm:space-y-5 my-auto">
-            <div class="inline-flex items-center gap-2 px-4 sm:px-5 py-1.5 sm:py-2 rounded-full bg-teal-950 border border-teal-700 text-teal-300 text-xs sm:text-sm font-bold shadow-md">
+          <div class="slide active w-full flex flex-col justify-center items-center text-center space-y-3 sm:space-y-5 my-auto py-2">
+            <div class="inline-flex items-center gap-1.5 px-3 sm:px-5 py-1 sm:py-2 rounded-full bg-teal-950 border border-teal-700 text-teal-300 text-[10px] sm:text-sm font-bold shadow-md">
               <span>🏆 ${slide.tag}</span>
             </div>
 
             <div>
-              <h2 class="text-3xl sm:text-5xl font-black text-white tracking-tight">
+              <h2 class="text-2xl sm:text-5xl font-black text-white tracking-tight">
                 ${slide.title}
               </h2>
-              <p class="text-sm sm:text-xl text-teal-200 font-bold italic mt-1">
+              <p class="text-xs sm:text-xl text-teal-200 font-bold italic mt-0.5">
                 ${slide.motto}
               </p>
             </div>
 
             <!-- Team Members 5-Card Grid -->
-            <div class="p-4 sm:p-6 rounded-2xl bg-slate-900/95 border border-slate-800 max-w-4xl w-full ${textDir} space-y-3.5 shadow-xl">
+            <div class="p-3.5 sm:p-6 rounded-2xl bg-slate-900/95 border border-slate-800 max-w-4xl w-full ${textDir} space-y-2.5 sm:space-y-3.5 shadow-xl">
               <span class="text-xs sm:text-sm font-bold text-teal-300 block uppercase tracking-wider">${slide.teamTitle}</span>
               
-              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3">
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
                 ${slide.members.map((m, idx) => `
-                  <div class="p-3 sm:p-3.5 rounded-xl bg-slate-950 border border-teal-800/60 space-y-1 shadow-sm">
-                    <div class="flex items-center gap-2">
-                      <span class="w-6 h-6 rounded-full bg-teal-600 text-white font-bold text-xs flex items-center justify-center">${idx + 1}</span>
+                  <div class="p-2.5 sm:p-3.5 rounded-xl bg-slate-950 border border-teal-800/60 space-y-0.5 shadow-sm">
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                      <span class="w-5 h-5 rounded-full bg-teal-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0">${idx + 1}</span>
                       <span class="font-extrabold text-white text-xs sm:text-sm">${m.name}</span>
                     </div>
-                    <span class="text-[10px] sm:text-[11px] text-slate-300 block px-1">${m.role}</span>
+                    <span class="text-[10px] text-slate-300 block px-1">${m.role}</span>
                   </div>
                 `).join('')}
               </div>
 
-              <div class="pt-2 border-t border-slate-800 text-center text-xs font-bold text-teal-300">
+              <div class="pt-1.5 border-t border-slate-800 text-center text-[11px] sm:text-xs font-bold text-teal-300">
                 ${slide.institution}
               </div>
             </div>
@@ -906,11 +905,58 @@
 
       const dotsContainer = document.getElementById('dotsContainer');
       dotsContainer.innerHTML = data.slides.map((_, i) => `
-        <button class="dot w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-full shrink-0 transition-all ${i === currentSlide ? 'bg-teal-400 scale-125' : 'bg-slate-700'}" onclick="goToSlide(${i})"></button>
+        <button class="dot w-2 sm:w-3 h-2 sm:h-3 rounded-full shrink-0 transition-all ${i === currentSlide ? 'bg-teal-400 scale-125' : 'bg-slate-700'}" onclick="goToSlide(${i})"></button>
       `).join('');
 
       document.getElementById('prevBtn').disabled = currentSlide === 0;
       document.getElementById('nextBtn').disabled = currentSlide === data.slides.length - 1;
+
+      // Reset scroll position on slide change
+      document.getElementById('slideCanvas').scrollTop = 0;
+    }
+
+    // TOUCH SWIPE DETECTION ENGINE FOR MOBILE
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+
+    const canvas = document.getElementById('slideCanvas');
+
+    canvas.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    canvas.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      touchEndY = e.changedTouches[0].screenY;
+      handleSwipeGesture();
+    }, { passive: true });
+
+    function handleSwipeGesture() {
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = touchEndY - touchStartY;
+      const minSwipeDistance = 45; // pixels
+
+      // Only trigger horizontal slide swipe if horizontal movement is greater than vertical movement
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+        if (currentLang === 'ar') {
+          // RTL Swipe logic
+          if (deltaX < 0) {
+            nextSlide(); // Swiped left -> next
+          } else {
+            prevSlide(); // Swiped right -> prev
+          }
+        } else {
+          // LTR Swipe logic
+          if (deltaX < 0) {
+            nextSlide();
+          } else {
+            prevSlide();
+          }
+        }
+      }
     }
 
     // INTERACTIVE SANDBOX DEMO HANDLERS
@@ -924,30 +970,30 @@
         results.innerHTML = `
           <div class="flex items-center justify-between p-2 rounded-lg bg-slate-950 border border-teal-800/60">
             <div>
-              <span class="font-bold text-teal-300 block text-xs sm:text-sm">Concor 5mg Tablets</span>
-              <span class="text-[10px] sm:text-[11px] text-slate-400 font-mono">Bisoprolol Fumarate (Merck)</span>
+              <span class="font-bold text-teal-300 block text-xs">Concor 5mg</span>
+              <span class="text-[10px] text-slate-400 font-mono">Bisoprolol Fumarate (Merck)</span>
             </div>
-            <span class="text-[9px] sm:text-[10px] bg-teal-950 text-teal-300 border border-teal-700 px-2 py-1 rounded font-bold">${isAr ? 'علاج الضغط ونبض القلب' : 'Beta Blocker'}</span>
+            <span class="text-[9px] bg-teal-950 text-teal-300 border border-teal-700 px-1.5 py-0.5 rounded font-bold">${isAr ? 'علاج الضغط' : 'Beta Blocker'}</span>
           </div>
         `;
       } else if (q.includes('cataflam')) {
         results.innerHTML = `
           <div class="flex items-center justify-between p-2 rounded-lg bg-slate-950 border border-teal-800/60">
             <div>
-              <span class="font-bold text-teal-300 block text-xs sm:text-sm">Cataflam 50mg Tablets</span>
-              <span class="text-[10px] sm:text-[11px] text-slate-400 font-mono">Diclofenac Potassium (Novartis)</span>
+              <span class="font-bold text-teal-300 block text-xs">Cataflam 50mg</span>
+              <span class="text-[10px] text-slate-400 font-mono">Diclofenac Potassium (Novartis)</span>
             </div>
-            <span class="text-[9px] sm:text-[10px] bg-amber-950 text-amber-300 border border-amber-700 px-2 py-1 rounded font-bold">${isAr ? 'مسكن ومضاد التهاب' : 'NSAID Pain Reliever'}</span>
+            <span class="text-[9px] bg-amber-950 text-amber-300 border border-amber-700 px-1.5 py-0.5 rounded font-bold">${isAr ? 'مسكن' : 'NSAID'}</span>
           </div>
         `;
       } else {
         results.innerHTML = `
           <div class="flex items-center justify-between p-2 rounded-lg bg-slate-950 border border-teal-800/60">
             <div>
-              <span class="font-bold text-teal-300 block text-xs sm:text-sm">Augmentin 1g Tablets</span>
-              <span class="text-[10px] sm:text-[11px] text-slate-400 font-mono">Amoxicillin + Clavulanic Acid (GSK)</span>
+              <span class="font-bold text-teal-300 block text-xs">Augmentin 1g</span>
+              <span class="text-[10px] text-slate-400 font-mono">Amoxicillin/Clavulanate (GSK)</span>
             </div>
-            <span class="text-[9px] sm:text-[10px] bg-teal-950 text-teal-300 border border-teal-700 px-2 py-1 rounded font-bold">${isAr ? 'مضاد واسع' : 'Broad Antibiotic'}</span>
+            <span class="text-[9px] bg-teal-950 text-teal-300 border border-teal-700 px-1.5 py-0.5 rounded font-bold">${isAr ? 'مضاد واسع' : 'Antibiotic'}</span>
           </div>
         `;
       }
@@ -960,25 +1006,25 @@
 
       if (pair === 'warfarin_cataflam') {
         res.innerHTML = `
-          <span class="text-[9px] sm:text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded uppercase">🔴 HIGH RISK (خطر نزيف حاد)</span>
-          <h5 class="text-xs sm:text-sm font-extrabold text-white">Warfarin ↔ Cataflam (Diclofenac)</h5>
-          <p class="text-[10px] sm:text-[11px] text-slate-300 leading-relaxed">
+          <span class="text-[9px] bg-red-600 text-white font-bold px-1.5 py-0.5 rounded uppercase">🔴 HIGH RISK (خطر نزيف حاد)</span>
+          <h5 class="text-xs font-extrabold text-white">Warfarin ↔ Cataflam (Diclofenac)</h5>
+          <p class="text-[10px] text-slate-300 leading-relaxed">
             ${isAr ? 'تنافس على بروتينات البلازما وتهتك بطانة المعدة يؤدي لنزيف داخلي حاد. التوصية: تجنب التزامن واستبدله بـ Panadol.' : 'Plasma protein displacement and gastric irritation causing severe hemorrhage. Action: Strictly avoid; substitute with Paracetamol.'}
           </p>
         `;
       } else if (pair === 'panadol_concor') {
         res.innerHTML = `
-          <span class="text-[9px] sm:text-[10px] bg-emerald-600 text-white font-bold px-2 py-0.5 rounded uppercase">🟢 SAFE (آمن تماماً)</span>
-          <h5 class="text-xs sm:text-sm font-extrabold text-white">Panadol (Paracetamol) ↔ Concor</h5>
-          <p class="text-[10px] sm:text-[11px] text-slate-300 leading-relaxed">
+          <span class="text-[9px] bg-emerald-600 text-white font-bold px-1.5 py-0.5 rounded uppercase">🟢 SAFE (آمن تماماً)</span>
+          <h5 class="text-xs font-extrabold text-white">Panadol (Paracetamol) ↔ Concor</h5>
+          <p class="text-[10px] text-slate-300 leading-relaxed">
             ${isAr ? 'لا يوجد أي تعارض فارماكولوجي. مزيج آمن لمرضى الضغط.' : 'No pharmacological cross-interaction. Safe combination for hypertensive patients.'}
           </p>
         `;
       } else {
         res.innerHTML = `
-          <span class="text-[9px] sm:text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded uppercase">🔴 HIGH RISK (خطورة عالية)</span>
-          <h5 class="text-xs sm:text-sm font-extrabold text-white">Ciprofloxacin ↔ Antinal</h5>
-          <p class="text-[10px] sm:text-[11px] text-slate-300 leading-relaxed">
+          <span class="text-[9px] bg-red-600 text-white font-bold px-1.5 py-0.5 rounded uppercase">🔴 HIGH RISK (خطورة عالية)</span>
+          <h5 class="text-xs font-extrabold text-white">Ciprofloxacin ↔ Antinal</h5>
+          <p class="text-[10px] text-slate-300 leading-relaxed">
             ${isAr ? 'يحدث التصاق معوي يقلل امتصاص السيبروفلوكساسين بنسبة 60%. التوصية: فصل الجرعات بساعتين.' : 'Intestinal chelation reducing ciprofloxacin absorption by 60%. Action: Separate by 2 hours.'}
           </p>
         `;
@@ -993,31 +1039,31 @@
       if (drug === 'glucophage') {
         res.innerHTML = `
           <div class="flex items-center justify-between">
-            <span class="font-bold text-emerald-300 text-xs">⏰ ${isAr ? 'الموعد: مع أو بعد الوجبة مباشرة' : 'Timing: With or Immediately After Meal'}</span>
-            <span class="text-[9px] sm:text-[10px] bg-emerald-950 border border-emerald-700 text-emerald-300 px-2 py-0.5 rounded font-bold">${isAr ? 'وسط الأكل' : 'With Food'}</span>
+            <span class="font-bold text-emerald-300 text-[11px]">⏰ ${isAr ? 'الموعد: مع أو بعد الوجبة' : 'Timing: With or After Meal'}</span>
+            <span class="text-[9px] bg-emerald-950 border border-emerald-700 text-emerald-300 px-1.5 py-0.5 rounded font-bold">${isAr ? 'وسط الأكل' : 'With Food'}</span>
           </div>
-          <div class="p-2 rounded-lg bg-amber-950/40 border border-amber-900/60 text-amber-300 text-[10px] sm:text-[11px]">
-            💡 <strong>${isAr ? 'السبب السريري:' : 'Clinical Rationale:'}</strong> ${isAr ? 'تقليل الاضطرابات المعوية والغثيان وتحسين استجابة الأنسولين.' : 'Reduces GI distress, nausea, and optimizes postprandial glucose uptake.'}
+          <div class="p-1.5 rounded-lg bg-amber-950/40 border border-amber-900/60 text-amber-300 text-[10px]">
+            💡 <strong>${isAr ? 'السبب:' : 'Reason:'}</strong> ${isAr ? 'تقليل الغثيان والاضطرابات المعوية.' : 'Reduces GI distress & nausea.'}
           </div>
         `;
       } else if (drug === 'concor') {
         res.innerHTML = `
           <div class="flex items-center justify-between">
-            <span class="font-bold text-teal-300 text-xs">⏰ ${isAr ? 'الموعد: صباحاً مع أو بدون طعام' : 'Timing: Morning with/without food'}</span>
-            <span class="text-[9px] sm:text-[10px] bg-teal-950 border border-teal-700 text-teal-300 px-2 py-0.5 rounded font-bold">${isAr ? 'موعد ثابت' : 'Fixed Time'}</span>
+            <span class="font-bold text-teal-300 text-[11px]">⏰ ${isAr ? 'الموعد: صباحاً' : 'Timing: Morning'}</span>
+            <span class="text-[9px] bg-teal-950 border border-teal-700 text-teal-300 px-1.5 py-0.5 rounded font-bold">${isAr ? 'موعد ثابت' : 'Fixed Time'}</span>
           </div>
-          <div class="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 text-[10px] sm:text-[11px]">
-            💡 <strong>${isAr ? 'إرشاد للمريض:' : 'Patient Tip:'}</strong> ${isAr ? 'تثبيت موعد الجرعة يومياً لتنظيم ضغط الدم على مدار 24 ساعة.' : 'Take at consistent time daily to maintain 24-hour blood pressure control.'}
+          <div class="p-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 text-[10px]">
+            💡 <strong>${isAr ? 'نصيحة:' : 'Tip:'}</strong> ${isAr ? 'تثبيت موعد الجرعة لتنظيم الضغط 24 ساعة.' : 'Take consistently to maintain 24h BP control.'}
           </div>
         `;
       } else {
         res.innerHTML = `
           <div class="flex items-center justify-between">
-            <span class="font-bold text-amber-300 text-xs">⏰ ${isAr ? 'الموعد: على معدة فارغة' : 'Timing: On Empty Stomach'}</span>
-            <span class="text-[9px] sm:text-[10px] bg-amber-950 border border-amber-700 text-amber-300 px-2 py-0.5 rounded font-bold">${isAr ? 'قبل الأكل بساعة' : '1h before meal'}</span>
+            <span class="font-bold text-amber-300 text-[11px]">⏰ ${isAr ? 'الموعد: على معدة فارغة' : 'Timing: On Empty Stomach'}</span>
+            <span class="text-[9px] bg-amber-950 border border-amber-700 text-amber-300 px-1.5 py-0.5 rounded font-bold">${isAr ? 'قبل الأكل بساعة' : '1h before meal'}</span>
           </div>
-          <div class="p-2 rounded-lg bg-red-950/40 border border-red-900/60 text-red-300 text-[10px] sm:text-[11px]">
-            🚫 <strong>${isAr ? 'ممنوع تماماً:' : 'Strictly Avoid:'}</strong> ${isAr ? 'منتجات الألبان والكالسيوم وعصير الجريب فروت أثناء وقت الجرعة.' : 'Dairy, Calcium-rich foods, and Grapefruit juice.'}
+          <div class="p-1.5 rounded-lg bg-red-950/40 border border-red-900/60 text-red-300 text-[10px]">
+            🚫 <strong>${isAr ? 'ممنوع تماماً:' : 'Strictly Avoid:'}</strong> ${isAr ? 'منتجات الألبان والكالسيوم وعصير الجريب فروت.' : 'Dairy, Calcium-rich foods, and Grapefruit.'}
           </div>
         `;
       }
@@ -1031,16 +1077,16 @@
       const n = parseFloat(val);
       if (n <= 1.2) {
         res.innerHTML = `
-          <span class="font-bold text-emerald-400 block text-xs">🟢 ${isAr ? 'النتيجة: طبيعي (Normal Range)' : 'Status: Normal (eGFR > 90)'}</span>
-          <p class="text-[10px] sm:text-[11px] text-slate-300">${isAr ? 'وظائف الكلى سليمة ولا تحتاج لتعديل جرعات.' : 'Normal renal function; standard dosing applicable.'}</p>
+          <span class="font-bold text-emerald-400 block text-xs">🟢 ${isAr ? 'النتيجة: طبيعي (Normal)' : 'Status: Normal'}</span>
+          <p class="text-[10px] text-slate-300">${isAr ? 'وظائف الكلى سليمة ولا تحتاج لتعديل جرعات.' : 'Normal renal function; standard dosing.'}</p>
         `;
-        res.className = 'p-2.5 sm:p-3 rounded-xl bg-emerald-950/40 border border-emerald-800 text-xs space-y-1';
+        res.className = 'p-2 rounded-xl bg-emerald-950/40 border border-emerald-800 text-xs space-y-0.5';
       } else {
         res.innerHTML = `
-          <span class="font-bold text-red-400 block text-xs">🔴 ${isAr ? 'النتيجة: مرتفع (High / Renal Alert)' : 'Status: Elevated (Renal Alert)'}</span>
-          <p class="text-[10px] sm:text-[11px] text-slate-300">${isAr ? 'يشير لانخفاض وظائف الكلى (eGFR < 45). يلزم تعديل جرعات المضادات ومسكنات NSAIDs.' : 'Indicates reduced kidney function (eGFR < 45). Renal dose reduction required for antibiotics.'}</p>
+          <span class="font-bold text-red-400 block text-xs">🔴 ${isAr ? 'النتيجة: مرتفع (High Alert)' : 'Status: Elevated (Renal Alert)'}</span>
+          <p class="text-[10px] text-slate-300">${isAr ? 'يشير لانخفاض وظائف الكلى. يلزم تعديل جرعات المضادات ومسكنات NSAIDs.' : 'Indicates reduced renal function. Dose reduction required.'}</p>
         `;
-        res.className = 'p-2.5 sm:p-3 rounded-xl bg-red-950/40 border border-red-800 text-xs space-y-1';
+        res.className = 'p-2 rounded-xl bg-red-950/40 border border-red-800 text-xs space-y-0.5';
       }
     };
 
@@ -1051,15 +1097,15 @@
 
       if (cond === 'htn') {
         res.innerHTML = `
-          <span class="font-bold text-amber-400 block text-xs">${isAr ? '🟠 تحذير وحذر شديد (Caution)' : '🟠 Caution Required'}</span>
-          <p class="text-[10px] sm:text-[11px] text-slate-300">
+          <span class="font-bold text-amber-400 block text-[11px]">${isAr ? '🟠 تحذير وحذر شديد (Caution)' : '🟠 Caution Required'}</span>
+          <p class="text-[10px] text-slate-300">
             ${isAr ? 'مسكنات NSAIDs ترفع ضغط الدم وتقلل فاعلية أدوية الضغط ACE/ARBs. لا يُستخدم لأكثر من 3 أيام.' : 'NSAIDs cause sodium retention, blunt antihypertensive therapy, and elevate systolic BP.'}
           </p>
         `;
       } else {
         res.innerHTML = `
-          <span class="font-bold text-red-400 block text-xs">${isAr ? '🚫 ممنوع تماماً (Contraindicated)' : '🚫 Strictly Contraindicated'}</span>
-          <p class="text-[10px] sm:text-[11px] text-slate-300">
+          <span class="font-bold text-red-400 block text-[11px]">${isAr ? '🚫 ممنوع تماماً (Contraindicated)' : '🚫 Strictly Contraindicated'}</span>
+          <p class="text-[10px] text-slate-300">
             ${isAr ? 'مسكنات NSAIDs تقلل تدفق الدم الكلوي وتفاقم القصور الكلوي. استبدله بالباراسيتامول (Panadol).' : 'NSAIDs reduce renal blood flow and precipitate acute renal failure. Substitute with Paracetamol.'}
           </p>
         `;
