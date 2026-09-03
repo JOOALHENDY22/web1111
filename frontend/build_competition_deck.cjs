@@ -81,7 +81,7 @@ async function buildCompetitionDeck() {
     const slide = pptx.addSlide();
     slide.background = { color: SLATE_DARK };
 
-    slide.addText('PHARMACY INNOVATION & AI COMPETITION 2026', {
+    slide.addText('FACULTY OF PHARMACY — EGYPTIAN CHINESE UNIVERSITY (ECU)', {
       x: 1.0,
       y: 0.8,
       w: 10,
